@@ -270,6 +270,140 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/04/18/shell-sed-遇到路径处理方式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/18/shell-sed-遇到路径处理方式/" itemprop="url">
+                  shell sed 遇到路径处理方式
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-18T00:37:38+08:00">
+                2017-04-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li><p>当我们使用sed的时候，又传入路径，则会出现以下这样的错误</p>
+<figure class="highlight sml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed: -e expression #<span class="number">1</span>, <span class="built_in">char</span> <span class="number">24</span>: unknown <span class="built_in">option</span> to `s'</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如何解决？首先是想到转义</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -<span class="selector-tag">i</span> <span class="string">'s/searchStr/\/path\/home/g'</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>上述是解决问题了，但是如果很多呢？怎么处理？</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">有人提出：使用正则表达式，把路径直接转换：</span><br><span class="line">VARPATH=<span class="string">"/var/tmp/cloud"</span>  </span><br><span class="line">VARPATHSED=$(<span class="built_in">echo</span> <span class="variable">$&#123;VARPATH&#125;</span> |sed <span class="_">-e</span> <span class="string">'s/\//\\\//g'</span> )</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>这是一种方法，但是有没有更加简单的呢？</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">将是s<span class="comment">///修改成s###就OK了 也就是用#代替/这样就不会有冲突了，简单便捷</span></span><br><span class="line">sed -<span class="selector-tag">i</span> <span class="string">'s#searchStr#/path/home#g'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/04/11/新买AMD1700-微星B350-折腾过程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1453,137 +1587,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/01/01/运维-CentOS-Tomcat单机多实例配置/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/01/01/运维-CentOS-Tomcat单机多实例配置/" itemprop="url">
-                  运维-CentOS-Tomcat单机多实例配置
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-01T18:40:25+08:00">
-                2017-01-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <ol>
-<li><p>下载tomcat-8 最新版本</p>
-<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget <span class="symbol">http:</span>/<span class="regexp">/mirrors.cnnic.cn/apache</span><span class="regexp">/tomcat/tomcat</span>-<span class="number">8</span>/v8.<span class="number">5.9</span>/bin/apache-tomcat-<span class="number">8.5</span>.<span class="number">9</span>.tar.gz</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>解压到当前目录，得到apache-tomcat-8.5.9目录。</p>
-</li>
-<li><p>在opt中创建tomcat文件夹
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/01/01/运维-CentOS-Tomcat单机多实例配置/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1633,7 +1636,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">64</span>
+                <span class="site-state-item-count">65</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1646,7 +1649,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">77</span>
+                <span class="site-state-item-count">78</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

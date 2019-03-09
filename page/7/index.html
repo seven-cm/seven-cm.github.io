@@ -270,6 +270,136 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2016/07/30/运维-CentOS-配置多个公网IP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/07/30/运维-CentOS-配置多个公网IP/" itemprop="url">
+                  运维-CentOS-配置多个公网IP
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-30T16:52:58+08:00">
+                2016-07-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>因业务需要，需要在单张网卡配置多个公网IP。</p>
+<ol>
+<li><p>进入到/etc/sysconfig/network-scripts/;复制一份需要配置的目标网卡配置信息。</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">cp /etc/sysconfig/network-scripts/ifcfg-eth0 /etc/sysconfig/network-scripts/ifcfg-eth0:<span class="number">0</span></span><br><span class="line">vi /etc/sysconfig/network-scripts/ifcfg-eth0:<span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="attr">DEVICE=eth0:0</span> <span class="comment">#注意Device不能重名，否则会配置到网卡中，但是是用ifconfig会看不到地址，然而又可以ping通</span></span><br><span class="line"><span class="attr">HWADDR=11:12:18:4D:B7:2C</span></span><br><span class="line"><span class="attr">TYPE=Ethernet</span></span><br><span class="line"><span class="attr">UUID=0cc484a5-defacde-ddescdd-descdde-cddea</span></span><br><span class="line"><span class="attr">ONBOOT=yes</span></span><br><span class="line"><span class="attr">NM_CONTROLLED=yes</span></span><br><span class="line"><span class="attr">BOOTPROTO=static</span></span><br><span class="line"><span class="attr">IPADDR=x.x.x.1</span> <span class="comment">#将IP地址修改</span></span><br><span class="line"><span class="attr">NETMASK=x.x.x.x</span></span><br><span class="line"><span class="attr">GATEWAY=x.x.x.x</span></span><br><span class="line"><span class="comment">#如果有多个同网段的公网IP按上述配置多个即可</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置完成后，使用ifup ifcfg-eth1:0启用配置信息
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/07/30/运维-CentOS-配置多个公网IP/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2016/07/30/运维-CentOS-搭建VPN/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -826,7 +956,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">64</span>
+                <span class="site-state-item-count">65</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -839,7 +969,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">77</span>
+                <span class="site-state-item-count">78</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
