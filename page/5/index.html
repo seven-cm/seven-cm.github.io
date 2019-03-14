@@ -270,6 +270,132 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/04/18/自动化构建-jenkins-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/18/自动化构建-jenkins-1/" itemprop="url">
+                  自动化构建-jenkins-1
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-18T19:43:25+08:00">
+                2017-04-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在项目不断增加的情况下，手工发布显得越来越吃力了。每次更新都要手工maven build, ssh 服务器，更新。为了解放双手，需将自动化构建功能引入。随手记录下搭建jenkins的过程。</p>
+<h3 id="1-下载jenkins"><a href="#1-下载jenkins" class="headerlink" title="1.下载jenkins"></a>1.下载jenkins</h3><p>这里直接下载war包，直接部署到tomcat中：<a href="http://mirrors.jenkins.io/war-stable/latest/jenkins.war" target="_blank" rel="external">http://mirrors.jenkins.io/war-stable/latest/jenkins.war</a></p>
+<h3 id="2-启动"><a href="#2-启动" class="headerlink" title="2.启动"></a>2.启动</h3><p>将war包放置在tomcat的weapps目录下。启动tomcat。</p>
+<h3 id="3-访问"><a href="#3-访问" class="headerlink" title="3.访问"></a>3.访问</h3><p><a href="http://localhost:8080/jenkins" target="_blank" rel="external">http://localhost:8080/jenkins</a><br>jenkins启动后，会在用户下生成一串秘钥。复制该串秘钥即可登录。在后续步骤配置相关的账号密码。</p>
+<h3 id="4-安装插件"><a href="#4-安装插件" class="headerlink" title="4.安装插件"></a>4.安装插件</h3><p>选择推荐安装打插件即可</p>
+<h3 id="5-新建工程"><a href="#5-新建工程" class="headerlink" title="5.新建工程"></a>5.新建工程</h3><p>输入工程名称;选择新建Maven工程;选择OK</p>
+<h3 id="6"><a href="#6" class="headerlink" title="6."></a>6.</h3>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/04/18/shell-sed-遇到路径处理方式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1451,142 +1577,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/01/04/Resource-temporarily-unavailable/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/01/04/Resource-temporarily-unavailable/" itemprop="url">
-                  Resource temporarily unavailable
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-04T00:05:55+08:00">
-                2017-01-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>今天使用ssh链接服务器的时候，老是链接不上；表现为链接上去，一下子就断开了链接。使用root登录，再用su切换用户的时候，提示”Resource temporarily unavailable”;</p>
-<ol>
-<li><p>查看系统开启的进程数量</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ps <span class="_">-e</span>L | wc <span class="_">-l</span></span><br><span class="line">1035</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>继续查看ulimit信息</p>
-<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">ulimit -a</span><br><span class="line">core file size          (<span class="name">blocks</span>, -c) <span class="number">0</span></span><br><span class="line">data seg size           (<span class="name">kbytes</span>, -d) unlimited</span><br><span class="line">scheduling priority             (<span class="name">-e</span>) <span class="number">0</span></span><br><span class="line">file size               (<span class="name">blocks</span>, -f) unlimited</span><br><span class="line">pending signals                 (<span class="name">-i</span>) <span class="number">515256</span></span><br><span class="line">max locked memory       (<span class="name">kbytes</span>, -l) <span class="number">64</span></span><br><span class="line">max memory size         (<span class="name">kbytes</span>, -m) unlimited</span><br><span class="line">open files                      (<span class="name">-n</span>) <span class="number">65535</span></span><br><span class="line">pipe size            (<span class="number">512</span> bytes, -p) <span class="number">8</span></span><br><span class="line">POSIX message queues     (<span class="name">bytes</span>, -q) <span class="number">819200</span></span><br><span class="line">real-time priority              (<span class="name">-r</span>) <span class="number">0</span></span><br><span class="line">stack size              (<span class="name">kbytes</span>, -s) <span class="number">8192</span></span><br><span class="line">cpu time               (<span class="name">seconds</span>, -t) unlimited</span><br><span class="line">max user processes              (<span class="name">-u</span>) <span class="number">4096</span></span><br><span class="line">virtual memory          (<span class="name">kbytes</span>, -v) unlimited</span><br><span class="line">file locks                      (<span class="name">-x</span>) unlimited</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>３. 到此，max user processes没有超过数量啊；很郁闷。最后通过搜索得知，可以使用命令校验配置是否正确。<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">su</span>　-<span class="keyword">m</span>　-c 'ulimit -<span class="keyword">u</span>' nobody</span><br><span class="line">1024</span><br></pre></td></tr></table></figure></p>
-<ol>
-<li>得到的数量居然是1024怪不得一直报“Resource temporarily unavailable”</li>
-<li>解决方法：<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vi  /etc/security/limits.<span class="keyword">d</span>/90-nproc.<span class="keyword">conf</span></span><br><span class="line"><span class="comment">* soft nproc 1024</span></span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>将1024值更改为4096后保存</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1636,7 +1626,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">65</span>
+                <span class="site-state-item-count">66</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1649,7 +1639,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">78</span>
+                <span class="site-state-item-count">80</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

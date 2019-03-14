@@ -270,6 +270,128 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/06/23/Java-comparator-报空指针异常/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/23/Java-comparator-报空指针异常/" itemprop="url">
+                  Java comparator 报空指针异常
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-23T23:12:24+08:00">
+                2017-06-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近在生产库上总是会发现某个实现了接口Comparator的类排序总是会报空指针异常。</p>
+<h1 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h1><p>为了重现…..</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/06/23/Jekins-Maven-module-拉取bug/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1419,132 +1541,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/04/18/自动化构建-jenkins-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/18/自动化构建-jenkins-1/" itemprop="url">
-                  自动化构建-jenkins-1
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-18T19:43:25+08:00">
-                2017-04-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在项目不断增加的情况下，手工发布显得越来越吃力了。每次更新都要手工maven build, ssh 服务器，更新。为了解放双手，需将自动化构建功能引入。随手记录下搭建jenkins的过程。</p>
-<h3 id="1-下载jenkins"><a href="#1-下载jenkins" class="headerlink" title="1.下载jenkins"></a>1.下载jenkins</h3><p>这里直接下载war包，直接部署到tomcat中：<a href="http://mirrors.jenkins.io/war-stable/latest/jenkins.war" target="_blank" rel="external">http://mirrors.jenkins.io/war-stable/latest/jenkins.war</a></p>
-<h3 id="2-启动"><a href="#2-启动" class="headerlink" title="2.启动"></a>2.启动</h3><p>将war包放置在tomcat的weapps目录下。启动tomcat。</p>
-<h3 id="3-访问"><a href="#3-访问" class="headerlink" title="3.访问"></a>3.访问</h3><p><a href="http://localhost:8080/jenkins" target="_blank" rel="external">http://localhost:8080/jenkins</a><br>jenkins启动后，会在用户下生成一串秘钥。复制该串秘钥即可登录。在后续步骤配置相关的账号密码。</p>
-<h3 id="4-安装插件"><a href="#4-安装插件" class="headerlink" title="4.安装插件"></a>4.安装插件</h3><p>选择推荐安装打插件即可</p>
-<h3 id="5-新建工程"><a href="#5-新建工程" class="headerlink" title="5.新建工程"></a>5.新建工程</h3><p>输入工程名称;选择新建Maven工程;选择OK</p>
-<h3 id="6"><a href="#6" class="headerlink" title="6."></a>6.</h3>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1594,7 +1590,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">65</span>
+                <span class="site-state-item-count">66</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1607,7 +1603,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">78</span>
+                <span class="site-state-item-count">80</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
