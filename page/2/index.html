@@ -270,6 +270,137 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2018/03/09/生产环境Tomcat启动失败/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/03/09/生产环境Tomcat启动失败/" itemprop="url">
+                  生产环境Tomcat启动失败
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-09T20:36:01+08:00">
+                2018-03-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>今天企业微信应用一直在发警报,某个采购商不接收我们的回调数据.他们开发又没有时间处理该问题.只有对该采购商的回调回写的数据不作判断了.于是快速定位代码,加入判断逻辑语句.测试无问题,可以发布到线上了.</p>
+<p>打开Jenkins,爽快输入账号密码,点击发布.然而,tomcat停止后再也没有起来.</p>
+<h2 id="疑问"><a href="#疑问" class="headerlink" title="疑问"></a>疑问</h2><p>一直以来,使用Jenkins发布是没有任何问题的啊;会不会有是代码有问题.于是快速回滚线上代码.然而tomcat还是起不来.</p>
+<h2 id="先不管那么多-先看看tomcat的日志"><a href="#先不管那么多-先看看tomcat的日志" class="headerlink" title="先不管那么多,先看看tomcat的日志"></a>先不管那么多,先看看tomcat的日志</h2><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Java HotSpot(TM) 64-Bit Server VM warning: INFO: os::commit_memory(0x00000000c8000000, 805306368, 0) failed; <span class="keyword">error</span>='Cannot allocate <span class="keyword">memory</span>' (errno=12)</span><br><span class="line">#</span><br><span class="line"># There is insufficient <span class="keyword">memory</span> <span class="keyword">for</span> the Java Runtime Environment to <span class="keyword">continue</span>.</span><br><span class="line"># Native <span class="keyword">memory</span> allocation (malloc) failed to allocate 805306368 bytes <span class="keyword">for</span> committing reserved <span class="keyword">memory</span>.</span><br><span class="line"># <span class="keyword">An</span> <span class="keyword">error</span> <span class="keyword">report</span> <span class="keyword">file</span> with <span class="keyword">more</span> information is saved <span class="keyword">as</span>:</span><br><span class="line"># /tmp/hs_err_pid9230.<span class="built_in">log</span></span><br></pre></td></tr></table></figure>
+<p>一看,才知道内存不够,所以起不来:<code>Cannot allocate memory</code>;</p>
+<p>使用 <code>free -mh</code> 命令一看,果然剩下可用内存: 150M.</p>
+<blockquote>
+<p>因是生产环境的发单业务,故先把自用的Admin给停了,保证发单业务正常运行.</p>
+</blockquote>
+<p>重启tomcat, 此时业务日志已正常输出.</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>重启服务的时候,不能单单看业务日志,还要看tomcat的启动日志.这样才能快速定位问题所在.而在此事件中,我仅仅是看业务日志,一开始还以为是业务日志的路径定位到错的位置了.找来找去,浪费7 8分钟.</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2018/03/08/有关IDEA的一些设置/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1496,144 +1627,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/11/10/WEB前端开发之-viewport/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/11/10/WEB前端开发之-viewport/" itemprop="url">
-                  WEB前端开发之-viewport
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-10T08:35:24+08:00">
-                2017-11-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我们做移动端的H5开发都会有用到viewport,那viewport究竟是什么呢?不着急,我们先看几篇文章:</p>
-<ol>
-<li><a href="http://weizhifeng.net/viewports.html" target="_blank" rel="external">两个viewport的故事</a></li>
-<li><a href="http://www.css88.com/archives/5975" target="_blank" rel="external">说说移动前端中 viewport</a></li>
-<li><a href="https://www.cnblogs.com/pigtail/archive/2013/03/15/2961631.html" target="_blank" rel="external">HTML meta viewport属性说明</a></li>
-</ol>
-<h2 id="viewport是什么"><a href="#viewport是什么" class="headerlink" title="viewport是什么?"></a>viewport是什么?</h2><p><code>手机浏览器是把页面放在一个虚拟的“窗口”（viewport）中，窗口可大于或小于手机的可视区域，一般手机默认viewport大于可视区域。这样不会破坏没有针对手机浏览器优化的网页的布局，用户可以通过平移和缩放来看网页的其他部分。</code></p>
-<h2 id="viewport元素内容介绍"><a href="#viewport元素内容介绍" class="headerlink" title="viewport元素内容介绍"></a>viewport元素内容介绍</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">”viewport”</span> <span class="attr">content</span>=<span class="string">”width=device-width,</span> <span class="attr">initial-scale</span>=<span class="string">1,</span> <span class="attr">maximum-scale</span>=<span class="string">1″</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>我们从上面常见的viewport元素中,看看:</p>
-<ol>
-<li>width：控制 viewport 的大小，可以指定的一个值，如果 600，或者特殊的值，如 device-width 为设备的宽度（单位为缩放为 100% 时的 CSS 的像素）。</li>
-<li>height：和 width 相对应，指定高度。</li>
-<li>initial-scale：初始缩放比例，也即是当页面第一次 load 的时候缩放比例。</li>
-<li>maximum-scale：允许用户缩放到的最大比例。</li>
-<li>minimum-scale：允许用户缩放到的最小比例。</li>
-<li>user-scalable：用户是否可以手动缩放。</li>
-<li>有关viewport兼容的写法如下:<br><code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no&quot; /&gt;</code></li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1683,7 +1676,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">66</span>
+                <span class="site-state-item-count">67</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
