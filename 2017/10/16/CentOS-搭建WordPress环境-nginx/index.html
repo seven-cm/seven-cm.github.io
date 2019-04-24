@@ -99,7 +99,7 @@
 故,只需要搭建php环境即可
 安装php1yum install -y php php-fpm
 安装PHP组件1yum install php-mysql php-gd libjpeg*">
-<meta property="og:updated_time" content="2019-02-28T16:02:19.028Z">
+<meta property="og:updated_time" content="2019-04-24T15:34:45.593Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CentOS 搭建WordPress环境(nginx)">
 <meta name="twitter:description" content="前言之前一直都是在用阿里云提供的WordPress镜像.最近需要在阿里云之外的服务器上搭建一套WordPress环境.环境信息如下:123系统:CentOS 6.5数据库:MySQL(已安装)Nginx:已搭建
@@ -370,8 +370,9 @@
 <h2 id="下载WordPress"><a href="#下载WordPress" class="headerlink" title="下载WordPress"></a>下载WordPress</h2><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget <span class="string">https:</span><span class="comment">//cn.wordpress.org/wordpress-4.8.1-zh_CN.tar.gz</span></span><br></pre></td></tr></table></figure>
 <p>解压至:/data/mall/wwwroot/www.test.com</p>
 <h2 id="您的PHP似乎没有安装运行WordPress所必需的MySQL扩展"><a href="#您的PHP似乎没有安装运行WordPress所必需的MySQL扩展" class="headerlink" title="您的PHP似乎没有安装运行WordPress所必需的MySQL扩展"></a>您的PHP似乎没有安装运行WordPress所必需的MySQL扩展</h2><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vi <span class="meta-keyword">/etc/</span>php.ini</span><br><span class="line"><span class="meta">#设置 extension_dir</span></span><br><span class="line">extension_dir = “<span class="meta-keyword">/usr/</span>lib64<span class="meta-keyword">/php/</span>modules”</span><br></pre></td></tr></table></figure>
-<h2 id="配置php-fpm运行用户"><a href="#配置php-fpm运行用户" class="headerlink" title="配置php-fpm运行用户"></a>配置php-fpm运行用户</h2><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/php-fpm.conf</span><br><span class="line"><span class="comment">#增加配置</span></span><br><span class="line"><span class="keyword">user</span>=运行用户名</span><br></pre></td></tr></table></figure>
+<h2 id="配置php-fpm运行用户"><a href="#配置php-fpm运行用户" class="headerlink" title="配置php-fpm运行用户"></a>配置php-fpm运行用户</h2><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vi <span class="meta-keyword">/etc/</span>php-fpm.d/www.conf</span><br><span class="line"><span class="meta">#修改相关的group user即可</span></span><br></pre></td></tr></table></figure>
 <p>最后往MySQL中增加网站的数据库以及用户后启动php-fpm即可.</p>
+<p>#访问出现403<br>此问题一般是wordpress的根目录权限没有设置为755造成；需检查是否被错误配置为700</p>
 
       
     </div>
@@ -504,7 +505,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">67</span>
+                <span class="site-state-item-count">68</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -517,7 +518,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">80</span>
+                <span class="site-state-item-count">81</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

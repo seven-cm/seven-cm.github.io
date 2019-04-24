@@ -270,6 +270,129 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/04/21/解决maven下载慢-为maven添加国内阿里云镜像/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/21/解决maven下载慢-为maven添加国内阿里云镜像/" itemprop="url">
+                  解决maven下载慢-为maven添加国内阿里云镜像
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-21T22:24:43+08:00">
+                2017-04-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>使用maven最痛苦的事情就是下载速度太慢了;解决方法要么自己找代理。</p>
+<h2 id="在网上找到一个阿里云的maven镜像"><a href="#在网上找到一个阿里云的maven镜像" class="headerlink" title="在网上找到一个阿里云的maven镜像"></a>在网上找到一个阿里云的maven镜像</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span><span class="meta">?&gt;</span></span></span><br><span class="line"><span class="tag">&lt;<span class="name">settings</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/SETTINGS/1.0.0"</span></span><br><span class="line">          <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span><br><span class="line">          <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mirrors</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 阿里云仓库 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>alimaven<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">name</span>&gt;</span>aliyun maven<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://maven.aliyun.com/nexus/content/repositories/central/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- 中央仓库1 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>repo1<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">name</span>&gt;</span>Human Readable Name for this Mirror.<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://repo1.maven.org/maven2/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- 中央仓库2 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>repo2<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">name</span>&gt;</span>Human Readable Name for this Mirror.<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://repo2.maven.org/maven2/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mirrors</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">settings</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="配置方法"><a href="#配置方法" class="headerlink" title="配置方法"></a>配置方法</h2><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在.m目录下新建文件settings.<span class="keyword">xml</span> <span class="title">内容填入上述代码即可</span></span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/04/21/hexo-搭建过程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1454,130 +1577,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/01/08/Java-web代码混淆/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/01/08/Java-web代码混淆/" itemprop="url">
-                  Java web代码混淆
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-08T10:10:49+08:00">
-                2017-01-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>因公司需将产品出售给第三方公司；而不能给源代码。只好给代码加上混淆。</p>
-<p>下面记录下相关的Ｍaven配置。</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- ProGuard混淆插件--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.github.wvengen<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>proguard-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.0.11<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 混淆时刻，这里是打包的时候混淆--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">phase</span>&gt;</span>package<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                            <span class="comment">&lt;!-- 使用插件的什么功能，当然是混淆--&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">goal</span>&gt;</span>proguard<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!-- 是否将生成的PG文件安装部署--&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">attach</span>&gt;</span>true<span class="tag">&lt;/<span class="name">attach</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!-- 是否混淆--&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">obfuscate</span>&gt;</span>true<span class="tag">&lt;/<span class="name">obfuscate</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!-- 指定生成文件分类 --&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">attachArtifactClassifier</span>&gt;</span>pg<span class="tag">&lt;/<span class="name">attachArtifactClassifier</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">options</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- JDK目标版本1.7--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-target 1.7<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 不做收缩（删除注释、未被引用代码）--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-dontshrink<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 不做优化（变更代码实现逻辑）--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-dontoptimize<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 不路过非公用类文件及成员--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-dontskipnonpubliclibraryclasses<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-dontskipnonpubliclibraryclassmembers<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 优化时允许访问并修改有修饰符的类和类的成员 --&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-allowaccessmodification<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 确定统一的混淆类的成员名称来增加混淆--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-useuniqueclassmembernames<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 不混淆所有包名，本人测试混淆后WEB项目问题实在太多，毕竟Spring配置中有大量固定写法的包名--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keeppackagenames<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 不混淆所有特殊的类--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,LocalVariable*Table,*Annotation*,Synthetic,EnclosingMethod<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 不混淆所有的set/get方法，毕竟项目中使用的部分第三方框架（例如Shiro）会用到大量的set/get映射--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keepclassmembers public class * &#123;void set*(***);*** get*();&#125;<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                        <span class="comment">&lt;!-- 不混淆job包下的所有类名，且类中的方法也不混淆--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keep class com.chinatelecom.gz.wy.zhukun.shiro_spring.job.** &#123; &amp;lt;methods&amp;gt;; &#125;<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 不混淆filter包下的所有类名，这里主要是对Shiro的路踢人过滤器混淆，对类的属性和方法进行了混淆--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keep class com.chinatelecom.gz.wy.zhukun.shiro_spring.filter.** <span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 不混淆凭证包下的所有类名，但对类中的属性、方法进行混淆，原因是Spring配置中用到了这个类名--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keep class com.chinatelecom.gz.wy.zhukun.shiro_spring.credntials.** <span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 混淆目的同上，这个是拦截器的包，包中有防止重复提交的拦截器--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keep class com.chinatelecom.gz.wy.zhukun.shiro_spring.interceptor.** <span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 混淆目的同上，这个是域包，包中有用户登录域--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keep class com.chinatelecom.gz.wy.zhukun.shiro_spring.realm.** <span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 不混淆model包中的所有类以及类的属性及方法，实体包，混淆了会导致ORM框架及前端无法识别--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keep class com.chinatelecom.gz.wy.zhukun.shiro_spring.model.** &#123;*;&#125;<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 以下两个包因为大部分是Spring管理的Bean，不对包类的类名进行混淆，但对类中的属性和方法混淆--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keep class com.chinatelecom.gz.wy.zhukun.shiro_spring.service.** <span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keep class com.chinatelecom.gz.wy.zhukun.shiro_spring.dao.**<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">options</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">outjar</span>&gt;</span>$&#123;project.build.finalName&#125;-pg.jar<span class="tag">&lt;/<span class="name">outjar</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!-- 添加依赖，这里你可以按你的需要修改，这里测试只需要一个JRE的Runtime包就行了 --&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">libs</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">lib</span>&gt;</span>$&#123;java.home&#125;/lib/rt.jar<span class="tag">&lt;/<span class="name">lib</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">libs</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!-- 加载文件的过滤器，就是你的工程目录了--&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">inFilter</span>&gt;</span>com/chinatelecom/gz/wy/zhukun/shiro_spring/**<span class="tag">&lt;/<span class="name">inFilter</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!-- 对什么东西进行加载，这里仅有classes成功，毕竟你也不可能对配置文件及JSP混淆吧--&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">injar</span>&gt;</span>classes<span class="tag">&lt;/<span class="name">injar</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!-- 输出目录--&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span>$&#123;project.build.directory&#125;<span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>参考资料<br>1 <a href="http://blog.csdn.net/wltj920/article/details/48970869" target="_blank" rel="external">Maven WEB 项目使用ProGuard进行混淆，最佳解决方案</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1627,7 +1626,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">67</span>
+                <span class="site-state-item-count">68</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1640,7 +1639,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">80</span>
+                <span class="site-state-item-count">81</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
