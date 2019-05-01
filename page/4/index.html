@@ -270,6 +270,263 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/08/18/Mysql-order-by-limit-效率问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/08/18/Mysql-order-by-limit-效率问题/" itemprop="url">
+                  Mysql order by limit 效率问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-18T21:21:02+08:00">
+                2017-08-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>今天业务在查询的时候，发现有些查询使用了相关的索引，还是很慢；特别是在相关数据量很少的时候，这个情况特别明显；有时候查询要10多秒，这种情况简直是无法忍受。</p>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>在必应中搜索mysql order by limit 效率问题,会发现很多提到此类的问题。浏览到一篇对自己的问题比较有启发的文章：<a href="http://blog.itpub.net/22418990/viewspace-1467249/" target="_blank" rel="external">http://blog.itpub.net/22418990/viewspace-1467249/</a><br>里面有提到用explain来分析查询语句的效率；而且“分析一条慢SQL,要从多个角度去看，而不能只看已个方面，从上面的执行计划中，rows 很小，给人的感觉就是扫描的行数都这么少，怎么会慢呢。但是同时不能忘了 扫描方式为index这种耗时的操作。因此优化可以从这个角度去考虑。”让人有一种顿悟的感觉。</p>
+<h2 id="详细分析"><a href="#详细分析" class="headerlink" title="详细分析"></a>详细分析</h2><p>我们来看看现在遇到的问题：<br><figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">mysql&gt; explain SELECT * FROM boss_shop_order  WHERE 1=1 AND shopId=10129 AND receiveTime &gt;= 1502985600 AND receiveTime &lt;= 1503072000 order by id desc  LIMIT 0, 20;</span><br><span class="line">+----+-------------+-----------------+-------+-----------------------------------+---------+---------+------+------+-------------+</span></span><br><span class="line"><span class="section">| id | select_type | table           | type  | possible_keys                     | key     | key_len | ref  | rows | Extra       |</span><br><span class="line">+----+-------------+-----------------+-------+-----------------------------------+---------+---------+------+------+-------------+</span></span><br><span class="line"><span class="section">|  1 | SIMPLE      | boss_shop_order | index | boss_shop_order_index_receiveTime | PRIMARY | 4       | NULL | 2699 | Using where |</span><br><span class="line">+----+-------------+-----------------+-------+-----------------------------------+---------+---------+------+------+-------------+</span></span><br><span class="line"></span><br><span class="line"><span class="section">mysql&gt; SELECT * FROM boss_shop_order  WHERE 1=1 AND shopId=10129 AND receiveTime &gt;= 1502985600 AND receiveTime &lt;= 1503072000 ORDER BY id DESC limit 0,20;</span><br><span class="line">+---------+--------+------------+-------------------+---------+--------------------+-------------+-------+----------+----------+--------+--------+-------------+------------+--------------------+-------+--------------------+------------+------------+-------------+----------+--------------+----------------+-------+--------------------------------------------------------------------------------+--------------+--------------+-------------+------+------------+-------------------------------------+---------+</span></span><br><span class="line"><span class="section">| id      | shopId | customerId | outTradeNo        | bizType | customerCategoryId | accountVal  | price | operator | province | city   | status | receiveTime | supplierId | supplierCategoryId | cost  | supplierOrderId    | submitTime | finishTime | chargeTimes | priority | manualStatus | callbackStatus | black | remark                                                                         | customerName | supplierName | productSize | area | failReason | systemTransNo                       | extInfo |</span><br><span class="line">+---------+--------+------------+-------------------+---------+--------------------+-------------+-------+----------+----------+--------+--------+-------------+------------+--------------------+-------+--------------------+------------+------------+-------------+----------+--------------+----------------+-------+--------------------------------------------------------------------------------+--------------+--------------+-------------+------+------------+-------------------------------------+---------+</span></span><br><span class="line"><span class="code">+---------+</span>--------<span class="code">+------------+</span>-------------------<span class="code">+---------+</span>--------------------<span class="code">+-------------+</span>-------<span class="code">+----------+</span>----------<span class="code">+--------+</span>--------<span class="code">+-------------+</span>------------<span class="code">+--------------------+</span>-------<span class="code">+--------------------+</span>------------<span class="code">+------------+</span>-------------<span class="code">+----------+</span>--------------<span class="code">+----------------+</span>-------<span class="code">+--------------------------------------------------------------------------------+</span>--------------<span class="code">+--------------+</span>-------------<span class="code">+------+</span>------------<span class="code">+-------------------------------------+</span>---------+</span><br><span class="line">4 rows in set (10.39 sec)</span><br></pre></td></tr></table></figure></p>
+<p>果然explain查询分析，只有几千条数据，怎么可能会慢呢？然后认真分析后，才发现，原来索引走的是主键，然而主键却在where条件却没有。那我们用receiveTime来作order by 是怎样的效果呢？</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">mysql&gt; explain SELECT * FROM boss_shop_order  WHERE 1=1 AND shopId=10129 AND receiveTime &gt;= 1502985600 AND receiveTime &lt;= 1503072000 order by receiveTime desc  LIMIT 0, 20;</span><br><span class="line">+----+-------------+-----------------+-------+-----------------------------------+-----------------------------------+---------+------+-------+-------------+</span></span><br><span class="line"><span class="section">| id | select_type | table           | type  | possible_keys                     | key                               | key_len | ref  | rows  | Extra       |</span><br><span class="line">+----+-------------+-----------------+-------+-----------------------------------+-----------------------------------+---------+------+-------+-------------+</span></span><br><span class="line"><span class="section">|  1 | SIMPLE      | boss_shop_order | range | boss_shop_order_index_receiveTime | boss_shop_order_index_receiveTime | 5       | NULL | 39558 | Using where |</span><br><span class="line">+----+-------------+-----------------+-------+-----------------------------------+-----------------------------------+---------+------+-------+-------------+</span></span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line"><span class="section">mysql&gt; SELECT * FROM boss_shop_order  WHERE 1=1 AND shopId=10129 AND receiveTime &gt;= 1502985600 AND receiveTime &lt;= 1503072000 order by receiveTime desc  LIMIT 0, 20;</span><br><span class="line">+---------+--------+------------+-------------------+---------+--------------------+-------------+-------+----------+----------+--------+--------+-------------+------------+--------------------+-------+--------------------+------------+------------+-------------+----------+--------------+----------------+-------+--------------------------------------------------------------------------------+--------------+--------------+-------------+------+------------+-------------------------------------+---------+</span></span><br><span class="line"><span class="section">| id      | shopId | customerId | outTradeNo        | bizType | customerCategoryId | accountVal  | price | operator | province | city   | status | receiveTime | supplierId | supplierCategoryId | cost  | supplierOrderId    | submitTime | finishTime | chargeTimes | priority | manualStatus | callbackStatus | black | remark                                                                         | customerName | supplierName | productSize | area | failReason | systemTransNo                       | extInfo |</span><br><span class="line">+---------+--------+------------+-------------------+---------+--------------------+-------------+-------+----------+----------+--------+--------+-------------+------------+--------------------+-------+--------------------+------------+------------+-------------+----------+--------------+----------------+-------+--------------------------------------------------------------------------------+--------------+--------------+-------------+------+------------+-------------------------------------+---------+</span></span><br><span class="line"><span class="code">+---------+</span>--------<span class="code">+------------+</span>-------------------<span class="code">+---------+</span>--------------------<span class="code">+-------------+</span>-------<span class="code">+----------+</span>----------<span class="code">+--------+</span>--------<span class="code">+-------------+</span>------------<span class="code">+--------------------+</span>-------<span class="code">+--------------------+</span>------------<span class="code">+------------+</span>-------------<span class="code">+----------+</span>--------------<span class="code">+----------------+</span>-------<span class="code">+--------------------------------------------------------------------------------+</span>--------------<span class="code">+--------------+</span>-------------<span class="code">+------+</span>------------<span class="code">+-------------------------------------+</span>---------+</span><br><span class="line">4 rows in set (0.06 sec)</span><br></pre></td></tr></table></figure>
+<p>到此，慢查询应该是暂时没有了。我们再看explain中的key已经变为了boss_shop_order_index_receiveTime，与ｗhere中的条件的receiveTime一致，所以走了相关的索引而不会全表扫描。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>还是那句：分析一条慢SQL,要从多个角度去看，而不能只简单看explain中的rows；从上面的执行计划中，rows很小，给人的感觉就是扫描的行数都这么少，怎么会慢呢。但是你会在慢查询日志中会发现，实际情况却是走了全表扫描。因此要实际情况实际分析，多角度考虑，而不是仅仅看explain中的rows就觉得不可能会产生慢查询。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/08/04/使用squid搭建http代理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/08/04/使用squid搭建http代理/" itemprop="url">
+                  使用squid搭建http代理
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-04T21:44:32+08:00">
+                2017-08-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>之前了解到使用littleProxy可以作http代理。故很多项目都是使用该jar包来作为http代理。但是这样比较不方便，故准备使用spuid来搭建http代理。</p>
+<h2 id="squid是什么？"><a href="#squid是什么？" class="headerlink" title="squid是什么？"></a>squid是什么？</h2><p>Squid是一个高性能的代理缓存服务器，Squid支持FTP、gopher和HTTP协议。和一般的代理缓存软件不同，Squid用一个单独的、非模块化的、I/O驱动的进程来处理所有的客户端请求。</p>
+<p>wiki:<br>Squid is a caching and forwarding HTTP web proxy. It has a wide variety of uses, including speeding up a web server by caching repeated requests, caching web, DNS and other computer network lookups for a group of people sharing network resources, and aiding security by filtering traffic. Although primarily used for HTTP and FTP, Squid includes limited support for several other protocols including Internet Gopher, SSL,[6] TLS and HTTPS. Squid does not support the SOCKS protocol.</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y <span class="keyword">install</span> squid</span><br></pre></td></tr></table></figure>
+<h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Recommended minimum configuration:</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">acl manager <span class="keyword">proto</span> cache_object</span><br><span class="line">acl localhost src <span class="number">127.0</span>.<span class="number">0.1</span>/<span class="number">32</span> ::<span class="number">1</span></span><br><span class="line">acl to_localhost dst <span class="number">127.0</span>.<span class="number">0.0</span>/<span class="number">8</span> <span class="number">0.0</span>.<span class="number">0.0</span>/<span class="number">32</span> ::<span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Example rule allowing access from your local networks.</span></span><br><span class="line"><span class="comment"># Adapt to list your (internal) IP networks from where browsing</span></span><br><span class="line"><span class="comment"># should be allowed</span></span><br><span class="line">acl localnet src <span class="number">10.0</span>.<span class="number">0.0</span>/<span class="number">8</span>     <span class="comment"># RFC1918 possible internal network</span></span><br><span class="line">acl localnet src <span class="number">172.16</span>.<span class="number">0.0</span>/<span class="number">12</span>  <span class="comment"># RFC1918 possible internal network</span></span><br><span class="line">acl localnet src <span class="number">192.168</span>.<span class="number">0.0</span>/<span class="number">16</span> <span class="comment"># RFC1918 possible internal network</span></span><br><span class="line">acl localnet src fc00::/<span class="number">7</span>       <span class="comment"># RFC 4193 local private network range</span></span><br><span class="line">acl localnet src fe80::/<span class="number">10</span>      <span class="comment"># RFC 4291 link-local (directly plugged) machines</span></span><br><span class="line"></span><br><span class="line">acl SSL_ports <span class="keyword">port</span> <span class="number">443</span></span><br><span class="line">acl Safe_ports <span class="keyword">port</span> <span class="number">80</span>          <span class="comment"># http</span></span><br><span class="line">acl Safe_ports <span class="keyword">port</span> <span class="number">21</span>          <span class="comment"># ftp</span></span><br><span class="line">acl Safe_ports <span class="keyword">port</span> <span class="number">443</span>         <span class="comment"># https</span></span><br><span class="line">acl Safe_ports <span class="keyword">port</span> <span class="number">70</span>          <span class="comment"># gopher</span></span><br><span class="line">acl Safe_ports <span class="keyword">port</span> <span class="number">210</span>         <span class="comment"># wais</span></span><br><span class="line">acl Safe_ports <span class="keyword">port</span> <span class="number">1025</span>-<span class="number">65535</span>  <span class="comment"># unregistered ports</span></span><br><span class="line">acl Safe_ports <span class="keyword">port</span> <span class="number">280</span>         <span class="comment"># http-mgmt</span></span><br><span class="line">acl Safe_ports <span class="keyword">port</span> <span class="number">488</span>         <span class="comment"># gss-http</span></span><br><span class="line">acl Safe_ports <span class="keyword">port</span> <span class="number">591</span>         <span class="comment"># filemaker</span></span><br><span class="line">acl Safe_ports <span class="keyword">port</span> <span class="number">777</span>         <span class="comment"># multiling http</span></span><br><span class="line">acl CONNECT method CONNECT</span><br><span class="line"></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Recommended minimum Access Permission configuration:</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Only allow cachemgr access from localhost</span></span><br><span class="line">http_access allow manager localhost</span><br><span class="line">http_access deny manager</span><br><span class="line"></span><br><span class="line"><span class="comment"># Deny requests to certain unsafe ports</span></span><br><span class="line">http_access deny !Safe_ports</span><br><span class="line"></span><br><span class="line"><span class="comment"># Deny CONNECT to other than secure SSL ports</span></span><br><span class="line">http_access deny CONNECT !SSL_ports</span><br><span class="line"></span><br><span class="line"><span class="comment"># We strongly recommend the following be uncommented to protect innocent</span></span><br><span class="line"><span class="comment"># web applications running on the proxy server who think the only</span></span><br><span class="line"><span class="comment"># one who can access services on "localhost" is a local user</span></span><br><span class="line"><span class="comment">#http_access deny to_localhost</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># INSERT YOUR OWN RULE(S) HERE TO ALLOW ACCESS FROM YOUR CLIENTS</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Example rule allowing access from your local networks.</span></span><br><span class="line"><span class="comment"># Adapt localnet in the ACL section to list your (internal) IP networks</span></span><br><span class="line"><span class="comment"># from where browsing should be allowed</span></span><br><span class="line"><span class="comment">#http_access allow localnet</span></span><br><span class="line"><span class="comment">#http_access allow localhost</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># And finally deny all other access to this proxy</span></span><br><span class="line"><span class="comment">#http_access deny all</span></span><br><span class="line"></span><br><span class="line">dns_nameservers <span class="number">8.8</span>.<span class="number">8.8</span></span><br><span class="line"></span><br><span class="line">http_access allow <span class="literal">all</span></span><br><span class="line">visible_hostname t</span><br><span class="line"></span><br><span class="line"><span class="comment"># Squid normally listens to port 3128</span></span><br><span class="line">http_port <span class="number">3128</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Uncomment and adjust the following to add a disk cache directory.</span></span><br><span class="line"><span class="comment">#cache_dir ufs /var/spool/squid 100 16 256</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Leave coredumps in the first cache dir</span></span><br><span class="line">coredump_dir /var/spool/squid</span><br><span class="line"></span><br><span class="line"><span class="comment"># Add any of your own refresh_pattern entries above these.</span></span><br><span class="line">refresh_pattern ^ftp:           <span class="number">1440</span>    <span class="number">20</span>%     <span class="number">10080</span></span><br><span class="line">refresh_pattern ^gopher:        <span class="number">1440</span>    <span class="number">0</span>%      <span class="number">1440</span></span><br><span class="line">refresh_pattern -i (/cgi-bin/|\?) <span class="number">0</span>     <span class="number">0</span>%      <span class="number">0</span></span><br><span class="line">refresh_pattern .               <span class="number">0</span>       <span class="number">20</span>%     <span class="number">4320</span></span><br></pre></td></tr></table></figure>
+<h2 id="相关命令"><a href="#相关命令" class="headerlink" title="相关命令"></a>相关命令</h2><figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#检查配置是否正确</span></span><br><span class="line">./squid -k parse</span><br><span class="line"><span class="meta">#启动</span></span><br><span class="line">./squid</span><br><span class="line"><span class="meta">#停止</span></span><br><span class="line">./squid -k shutdown</span><br></pre></td></tr></table></figure>
+<h2 id="发现问题"><a href="#发现问题" class="headerlink" title="发现问题"></a>发现问题</h2><p>按上述的配置，你修改后，你会发现通过java代理请求的时候，服务端获取到的ip并不是代理服务器的ip,而是代理客户端的ip。那该问题如何解决？</p>
+<h2 id="添加配置信息"><a href="#添加配置信息" class="headerlink" title="添加配置信息"></a>添加配置信息</h2><figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">request_header_access Via deny <span class="keyword">all</span></span><br><span class="line">request_header_access X-Forwarded-<span class="keyword">For</span> deny <span class="keyword">all</span></span><br></pre></td></tr></table></figure>
+<p>添加上述配置后，即可隐藏由客户端带出去的头部信息。而通过配置后的方式后，java通过代理的请求在服务端中获取到的ip为代理服务器的ip。</p>
+<h2 id="最后要注意的地方"><a href="#最后要注意的地方" class="headerlink" title="最后要注意的地方"></a>最后要注意的地方</h2><p>因代理配置中是http_access allow all，也就是所有ip都可以请求。如果要在生产环境中配置，则需在防火墙中增加可请求ip；以保证生产环境的安全.</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/07/25/Java-wsdl设置http代理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1285,263 +1542,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/05/23/vue2-0基础入门-一/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/05/23/vue2-0基础入门-一/" itemprop="url">
-                  vue2.0基础入门之认识vue指令(一)
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-23T19:29:15+08:00">
-                2017-05-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近了解到iView已经支持vue2.0了，故准备使用vue2.0+iView构建一套cms后台模板。此系列教程适合vue入门。</p>
-<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>此处不再作多余的描述，大家参考官网的安装教程即可：<a href="https://cn.vuejs.org/v2/guide/installation.html" target="_blank" rel="external">https://cn.vuejs.org/v2/guide/installation.html</a></p>
-<h1 id="vue的核心"><a href="#vue的核心" class="headerlink" title="vue的核心"></a>vue的核心</h1><p>Vue.js 的核心是一个允许采用简洁的模板语法来声明式的将数据渲染进 DOM</p>
-<h1 id="vue指令"><a href="#vue指令" class="headerlink" title="vue指令"></a>vue指令</h1><h2 id="vue指令的定义"><a href="#vue指令的定义" class="headerlink" title="vue指令的定义"></a>vue指令的定义</h2><p>指令带有前缀 v-，以表示它们是 Vue 提供的特殊属性。</p>
-<h2 id="vue-v-if-指令"><a href="#vue-v-if-指令" class="headerlink" title="vue v-if 指令"></a>vue v-if 指令</h2><p>根据表达式的值的真假条件渲染元素。在切换时元素及它的数据绑定 / 组件被销毁并重建。如果元素是 <template> ，将提出它的内容作为条件块。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span> <span class="attr">v-if</span>=<span class="string">"ok"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>Paragraph 1<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>Paragraph 2<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span> <span class="attr">v-if</span>=<span class="string">"ok"</span>&gt;</span>Yes<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br></pre></td></tr></table></figure></template></p>
-<p>在上述例子中，如果ok=true则会显示<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>Paragraph 1<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>Paragraph 2<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>Yes<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="vue-v-show指令"><a href="#vue-v-show指令" class="headerlink" title="vue v-show指令"></a>vue v-show指令</h2><p>带有 v-show 的元素始终会被渲染并保留在 DOM 中。v-show 是简单地切换元素的 CSS 属性 display 。<br>也就是说show只是简单的是否为：display:none<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">v-show</span>=<span class="string">"ok"</span>&gt;</span>show?<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">则会体现为：</span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">style</span>=<span class="string">"display: none;"</span>&gt;</span>show?<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>那v-if与v-show的区别是什么？在什么情况下使用v-if？什么情况下使用v-show？官方有详细说明：<a href="https://cn.vuejs.org/v2/guide/conditional.html#v-show" target="_blank" rel="external">https://cn.vuejs.org/v2/guide/conditional.html#v-show</a></p>
-<h2 id="vue-v-for指令"><a href="#vue-v-for指令" class="headerlink" title="vue v-for指令"></a>vue v-for指令</h2><p>基于源数据多次渲染元素或模板块。此指令之值，必须使用特定语法 alias in expression ，为当前遍历的元素提供别名。<br><figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;div v-<span class="keyword">for</span>=<span class="string">"item in items"</span>&gt;</span><br><span class="line">  <span class="template-variable">&#123;&#123; item.text &#125;&#125;</span></span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="vue-v-on指令"><a href="#vue-v-on指令" class="headerlink" title="vue v-on指令"></a>vue v-on指令</h2><p>绑定事件监听器；可用@作为v-on的缩写。<br>详细用法，参考：<a href="https://cn.vuejs.org/v2/api/#v-on" target="_blank" rel="external">https://cn.vuejs.org/v2/api/#v-on</a></p>
-<h2 id="vue-v-model指令"><a href="#vue-v-model指令" class="headerlink" title="vue v-model指令"></a>vue v-model指令</h2><p>在表单控件或者组件上创建双向绑定。<br>详细参考：<a href="https://cn.vuejs.org/v2/api/#v-model" target="_blank" rel="external">https://cn.vuejs.org/v2/api/#v-model</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/05/04/Java-每秒指定发送线程数量/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/05/04/Java-每秒指定发送线程数量/" itemprop="url">
-                  Java 每秒指定发送线程数量
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-04T00:32:10+08:00">
-                2017-05-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在业务中使用Executor框架中的newFixThreadPool创建固定大小的线程池；会出现这样的一个情况：当提供服务方的服务在超时的时候，还没有返回相关的状态信息给我们，就会出现所有线程都在等待这一个返回结果。后果就是业务订单堆积得越来越多；一直等待到线程池有空闲的线程才能继续处理。那么，问题来了：线程池饱满后，该如何处理？</p>
-<h2 id="方案１"><a href="#方案１" class="headerlink" title="方案１"></a>方案１</h2><p>首先想到的方案是读透Executor框架的代码，然后对相关代码进行组合，以满足业务的需要。但是这块后续仔细想了想，如果要做的话，那改造的功夫可不小了，既要读透，又要自己造轮子。在时间不充足的条件下，这个方案不大合适。</p>
-<h2 id="方案２"><a href="#方案２" class="headerlink" title="方案２"></a>方案２</h2><p>有同事提出用MQ来解决这个问题；使用消息的发布与订阅，能很好地控制相关的订单流的大小。然而问题来了，这块的改造又是一个大工程。</p>
-<h2 id="方案３"><a href="#方案３" class="headerlink" title="方案３"></a>方案３</h2><p>在原有Java代码的基础上，用现有的知识进行代码改善，支撑业务需要。既然我们需要的线程是不能因服务方返回慢就一直在等待，那么这个线程就不能是固定大小的了；虽然在Executor框架中提供了：newCachedThreadPool来创建不限制线程池大小的方法，但是我们不能控制相关的线程多少，对系统的资源消耗还有可控性来说是不符合业务的需要。</p>
-<p>思量了多次，最终得到相关的方案：<br>１、还是使用newFixThreadPool，但是该线程池只创建２个线程：一个读取订单线程；一个处理订单线程<br>２、对于处理订单线程，我们可以粗暴地使用Thread提供的方法来执行业务；</p>
-<p>这样，我们能用最熟悉的方法来创建相关的线程，以符合业务的需要。<br>相关核心代码如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line"> * 交易线程池工具类</span><br><span class="line"> * 主要结合Executor 与 Thread 来处理订单</span><br><span class="line"> * <span class="doctag">@author</span> sevencm</span><br><span class="line"> * <span class="doctag">@Date</span> 2017-05-03</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Executor4TransTools</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger log = LoggerFactory.getLogger(Executor4TransTools.class);</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 线程池大小</span><br><span class="line">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> EXECUTOR_4TRANS_NUM = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * &lt;br&gt;固定线程池</span><br><span class="line">	 * &lt;br&gt;1个线程读取订单</span><br><span class="line">	 * &lt;br&gt;1个线程处理订单</span><br><span class="line">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> ExecutorService executorService = ExecutorUtils.getFixedThreadPool(EXECUTOR_4TRANS_NUM);</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 订单线程队列</span><br><span class="line">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> Queue&lt;Integer&gt; transQueue = <span class="keyword">new</span> ConcurrentLinkedQueue&lt;Integer&gt;();</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 记录队列大小</span><br><span class="line">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> AtomicInteger queueSize = <span class="keyword">new</span> AtomicInteger(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 默认处理线程大小 5 个</span><br><span class="line">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> AtomicInteger threadSize = <span class="keyword">new</span> AtomicInteger(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 是否继续发送订单-用于控制线程开关；为服务更新使用</span><br><span class="line">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> running = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> poolSize  = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String THREAD_NAME = Thread.currentThread().getName();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 默认处理线程大小 5 个</span><br><span class="line">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> AtomicInteger testOrderId = <span class="keyword">new</span> AtomicInteger(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initChinaMobileWorkerThread</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		executorService.execute(loadOrderCommand());</span><br><span class="line">		executorService.execute(handleOrderCommand());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 处理订单线程</span><br><span class="line">	 * <span class="doctag">@return</span></span><br><span class="line">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> Runnable <span class="title">handleOrderCommand</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		Runnable hoc = <span class="keyword">new</span> Runnable() &#123;</span><br><span class="line"></span><br><span class="line">			<span class="meta">@Override</span></span><br><span class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">				<span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line"></span><br><span class="line">					<span class="keyword">final</span> Integer order = transQueue.poll();</span><br><span class="line">					<span class="keyword">if</span>(order==<span class="keyword">null</span>)&#123;</span><br><span class="line">						ExecutorUtils.threadSleep(<span class="number">500L</span>);</span><br><span class="line">					&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">						queueSize.decrementAndGet();</span><br><span class="line">						<span class="keyword">int</span> nowSize = threadSize.addAndGet(<span class="number">1</span>);</span><br><span class="line">						<span class="keyword">if</span>(nowSize&lt;=(poolSize-<span class="number">1</span>))&#123;</span><br><span class="line">							Runnable runnable = <span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">								<span class="meta">@Override</span></span><br><span class="line">								<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">									log.info(order+<span class="string">""</span>);</span><br><span class="line">								&#125;</span><br><span class="line">							&#125;;</span><br><span class="line">							Thread thread = <span class="keyword">new</span> Thread(runnable);</span><br><span class="line">							thread.setName(THREAD_NAME+<span class="string">"-handle-thread-"</span>+nowSize);</span><br><span class="line">							thread.start();</span><br><span class="line">						&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">							ExecutorUtils.threadSleep(<span class="number">1000L</span>);</span><br><span class="line">							threadSize.set(<span class="number">0</span>);</span><br><span class="line">							Runnable runnable = <span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">								<span class="meta">@Override</span></span><br><span class="line">								<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">									log.info(order+<span class="string">""</span>);</span><br><span class="line">								&#125;</span><br><span class="line">							&#125;;</span><br><span class="line">							Thread thread = <span class="keyword">new</span> Thread(runnable);</span><br><span class="line">							thread.setName(THREAD_NAME+<span class="string">"-handle-thread-0"</span>);</span><br><span class="line">							thread.start();</span><br><span class="line">						&#125;</span><br><span class="line"></span><br><span class="line">					&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;;</span><br><span class="line">		<span class="keyword">return</span> hoc;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 读取订单线程</span><br><span class="line">	 * <span class="doctag">@return</span></span><br><span class="line">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> Runnable <span class="title">loadOrderCommand</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		Runnable loc = <span class="keyword">new</span> Runnable() &#123;</span><br><span class="line"></span><br><span class="line">			<span class="meta">@Override</span></span><br><span class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">				<span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">					<span class="keyword">if</span>(transQueue.isEmpty())&#123;</span><br><span class="line">						ExecutorUtils.threadSleep(<span class="number">500L</span>);</span><br><span class="line">						<span class="keyword">if</span>(running)&#123;</span><br><span class="line">							<span class="comment">//TODO 读取订单信息</span></span><br><span class="line">							ArrayList&lt;Integer&gt; orders = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">							<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">100</span>;i++)&#123;</span><br><span class="line">								<span class="keyword">int</span> order = testOrderId.addAndGet(<span class="number">1</span>);</span><br><span class="line">								orders.add(order);</span><br><span class="line">							&#125;</span><br><span class="line">							queueSize.getAndAdd(orders.size());</span><br><span class="line">							transQueue.addAll(orders);</span><br><span class="line">						&#125;</span><br><span class="line">					&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">						ExecutorUtils.threadSleep(<span class="number">500L</span>);</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;;</span><br><span class="line">		<span class="keyword">return</span> loc;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1591,7 +1591,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">68</span>
+                <span class="site-state-item-count">70</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1604,7 +1604,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">81</span>
+                <span class="site-state-item-count">84</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

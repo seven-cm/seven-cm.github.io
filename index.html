@@ -270,6 +270,266 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2019/05/01/指定git的端口以及密钥/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/05/01/指定git的端口以及密钥/" itemprop="url">
+                  指定git的端口以及密钥
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-01T22:59:32+08:00">
+                2019-05-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>为了提高服务器的安全，一般ssh 22端口都会更换为其他端口；<br>若在不是ssh为22端口的服务器中搭建git，需要指定git的端口才能正常使用。</p>
+<h2 id="指定git端口"><a href="#指定git端口" class="headerlink" title="指定git端口"></a>指定git端口</h2><figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">ssh:</span>//git<span class="subst">@192</span><span class="number">.168</span><span class="number">.1</span><span class="number">.10</span>:<span class="number">8888</span>/xxx.git</span><br></pre></td></tr></table></figure>
+<h2 id="指定git使用的密钥"><a href="#指定git使用的密钥" class="headerlink" title="指定git使用的密钥"></a>指定git使用的密钥</h2><h3 id="在-ssh目录下增加config"><a href="#在-ssh目录下增加config" class="headerlink" title="在.ssh目录下增加config"></a>在.ssh目录下增加config</h3><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cd ~</span><br><span class="line">cd .ssh</span><br><span class="line">touch config</span><br><span class="line">vi config</span><br><span class="line"><span class="comment">#config内容如下</span></span><br><span class="line">Host githost</span><br><span class="line">    HostName <span class="number">192.168</span>.<span class="number">1.10</span></span><br><span class="line">    Port <span class="number">8888</span></span><br><span class="line">    <span class="keyword">User</span> <span class="title">git</span></span><br><span class="line">    IdentityFile /Users/your/.ssh/your_id_rsa</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>若仓库已经clone下来，需执行以下操作</p>
+<h3 id="修改-git下的config"><a href="#修改-git下的config" class="headerlink" title="修改.git下的config"></a>修改.git下的config</h3><figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#将url修改即可</span></span><br><span class="line"><span class="meta"># url = ssh://git@192.168.1.10:8888/xxx.git</span></span><br><span class="line">url = ssh:<span class="comment">//git@githost/xxx.git</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2019/05/01/CentOS-搭建-gitolite/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/05/01/CentOS-搭建-gitolite/" itemprop="url">
+                  CentOS 搭建 gitolite
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-01T22:58:30+08:00">
+                2019-05-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近准备把svn更换为git，为了方便管理用户权限，准备使用gitolite。</p>
+<h2 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h2><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y <span class="keyword">install</span> git</span><br></pre></td></tr></table></figure>
+<h2 id="安装gitolite依赖"><a href="#安装gitolite依赖" class="headerlink" title="安装gitolite依赖"></a>安装gitolite依赖</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum -y <span class="keyword">install</span> perl</span><br><span class="line">yum -y <span class="keyword">install</span> perl-<span class="keyword">Data</span>-Dumper.x86_64</span><br></pre></td></tr></table></figure>
+<h2 id="添加git用户"><a href="#添加git用户" class="headerlink" title="添加git用户"></a>添加git用户</h2><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">useradd</span> git</span><br></pre></td></tr></table></figure>
+<h2 id="安装gitolite"><a href="#安装gitolite" class="headerlink" title="安装gitolite"></a>安装gitolite</h2><figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">su git</span><br><span class="line">cd ~</span><br><span class="line">git clone https://github.com/sitaramc/gitolite</span><br><span class="line">mkdir bin</span><br><span class="line">./gitolite/install -<span class="keyword">to</span> $HOME/bin</span><br></pre></td></tr></table></figure>
+<h2 id="下面的步骤可在客户端做或直接在git用户下操作也可以"><a href="#下面的步骤可在客户端做或直接在git用户下操作也可以" class="headerlink" title="下面的步骤可在客户端做或直接在git用户下操作也可以"></a>下面的步骤可在客户端做或直接在git用户下操作也可以</h2><blockquote>
+<p>区别是，如果你想在客户端管理（添加用户，仓库等信息）就在客户端增加；若仅仅在服务端管理，就在服务端操作即可<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#生成rsa密钥</span><br><span class="line">ssh-keygen -t rsa</span><br><span class="line">mv .ssh/id_rsa<span class="selector-class">.pub</span> admin<span class="selector-class">.pub</span></span><br><span class="line"><span class="variable">$HOME</span>/bin/gitolite setup -pk .ssh/admin.pub</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h2 id="clone配置仓库"><a href="#clone配置仓库" class="headerlink" title="clone配置仓库"></a>clone配置仓库</h2><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone git<span class="variable">@127</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">1</span><span class="symbol">:gitolite-admin</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>clone后即可在此仓库中配置git的用户密钥、仓库、权限</p>
+<h2 id="配置说明"><a href="#配置说明" class="headerlink" title="配置说明"></a>配置说明</h2><p>相关配置，可参考网站：<br><a href="https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitolite" target="_blank" rel="external">https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitolite</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2019/04/24/VisualVM远程监控阿里云tomcat/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1312,281 +1572,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2018/05/27/小程序样例工程详解-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/05/27/小程序样例工程详解-1/" itemprop="url">
-                  小程序样例工程详解 1
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-27T08:04:37+08:00">
-                2018-05-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近发布了一批搞笑的文字类小程序；故记录一下有关小程序的一些开发心得。开篇就拿样例工程入手。</p>
-<p>此篇主要是介绍一下小程序样例工程的目录结构，以及小程序的文件构成。另外还对于自己认为callback获取用户信息的疑点做出了一些说明。</p>
-<h1 id="样例工程"><a href="#样例工程" class="headerlink" title="样例工程"></a>样例工程</h1><h2 id="小程序样例工程（QuickStart）目录结构"><a href="#小程序样例工程（QuickStart）目录结构" class="headerlink" title="小程序样例工程（QuickStart）目录结构"></a>小程序样例工程（QuickStart）目录结构</h2><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">│  app<span class="selector-class">.js</span></span><br><span class="line">│  app<span class="selector-class">.json</span></span><br><span class="line">│  app<span class="selector-class">.wxss</span></span><br><span class="line">│  jsconfig<span class="selector-class">.json</span></span><br><span class="line">│  project<span class="selector-class">.config</span><span class="selector-class">.json</span></span><br><span class="line">│</span><br><span class="line">├─<span class="selector-class">.vscode</span></span><br><span class="line">│      settings<span class="selector-class">.json</span></span><br><span class="line">│</span><br><span class="line">├─pages</span><br><span class="line">│  ├─index</span><br><span class="line">│  │      index<span class="selector-class">.js</span></span><br><span class="line">│  │      index<span class="selector-class">.wxml</span></span><br><span class="line">│  │      index<span class="selector-class">.wxss</span></span><br><span class="line">│  │</span><br><span class="line">│  └─logs</span><br><span class="line">│          logs<span class="selector-class">.js</span></span><br><span class="line">│          logs<span class="selector-class">.json</span></span><br><span class="line">│          logs<span class="selector-class">.wxml</span></span><br><span class="line">│          logs<span class="selector-class">.wxss</span></span><br><span class="line">│</span><br><span class="line">├─typings</span><br><span class="line">│      wx<span class="selector-class">.d</span><span class="selector-class">.ts</span></span><br><span class="line">│</span><br><span class="line">└─utils</span><br><span class="line">        util.js</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>注意：因我使用了vscode作为小程序的开发工具，故会自动增加<code>.vscode</code>以及<code>typings</code>(vscode小程序开发插件自动增加)目录</p>
-</blockquote>
-<p>官网中的API文档有提到不同文件的含义<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.json</span> 后缀的 JSON 配置文件</span><br><span class="line"><span class="selector-class">.wxml</span> 后缀的 WXML 模板文件</span><br><span class="line"><span class="selector-class">.wxss</span> 后缀的 WXSS 样式文件</span><br><span class="line"><span class="selector-class">.js</span> 后缀的 JS 脚本逻辑文件</span><br></pre></td></tr></table></figure></p>
-<h3 id="JSON文件"><a href="#JSON文件" class="headerlink" title="JSON文件"></a>JSON文件</h3><p>在项目中有以下几个JSON文件 app.json、project.config.json、pages/logs/logs.json</p>
-<h4 id="app-json"><a href="#app-json" class="headerlink" title="app.json"></a>app.json</h4><p>app.json 是对当前小程序的全局配置，包括了小程序的所有页面路径、界面表现、网络超时时间、底部 tab 等</p>
-<p><code>pages</code>用于描述当前小程序所有页面路径（让微信客户端知道当前你的小程序页面定义在哪个目录）</p>
-<p><code>window</code>定义小程序所有页面的顶部背景颜色。</p>
-<h4 id="工具配置-project-config-json"><a href="#工具配置-project-config-json" class="headerlink" title="工具配置 project.config.json"></a>工具配置 project.config.json</h4><p>project.config.json 是指个性化的配置信息；如配置版本库、该小程序是发布到哪个appId，以及工程名等…</p>
-<h4 id="页面配置-page-json"><a href="#页面配置-page-json" class="headerlink" title="页面配置 page.json"></a>页面配置 page.json</h4><p>为每个page定义顶部颜色、是否允许下拉刷新等</p>
-<blockquote>
-<p>该文件在page中可有可无，如果不存在，则默认为app.json的配置；存在则以该文件的配置为准。</p>
-</blockquote>
-<h3 id="WXML-模板"><a href="#WXML-模板" class="headerlink" title="WXML 模板"></a>WXML 模板</h3><p>WXML（WeiXin Markup Language）是框架设计的一套标签语言，结合基础组件、事件系统，可以构建出页面的结构。简单来说：WXML 充当类似 HTML 的角色。</p>
-<p>而且小程序是基于MVVM的开发模式，对于已经熟悉Vue、React等前端开发框架的话，会很容易上手。另外有个WXML的一些数据绑定、事件等可参考官网API：<a href="https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxml/" target="_blank" rel="external">WXML</a></p>
-<p>需要注意的是小程序本身已经封装了属于自身的标签: view, button, text 等等；具体用法可以在官网API中了解：<a href="https://developers.weixin.qq.com/miniprogram/dev/component/" target="_blank" rel="external">组件说明</a></p>
-<h3 id="WXSS-样式"><a href="#WXSS-样式" class="headerlink" title="WXSS 样式"></a>WXSS 样式</h3><p>也就是小程序的页面样式，官网有提到<code>app.wxss 作为全局样式，会作用于当前小程序的所有页面，局部页面样式 page.wxss 仅对当前页面生效</code>。</p>
-<p>另外<code>WXSS 在底层支持新的尺寸单位 rpx ，开发者可以免去换算的烦恼</code>。也就是说，rpx是类似于rem等单位尺寸；但rpx不需要要增加根大小，直接使用即可。</p>
-<h3 id="JS-交互逻辑"><a href="#JS-交互逻辑" class="headerlink" title="JS 交互逻辑"></a>JS 交互逻辑</h3><p>该文件是作为小程序的交互逻辑文件；处理相关交互逻辑。<br>在此可查看与小程序交互逻辑API：<a href="https://developers.weixin.qq.com/miniprogram/dev/api/" target="_blank" rel="external">交互逻辑API</a></p>
-<h2 id="小程序的启动"><a href="#小程序的启动" class="headerlink" title="小程序的启动"></a>小程序的启动</h2><p><code>微信客户端在打开小程序之前，会把整个小程序的代码包下载到本地。</code></p>
-<p><code>小程序启动之后，在 app.js 定义的 App 实例的 onLaunch 回调会被执行</code></p>
-<p><code>整个小程序只有一个 App 实例，全部页面共享</code></p>
-<p> <a href="https://developers.weixin.qq.com/miniprogram/dev/framework/app-service/app.html" target="_blank" rel="external">App实例相关回调函数说明</a></p>
-<h2 id="对于样例工程中，callback的理解"><a href="#对于样例工程中，callback的理解" class="headerlink" title="对于样例工程中，callback的理解"></a>对于样例工程中，callback的理解</h2><p>下面先看看样例工程中的app.js<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//app.js</span></span><br><span class="line">App(&#123;</span><br><span class="line">  onLaunch: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 展示本地存储能力</span></span><br><span class="line">    <span class="keyword">var</span> logs = wx.getStorageSync(<span class="string">'logs'</span>) || []</span><br><span class="line">    logs.unshift(<span class="built_in">Date</span>.now())</span><br><span class="line">    wx.setStorageSync(<span class="string">'logs'</span>, logs)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 登录</span></span><br><span class="line">    wx.login(&#123;</span><br><span class="line">      success: res =&gt; &#123;</span><br><span class="line">        <span class="comment">// 发送 res.code 到后台换取 openId, sessionKey, unionId</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="comment">// 获取用户信息</span></span><br><span class="line">    wx.getSetting(&#123;</span><br><span class="line">      success: res =&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> (res.authSetting[<span class="string">'scope.userInfo'</span>]) &#123;</span><br><span class="line">          <span class="comment">// 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框</span></span><br><span class="line">          wx.getUserInfo(&#123;</span><br><span class="line">            success: res =&gt; &#123;</span><br><span class="line">              <span class="comment">// 可以将 res 发送给后台解码出 unionId</span></span><br><span class="line">              <span class="keyword">this</span>.globalData.userInfo = res.userInfo</span><br><span class="line"></span><br><span class="line">              <span class="comment">// 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回</span></span><br><span class="line">              <span class="comment">// 所以此处加入 callback 以防止这种情况</span></span><br><span class="line">              <span class="keyword">if</span> (<span class="keyword">this</span>.userInfoReadyCallback) &#123;</span><br><span class="line">                <span class="keyword">this</span>.userInfoReadyCallback(res)</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;,</span><br><span class="line">  globalData: &#123;</span><br><span class="line">    userInfo: <span class="literal">null</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
-<p>上面有关callback的的疑问大多都在<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="keyword">this</span>.userInfoReadyCallback) &#123;</span><br><span class="line">    <span class="keyword">this</span>.userInfoReadyCallback(res)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>其实 userInfoReadyCallback 可以换成你想要的命名。</p>
-<p>我们在index.js中可以看到有这样的代码:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> app = getApp()</span><br><span class="line">......</span><br><span class="line"> <span class="comment">// 所以此处加入 callback 以防止这种情况</span></span><br><span class="line">app.userInfoReadyCallback = res =&gt; &#123;</span><br><span class="line"><span class="keyword">this</span>.setData(&#123;</span><br><span class="line">    userInfo: res.userInfo,</span><br><span class="line">    hasUserInfo: <span class="literal">true</span></span><br><span class="line">&#125;)</span><br><span class="line">&#125;</span><br><span class="line">......</span><br></pre></td></tr></table></figure></p>
-<p>结合上面的代码，我们不难理上面的代码：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//app.js</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">this</span>.userInfoReadyCallback) &#123; <span class="comment">//是否定义了userInfoReadyCallback</span></span><br><span class="line">    <span class="keyword">this</span>.userInfoReadyCallback(res) <span class="comment">//定义后就调用该函数，并且传入res的参数信息</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//index.js</span></span><br><span class="line"><span class="comment">//此处定义了function userInfoReadyCallback(res)，注意app.userInfoReadyCallback；也就是在app.js中定义了userInfoReadyCallback；故在执行获取用户信息的时候，会将用户信息设置到index.wxml页面的data中</span></span><br><span class="line">app.userInfoReadyCallback = res =&gt; &#123;</span><br><span class="line"><span class="keyword">this</span>.setData(&#123;</span><br><span class="line">    userInfo: res.userInfo,</span><br><span class="line">    hasUserInfo: <span class="literal">true</span></span><br><span class="line">&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>最后有关 js 的 callback 可以参考一下：<a href="http://javascriptissexy.com/understand-javascript-callback-functions-and-use-them/" target="_blank" rel="external">Understand JavaScript Callback Functions and Use Them</a> 文章。</p>
-<p>后续将介绍，在小程序中使用promise。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2018/05/07/近况/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/05/07/近况/" itemprop="url">
-                  近况
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-07T20:34:29+08:00">
-                2018-05-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>因最近在做微信小程序项目，故顺便熟悉一下vue。用了差不多一周的小项目实训来学习vue；而后真真地感受到了vue的强大。</p>
-<h2 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h2><p>后续会出一些和小程序以及vue相关的的心得文章。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1636,7 +1621,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">68</span>
+                <span class="site-state-item-count">70</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1649,7 +1634,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">81</span>
+                <span class="site-state-item-count">84</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

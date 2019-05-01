@@ -270,6 +270,263 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/05/23/vue2-0基础入门-一/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/05/23/vue2-0基础入门-一/" itemprop="url">
+                  vue2.0基础入门之认识vue指令(一)
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-23T19:29:15+08:00">
+                2017-05-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近了解到iView已经支持vue2.0了，故准备使用vue2.0+iView构建一套cms后台模板。此系列教程适合vue入门。</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>此处不再作多余的描述，大家参考官网的安装教程即可：<a href="https://cn.vuejs.org/v2/guide/installation.html" target="_blank" rel="external">https://cn.vuejs.org/v2/guide/installation.html</a></p>
+<h1 id="vue的核心"><a href="#vue的核心" class="headerlink" title="vue的核心"></a>vue的核心</h1><p>Vue.js 的核心是一个允许采用简洁的模板语法来声明式的将数据渲染进 DOM</p>
+<h1 id="vue指令"><a href="#vue指令" class="headerlink" title="vue指令"></a>vue指令</h1><h2 id="vue指令的定义"><a href="#vue指令的定义" class="headerlink" title="vue指令的定义"></a>vue指令的定义</h2><p>指令带有前缀 v-，以表示它们是 Vue 提供的特殊属性。</p>
+<h2 id="vue-v-if-指令"><a href="#vue-v-if-指令" class="headerlink" title="vue v-if 指令"></a>vue v-if 指令</h2><p>根据表达式的值的真假条件渲染元素。在切换时元素及它的数据绑定 / 组件被销毁并重建。如果元素是 <template> ，将提出它的内容作为条件块。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span> <span class="attr">v-if</span>=<span class="string">"ok"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>Paragraph 1<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>Paragraph 2<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span> <span class="attr">v-if</span>=<span class="string">"ok"</span>&gt;</span>Yes<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br></pre></td></tr></table></figure></template></p>
+<p>在上述例子中，如果ok=true则会显示<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>Paragraph 1<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>Paragraph 2<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>Yes<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="vue-v-show指令"><a href="#vue-v-show指令" class="headerlink" title="vue v-show指令"></a>vue v-show指令</h2><p>带有 v-show 的元素始终会被渲染并保留在 DOM 中。v-show 是简单地切换元素的 CSS 属性 display 。<br>也就是说show只是简单的是否为：display:none<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">v-show</span>=<span class="string">"ok"</span>&gt;</span>show?<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">则会体现为：</span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">style</span>=<span class="string">"display: none;"</span>&gt;</span>show?<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>那v-if与v-show的区别是什么？在什么情况下使用v-if？什么情况下使用v-show？官方有详细说明：<a href="https://cn.vuejs.org/v2/guide/conditional.html#v-show" target="_blank" rel="external">https://cn.vuejs.org/v2/guide/conditional.html#v-show</a></p>
+<h2 id="vue-v-for指令"><a href="#vue-v-for指令" class="headerlink" title="vue v-for指令"></a>vue v-for指令</h2><p>基于源数据多次渲染元素或模板块。此指令之值，必须使用特定语法 alias in expression ，为当前遍历的元素提供别名。<br><figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;div v-<span class="keyword">for</span>=<span class="string">"item in items"</span>&gt;</span><br><span class="line">  <span class="template-variable">&#123;&#123; item.text &#125;&#125;</span></span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="vue-v-on指令"><a href="#vue-v-on指令" class="headerlink" title="vue v-on指令"></a>vue v-on指令</h2><p>绑定事件监听器；可用@作为v-on的缩写。<br>详细用法，参考：<a href="https://cn.vuejs.org/v2/api/#v-on" target="_blank" rel="external">https://cn.vuejs.org/v2/api/#v-on</a></p>
+<h2 id="vue-v-model指令"><a href="#vue-v-model指令" class="headerlink" title="vue v-model指令"></a>vue v-model指令</h2><p>在表单控件或者组件上创建双向绑定。<br>详细参考：<a href="https://cn.vuejs.org/v2/api/#v-model" target="_blank" rel="external">https://cn.vuejs.org/v2/api/#v-model</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/05/04/Java-每秒指定发送线程数量/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/05/04/Java-每秒指定发送线程数量/" itemprop="url">
+                  Java 每秒指定发送线程数量
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-04T00:32:10+08:00">
+                2017-05-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在业务中使用Executor框架中的newFixThreadPool创建固定大小的线程池；会出现这样的一个情况：当提供服务方的服务在超时的时候，还没有返回相关的状态信息给我们，就会出现所有线程都在等待这一个返回结果。后果就是业务订单堆积得越来越多；一直等待到线程池有空闲的线程才能继续处理。那么，问题来了：线程池饱满后，该如何处理？</p>
+<h2 id="方案１"><a href="#方案１" class="headerlink" title="方案１"></a>方案１</h2><p>首先想到的方案是读透Executor框架的代码，然后对相关代码进行组合，以满足业务的需要。但是这块后续仔细想了想，如果要做的话，那改造的功夫可不小了，既要读透，又要自己造轮子。在时间不充足的条件下，这个方案不大合适。</p>
+<h2 id="方案２"><a href="#方案２" class="headerlink" title="方案２"></a>方案２</h2><p>有同事提出用MQ来解决这个问题；使用消息的发布与订阅，能很好地控制相关的订单流的大小。然而问题来了，这块的改造又是一个大工程。</p>
+<h2 id="方案３"><a href="#方案３" class="headerlink" title="方案３"></a>方案３</h2><p>在原有Java代码的基础上，用现有的知识进行代码改善，支撑业务需要。既然我们需要的线程是不能因服务方返回慢就一直在等待，那么这个线程就不能是固定大小的了；虽然在Executor框架中提供了：newCachedThreadPool来创建不限制线程池大小的方法，但是我们不能控制相关的线程多少，对系统的资源消耗还有可控性来说是不符合业务的需要。</p>
+<p>思量了多次，最终得到相关的方案：<br>１、还是使用newFixThreadPool，但是该线程池只创建２个线程：一个读取订单线程；一个处理订单线程<br>２、对于处理订单线程，我们可以粗暴地使用Thread提供的方法来执行业务；</p>
+<p>这样，我们能用最熟悉的方法来创建相关的线程，以符合业务的需要。<br>相关核心代码如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line"> * 交易线程池工具类</span><br><span class="line"> * 主要结合Executor 与 Thread 来处理订单</span><br><span class="line"> * <span class="doctag">@author</span> sevencm</span><br><span class="line"> * <span class="doctag">@Date</span> 2017-05-03</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Executor4TransTools</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger log = LoggerFactory.getLogger(Executor4TransTools.class);</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 线程池大小</span><br><span class="line">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> EXECUTOR_4TRANS_NUM = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * &lt;br&gt;固定线程池</span><br><span class="line">	 * &lt;br&gt;1个线程读取订单</span><br><span class="line">	 * &lt;br&gt;1个线程处理订单</span><br><span class="line">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> ExecutorService executorService = ExecutorUtils.getFixedThreadPool(EXECUTOR_4TRANS_NUM);</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 订单线程队列</span><br><span class="line">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> Queue&lt;Integer&gt; transQueue = <span class="keyword">new</span> ConcurrentLinkedQueue&lt;Integer&gt;();</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 记录队列大小</span><br><span class="line">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> AtomicInteger queueSize = <span class="keyword">new</span> AtomicInteger(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 默认处理线程大小 5 个</span><br><span class="line">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> AtomicInteger threadSize = <span class="keyword">new</span> AtomicInteger(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 是否继续发送订单-用于控制线程开关；为服务更新使用</span><br><span class="line">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> running = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> poolSize  = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String THREAD_NAME = Thread.currentThread().getName();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 默认处理线程大小 5 个</span><br><span class="line">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> AtomicInteger testOrderId = <span class="keyword">new</span> AtomicInteger(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initChinaMobileWorkerThread</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		executorService.execute(loadOrderCommand());</span><br><span class="line">		executorService.execute(handleOrderCommand());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 处理订单线程</span><br><span class="line">	 * <span class="doctag">@return</span></span><br><span class="line">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> Runnable <span class="title">handleOrderCommand</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		Runnable hoc = <span class="keyword">new</span> Runnable() &#123;</span><br><span class="line"></span><br><span class="line">			<span class="meta">@Override</span></span><br><span class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">				<span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line"></span><br><span class="line">					<span class="keyword">final</span> Integer order = transQueue.poll();</span><br><span class="line">					<span class="keyword">if</span>(order==<span class="keyword">null</span>)&#123;</span><br><span class="line">						ExecutorUtils.threadSleep(<span class="number">500L</span>);</span><br><span class="line">					&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">						queueSize.decrementAndGet();</span><br><span class="line">						<span class="keyword">int</span> nowSize = threadSize.addAndGet(<span class="number">1</span>);</span><br><span class="line">						<span class="keyword">if</span>(nowSize&lt;=(poolSize-<span class="number">1</span>))&#123;</span><br><span class="line">							Runnable runnable = <span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">								<span class="meta">@Override</span></span><br><span class="line">								<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">									log.info(order+<span class="string">""</span>);</span><br><span class="line">								&#125;</span><br><span class="line">							&#125;;</span><br><span class="line">							Thread thread = <span class="keyword">new</span> Thread(runnable);</span><br><span class="line">							thread.setName(THREAD_NAME+<span class="string">"-handle-thread-"</span>+nowSize);</span><br><span class="line">							thread.start();</span><br><span class="line">						&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">							ExecutorUtils.threadSleep(<span class="number">1000L</span>);</span><br><span class="line">							threadSize.set(<span class="number">0</span>);</span><br><span class="line">							Runnable runnable = <span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">								<span class="meta">@Override</span></span><br><span class="line">								<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">									log.info(order+<span class="string">""</span>);</span><br><span class="line">								&#125;</span><br><span class="line">							&#125;;</span><br><span class="line">							Thread thread = <span class="keyword">new</span> Thread(runnable);</span><br><span class="line">							thread.setName(THREAD_NAME+<span class="string">"-handle-thread-0"</span>);</span><br><span class="line">							thread.start();</span><br><span class="line">						&#125;</span><br><span class="line"></span><br><span class="line">					&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;;</span><br><span class="line">		<span class="keyword">return</span> hoc;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 读取订单线程</span><br><span class="line">	 * <span class="doctag">@return</span></span><br><span class="line">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> Runnable <span class="title">loadOrderCommand</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		Runnable loc = <span class="keyword">new</span> Runnable() &#123;</span><br><span class="line"></span><br><span class="line">			<span class="meta">@Override</span></span><br><span class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">				<span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">					<span class="keyword">if</span>(transQueue.isEmpty())&#123;</span><br><span class="line">						ExecutorUtils.threadSleep(<span class="number">500L</span>);</span><br><span class="line">						<span class="keyword">if</span>(running)&#123;</span><br><span class="line">							<span class="comment">//TODO 读取订单信息</span></span><br><span class="line">							ArrayList&lt;Integer&gt; orders = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">							<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">100</span>;i++)&#123;</span><br><span class="line">								<span class="keyword">int</span> order = testOrderId.addAndGet(<span class="number">1</span>);</span><br><span class="line">								orders.add(order);</span><br><span class="line">							&#125;</span><br><span class="line">							queueSize.getAndAdd(orders.size());</span><br><span class="line">							transQueue.addAll(orders);</span><br><span class="line">						&#125;</span><br><span class="line">					&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">						ExecutorUtils.threadSleep(<span class="number">500L</span>);</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;;</span><br><span class="line">		<span class="keyword">return</span> loc;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/04/21/解决maven下载慢-为maven添加国内阿里云镜像/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1307,276 +1564,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/02/05/Let-s-Encrypt/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/02/05/Let-s-Encrypt/" itemprop="url">
-                  Let's Encrypt
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-05T10:21:01+08:00">
-                2017-02-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>因StartSSL在IOS10.2中不支持，故将HPPTS的证书更换为由LetsEncrypt签发的证书。【测试了，在ios10.2中可以，但是Android系统又不行，故已经更换为阿里云免费提供的证书】</p>
-<ol>
-<li>进入网站：<a href="https://certbot.eff.org/" target="_blank" rel="external">https://certbot.eff.org/</a></li>
-<li>选择相应的web服务（Apache、nginx）、系统类型（Centos、Rhel）；</li>
-<li>因服务器系统为CentOS 6，web服务为Nginx ，故进入：<a href="https://certbot.eff.org/#centos6-nginx" target="_blank" rel="external">https://certbot.eff.org/#centos6-nginx</a></li>
-<li><p>切换root用户，将Certbot-auto下载下来</p>
-<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https:<span class="comment">//dl.eff.org/certbot-auto</span></span><br><span class="line">chmod a+x certbot-<span class="keyword">auto</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>下载完成后，执行</p>
-<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./certbot-<span class="keyword">auto</span> certonly --email xxx@xxx --webroot -w /<span class="built_in">home</span>/www/webroot -d xxx.xxxx.xxx</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>需要注意的是可能会在Install Python packges 的时候卡主：解决方法</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#编辑~/.pip/pip.conf，如果文件和目录不存在的话，应当先建立文件或者目录，加入或修改以下配置</span></span><br><span class="line"><span class="section"></span><br><span class="line">[global]</span></span><br><span class="line"><span class="attr">index-url</span> = http://mirrors.aliyun.com/pypi/simple/</span><br><span class="line"><span class="section"></span><br><span class="line">[install]</span></span><br><span class="line"><span class="attr">trusted-host</span>=mirrors.aliyun.com</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>参考资料</p>
-</li>
-</ol>
-<p><a href="https://segmentfault.com/a/1190000005797776" target="_blank" rel="external">手把手教你在Nginx上使用CertBot</a></p>
-<p><a href="https://www.zyx.im/no-response-of-installing-python-packages/" target="_blank" rel="external">解决安装Let’s Encrypt时卡死在“Installing Python packages”的问题</a></p>
-<p>后续的续期，参照参考资料操作即可。</p>
-<p>附上nginx的配置</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line"></span><br><span class="line">       <span class="attribute">listen</span> <span class="number">443</span> ;</span><br><span class="line"></span><br><span class="line">       <span class="attribute">ssl</span> <span class="literal">on</span>;</span><br><span class="line"></span><br><span class="line">       <span class="attribute">ssl_certificate</span> /etc/letsencrypt/live/xxx.com/cert.pem;</span><br><span class="line"></span><br><span class="line">       <span class="attribute">ssl_certificate_key</span> /etc/letsencrypt/live/xxx.com/privkey.pem;</span><br><span class="line"></span><br><span class="line">       <span class="attribute">server_name</span> xxx.com;</span><br><span class="line"></span><br><span class="line">	   <span class="attribute">root</span>    /home/nginx/html/;</span><br><span class="line"></span><br><span class="line">	   <span class="attribute">error_page</span> <span class="number">404</span> <span class="number">502</span> = <span class="variable">@fetch</span>;</span><br><span class="line"></span><br><span class="line">	   <span class="attribute">location</span>  <span class="variable">@fetch</span> &#123;</span><br><span class="line">               <span class="attribute">default_type</span> application/json;</span><br><span class="line">               <span class="attribute">return</span> <span class="number">200</span> <span class="string">'&#123;"result":110"&#125;'</span>;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="attribute">location</span> <span class="regexp">~ /</span> &#123;</span><br><span class="line">               <span class="attribute">proxy_pass</span> http://xxx-server;</span><br><span class="line">               <span class="attribute">proxy_read_timeout</span>      <span class="number">7200</span>;</span><br><span class="line">               <span class="attribute">proxy_connect_timeout</span>   <span class="number">5</span>;</span><br><span class="line">               <span class="attribute">proxy_set_header</span>        Host                <span class="variable">$Host</span>;</span><br><span class="line">               <span class="attribute">proxy_set_header</span>        X-Forwarded-For     <span class="variable">$remote_addr</span>;</span><br><span class="line">       &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/01/18/为小程序加上https-startssl/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/01/18/为小程序加上https-startssl/" itemprop="url">
-                  为小程序加上https--StartSSL
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-18T20:40:39+08:00">
-                2017-01-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>2月５日更新：<br>因在ios10.2中有问题，故更换为阿里云的免费证书。  </p>
-<p>１、小程序准备上线了，现在要为服务器申请https。先用免费的SSL来测试。</p>
-<p>２、进入<a href="https://www.startssl.com/；">https://www.startssl.com/；</a> 可以申请免费的SSL证书。</p>
-<p>３、先注册：<a href="https://www.startssl.com/SignUp">https://www.startssl.com/SignUp</a><br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/01/18/为小程序加上https-startssl/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1626,7 +1613,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">68</span>
+                <span class="site-state-item-count">70</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1639,7 +1626,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">81</span>
+                <span class="site-state-item-count">84</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
