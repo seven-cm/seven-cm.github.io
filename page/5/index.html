@@ -270,6 +270,137 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/06/07/vue2-0基础之ES6语法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/07/vue2-0基础之ES6语法/" itemprop="url">
+                  vue2.0基础之ES6语法
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-07T23:41:45+08:00">
+                2017-06-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>有关module还是直接看大神的著作中的介绍吧：<br>ECMAScript 6 入门 - ECMAScript 6入门　阮一峰<br><a href="http://es6.ruanyifeng.com/#docs/module" target="_blank" rel="external">http://es6.ruanyifeng.com/#docs/module</a></p>
+<h1 id="摘录"><a href="#摘录" class="headerlink" title="摘录"></a>摘录</h1><p>【以下部分，全部摘录于阮一峰的《ECMAScript 6 入门》】</p>
+<h2 id="模块的构成"><a href="#模块的构成" class="headerlink" title="模块的构成"></a>模块的构成</h2><p>模块功能主要由两个命令构成：export和import。</p>
+<h2 id="export"><a href="#export" class="headerlink" title="export"></a>export</h2><p>export命令用于规定模块的对外接口，import命令用于输入其他模块提供的功能。</p>
+<p>一个模块就是一个独立的文件。该文件内部的所有变量，外部无法获取。如果你希望外部能够读取模块内部的某个变量，就必须使用export关键字输出该变量。</p>
+<p>需要特别注意的是，export命令规定的是对外的接口，必须与模块内部的变量建立一一对应关系。</p>
+<h2 id="import"><a href="#import" class="headerlink" title="import"></a>import</h2><p>使用export命令定义了模块的对外接口以后，其他 JS 文件就可以通过import命令加载这个模块。</p>
+<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ES6模块</span></span><br><span class="line"><span class="keyword">import</span> &#123; stat, <span class="keyword">exists</span>, readFile &#125; from <span class="string">'fs'</span>;</span><br></pre></td></tr></table></figure>
+<p>上面代码的实质是从fs模块加载3个方法，其他方法不加载。这种加载称为“编译时加载”或者静态加载，即 ES6 可以在编译时就完成模块加载，效率要比 CommonJS 模块的加载方式高</p>
+<h2 id="export-default"><a href="#export-default" class="headerlink" title="export default"></a>export default</h2><p>从前面的例子可以看出，使用import命令的时候，用户需要知道所要加载的变量名或函数名，否则无法加载。但是，用户肯定希望快速上手，未必愿意阅读文档，去了解模块有哪些属性和方法。</p>
+<p>为了给用户提供方便，让他们不用阅读文档就能加载模块，就要用到export default命令，为模块指定默认输出。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/06/05/Maven-java-spring-多环境配置/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1429,142 +1560,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/03/23/JAVA实现HTTP代理服务器/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/23/JAVA实现HTTP代理服务器/" itemprop="url">
-                  JAVA实现HTTP代理服务器
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-23T20:57:11+08:00">
-                2017-03-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>场景：在数据库内网的情况下通过web服务代理上网；但是又不想在web服务器上安装其他多余的包。<br>条件：web服务器已经安装了JAVA环境</p>
-<ol>
-<li>当下的任务是用JAVA实现HTTP代理服务器.</li>
-<li>搜索中，发现LittleProxy神器：<a href="https://github.com/adamfisk/LittleProxy" target="_blank" rel="external">https://github.com/adamfisk/LittleProxy</a></li>
-<li><p>直接上代码：</p>
-<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) throws UnknownHostException &#123;</span><br><span class="line">	int port = Integer.parseInt(args[<span class="number">0</span>])<span class="comment">;</span></span><br><span class="line">	InetAddress <span class="keyword">addr </span>= InetAddress.getByName(args[<span class="number">1</span>])<span class="comment">;</span></span><br><span class="line">	InetSocketAddress <span class="keyword">address </span>= new InetSocketAddress(<span class="keyword">addr, </span>port)<span class="comment">;</span></span><br><span class="line">	HttpProxyServer server =</span><br><span class="line">		    DefaultHttpProxyServer.<span class="keyword">bootstrap()</span><br><span class="line"></span>		    .withAddress(<span class="keyword">address)</span><br><span class="line"></span>		        .start()<span class="comment">;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>编译后在web服务器运行：</p>
-<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#此处的代理ip为可以链接外网的内网ip</span></span><br><span class="line"><span class="keyword">java </span>-<span class="keyword">jar </span>xxx.<span class="keyword">jar </span>端口 绑定的代理IP</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在数据库内网服务器</p>
-<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vim <span class="meta-keyword">/etc/</span>yum.conf</span><br><span class="line"><span class="meta">#增加</span></span><br><span class="line">proxy=http:<span class="comment">//绑定的代理IP:端口</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>yum 跑起来 OVER~</p>
-</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1614,7 +1609,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">72</span>
+                <span class="site-state-item-count">73</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1627,7 +1622,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-count">89</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

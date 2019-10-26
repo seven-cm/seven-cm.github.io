@@ -270,6 +270,153 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2016/09/18/CentOS-SVN服务搭建/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/09/18/CentOS-SVN服务搭建/" itemprop="url">
+                  CentOS SVN服务搭建
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-09-18T21:57:52+08:00">
+                2016-09-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li>安装SVN:yum install subversion</li>
+<li><p>创建svn用户</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">groupadd</span> svn</span><br><span class="line">useradd -g svn svn</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>切换至svn用户</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">su</span> svn</span><br><span class="line">＃创建svn仓库目录</span><br><span class="line"><span class="keyword">cd</span> /home/svn</span><br><span class="line"><span class="keyword">mkdir</span> _svn</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置svn</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vi .bash_profile</span><br><span class="line"></span><br><span class="line">SVN_HOME=/<span class="built_in">home</span>/svn/_svn</span><br><span class="line"><span class="keyword">export</span> SVN_HOME</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建svn版本库</p>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#进入_svn目录</span></span><br><span class="line"><span class="meta">#创建dirname的版本库</span></span><br><span class="line">svnadmin <span class="keyword">create</span> --fs-<span class="built_in">type</span> fsfs dirname</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建用户</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#进入dirname/<span class="keyword">cnf</span>/</span><br><span class="line"><span class="keyword">vi</span> <span class="keyword">pwd</span></span><br><span class="line">用户名＝密码</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建用户组</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#进入dirname/cnf/</span></span><br><span class="line"><span class="attribute">vi</span> authz</span><br><span class="line"><span class="comment">#增加组</span></span><br><span class="line">[groups]</span><br><span class="line">vip_1 = 用户名<span class="number">1</span>,用户名２</span><br><span class="line"><span class="comment">#根目录授权 如果是要分目录授权，则增加具体路径授权即可</span></span><br><span class="line">[dirname:/]</span><br><span class="line"><span class="variable">@vip_1</span> = rw</span><br><span class="line">* =</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>服务配置</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[general]</span></span><br><span class="line"><span class="attr">anon-access</span> = none</span><br><span class="line"><span class="attr">auth-access</span> = write</span><br><span class="line"><span class="attr">authz-db</span> = authz</span><br><span class="line"><span class="attr">password-db</span> = passwd</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>svn启动服务命令</p>
+<figure class="highlight cos"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">svnserve -<span class="keyword">d</span> -<span class="keyword">r</span> /home/svn/_svn</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2016/09/10/９月/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1417,134 +1564,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2016/07/30/运维-CentOS-生产环境安装（2）/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/07/30/运维-CentOS-生产环境安装（2）/" itemprop="url">
-                  运维-CentOS-生产环境安装（2）
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-30T16:36:14+08:00">
-                2016-07-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>接着上一篇，我们已经成功安装最小化安装的CentOS。</p>
-<p>当配置好网络后，我们需要进行以下的配置。</p>
-<p> 1.查看系统时区、系统时间<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-attr">[root@localhost ~]</span># <span class="selector-tag">date</span> <span class="selector-tag">-R</span></span><br><span class="line"><span class="selector-tag">Wed</span>, 22 <span class="selector-tag">Jun</span> 2016 19<span class="selector-pseudo">:51</span><span class="selector-pseudo">:39</span> +0800</span><br></pre></td></tr></table></figure></p>
-<p>2.若需将时区修改为中国北京时间
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/07/30/运维-CentOS-生产环境安装（2）/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1594,7 +1613,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">72</span>
+                <span class="site-state-item-count">73</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1607,7 +1626,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">87</span>
+                <span class="site-state-item-count">89</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
