@@ -270,6 +270,148 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/03/13/SCP免密码输入/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/03/13/SCP免密码输入/" itemprop="url">
+                  SCP免密码输入
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-13T22:17:29+08:00">
+                2017-03-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li>存在服务器A=192.168.1.10 服务器B=192.168.1.11；需实现从A免输密码SCP文件至B服务器</li>
+<li><p>在A服务器执行如下命令</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>对于上述命令，全回车，至结束</p>
+</li>
+<li><p>进入目录</p>
+<figure class="highlight cos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cd ~/.ssh</span><br><span class="line">ls -lh</span><br><span class="line">total <span class="number">12</span><span class="keyword">K</span></span><br><span class="line">-rw------- <span class="number">1</span> root root <span class="number">1.7</span><span class="keyword">K</span> Mar <span class="number">13</span> <span class="number">14</span>:<span class="number">13</span> id_rsa</span><br><span class="line">-rw-<span class="keyword">r</span>--<span class="keyword">r</span>-- <span class="number">1</span> root root  <span class="number">400</span> Mar <span class="number">13</span> <span class="number">14</span>:<span class="number">13</span> id_rsa.pub #需要的公钥</span><br><span class="line">-rw-<span class="keyword">r</span>--<span class="keyword">r</span>-- <span class="number">1</span> root root  <span class="number">794</span> Jul <span class="number">13</span>  <span class="number">2016</span> known_hosts</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将上述的id_rsa.pub复制至B=192.168.1.11服务器</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp .ssh/id_rsa.pub <span class="number">192.168</span>.<span class="number">1.11</span><span class="symbol">:/root/</span>.ssh/id_rsa.pub</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat ~<span class="regexp">/.ssh/id</span>_rsa.pub <span class="meta">&gt;&gt; </span>~<span class="regexp">/.ssh/authorized</span>_keys</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改相关文件夹、文件权限（如果权限不对，则还是需要密码）</p>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#.ssh目录，以及/home/当前用户 需要700权限，参考以下操作调整</span></span><br><span class="line">chmod <span class="number">700</span> ~/.ssh</span><br><span class="line"><span class="meta">#.ssh目录下的authorized_keys文件需要600或644权限，参考以下操作调整</span></span><br><span class="line">chmod <span class="number">600</span> ~/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>后续从A SCP文件至B服务器，则不需再输入密码</p>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/02/05/SqlServer命令行执行Sql脚本/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1449,129 +1591,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2016/09/10/９月/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/09/10/９月/" itemprop="url">
-                  ９月
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-09-10T13:09:18+08:00">
-                2016-09-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>时间转眼到了９月份，眼下正是开学的日子。似乎一切都是那么平静。<br>而在前几天，经理却说要让开发组的某人辞职。一个晴天霹雳～</p>
-<p>每当有同事要离职的时候，心理都有一阵的不快。或许这是同事之间的一种情感；或许这是对组员的一种认同感。<br>但是，为了工作的效率，不得不让其中一人离开。</p>
-<p>想想，对于一个公司来说，利益是至上的。而这也是公司能生存的基本准则。<br>对于员工来说，唯有让自己变得更加“有用”才是硬道理。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1621,7 +1640,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">71</span>
+                <span class="site-state-item-count">72</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1634,7 +1653,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">85</span>
+                <span class="site-state-item-count">87</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

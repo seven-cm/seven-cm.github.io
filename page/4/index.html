@@ -270,6 +270,134 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/08/29/export-Runnable-JAR-File-UnsatisfiedLinkError/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/08/29/export-Runnable-JAR-File-UnsatisfiedLinkError/" itemprop="url">
+                  export Runnable JAR File UnsatisfiedLinkError
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-29T19:49:55+08:00">
+                2017-08-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>今天在使用<a href="http://jnetpcap.com/download" target="_blank" rel="external">http://jnetpcap.com/download</a> 进行网卡监听；直接导出可运行java文件会引发java.lang.UnsatisfiedLinkError: com.slytechs.library的异常。</p>
+<h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><p>在网上搜了，只有这个是符合我的要求<code>JAVA打成JAR包后dll的调用方法</code><a href="http://blog.csdn.net/bupt073114/article/details/52083768" target="_blank" rel="external">http://blog.csdn.net/bupt073114/article/details/52083768</a><br>参照文章中的说法，得出以下经验：<br><code>配置方法</code></p>
+<ol>
+<li>在package中新建lib包，然后放入相关的.dll或.so等文件</li>
+<li>右键工程properties,在source中编辑Native library location指向至src/lib文件夹即可</li>
+<li>在main中添加静态块<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line"></span><br><span class="line">			InputStream in = ClassicPcapExample.class</span><br><span class="line">					.getResourceAsStream(<span class="string">"/lib/jnetpcap.dll"</span>);</span><br><span class="line"></span><br><span class="line">			System.out.println(<span class="string">"ClassicPcapExample.class.getClass()"</span> + in);</span><br><span class="line"></span><br><span class="line">			File ffile = <span class="keyword">new</span> File(<span class="string">""</span>);</span><br><span class="line">			String filePath = <span class="keyword">null</span>;</span><br><span class="line">			filePath = ffile.getAbsolutePath() + File.separator + <span class="string">"jnetpcap.dll"</span>;</span><br><span class="line">			System.out.println(<span class="string">"filePath jnetpcap.dll is "</span> + filePath);</span><br><span class="line">			File dll = <span class="keyword">new</span> File(filePath);</span><br><span class="line">			FileOutputStream out = <span class="keyword">new</span> FileOutputStream(dll);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">int</span> i;</span><br><span class="line">			<span class="keyword">byte</span>[] buf = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				<span class="keyword">while</span> ((i = in.read(buf)) != -<span class="number">1</span>) &#123;</span><br><span class="line">					out.write(buf, <span class="number">0</span>, i);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">				in.close();</span><br><span class="line">				out.close();</span><br><span class="line">			&#125;</span><br><span class="line">			System.load(dll.getAbsolutePath());<span class="comment">//</span></span><br><span class="line">			dll.deleteOnExit();</span><br><span class="line"></span><br><span class="line">		&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">			System.err.println(<span class="string">"load jni error!"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/08/23/阿里云CentOS6-8配置tomcat所遇到的问题/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1401,144 +1529,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/06/05/Maven-java-spring-多环境配置/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/06/05/Maven-java-spring-多环境配置/" itemprop="url">
-                  Maven-java-spring-多环境配置
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-05T23:52:43+08:00">
-                2017-06-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ol>
-<li>在pom文件中加入以下属性配置<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">profiles</span>&gt;</span></span><br><span class="line">		<span class="comment">&lt;!-- 开发环境，默认激活 --&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">profile</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">id</span>&gt;</span>development<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- Spring XML profile 环境标识 --&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">profiles.active</span>&gt;</span>development<span class="tag">&lt;/<span class="name">profiles.active</span>&gt;</span></span><br><span class="line">                 <span class="comment">&lt;!-- log4j测试环境配置文件名 --&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">log4j.file.name</span>&gt;</span>log4j_t<span class="tag">&lt;/<span class="name">log4j.file.name</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">activation</span>&gt;</span></span><br><span class="line">				<span class="comment">&lt;!-- 默认启用的是dev环境配置 --&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">activeByDefault</span>&gt;</span>true<span class="tag">&lt;/<span class="name">activeByDefault</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">activation</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">profile</span>&gt;</span></span><br><span class="line">		<span class="comment">&lt;!-- 部署环境 --&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">profile</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">id</span>&gt;</span>production<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">             <span class="comment">&lt;!-- Spring XML profile 环境标识 --&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">profiles.active</span>&gt;</span>production<span class="tag">&lt;/<span class="name">profiles.active</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- log4j生产环境配置文件名 --&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">log4j.file.name</span>&gt;</span>log4j<span class="tag">&lt;/<span class="name">log4j.file.name</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">activation</span>&gt;</span></span><br><span class="line">				<span class="comment">&lt;!-- 生产环境默认关闭 --&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">activeByDefault</span>&gt;</span>false<span class="tag">&lt;/<span class="name">activeByDefault</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">activation</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">profile</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">profiles</span>&gt;</span></span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>在上述配置后，如果需要打包不同的环境，则使用clean install -P development/production命令即可</p>
-<ol>
-<li><p>配置上述属性，需增加maven 插件配置</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-war-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">version</span>&gt;</span>2.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">					<span class="comment">&lt;!-- 激活spring profile --&gt;</span></span><br><span class="line">					<span class="tag">&lt;<span class="name">webResources</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">							<span class="tag">&lt;<span class="name">filtering</span>&gt;</span>true<span class="tag">&lt;/<span class="name">filtering</span>&gt;</span></span><br><span class="line">							<span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/webapp<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">							<span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">								<span class="tag">&lt;<span class="name">include</span>&gt;</span>**/web.xml<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">							<span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">						<span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;/<span class="name">webResources</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;<span class="name">warSourceDirectory</span>&gt;</span>src/main/webapp<span class="tag">&lt;/<span class="name">warSourceDirectory</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;<span class="name">webXml</span>&gt;</span>src/main/webapp/WEB-INF/web.xml<span class="tag">&lt;/<span class="name">webXml</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在web.xml中使用Spring的配置，指定加载相关的配置文件信息</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">context-param</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">param-name</span>&gt;</span>log4jConfigLocation<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">param-value</span>&gt;</span>/WEB-INF/config/log4j/$&#123;log4j.file.name&#125;.properties<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">context-param</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">listener</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">listener-class</span>&gt;</span>org.springframework.web.util.Log4jConfigListener<span class="tag">&lt;/<span class="name">listener-class</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">listener</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">context-param</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">param-name</span>&gt;</span>contextConfigLocation<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">param-value</span>&gt;</span></span><br><span class="line">			<span class="comment">&lt;!-- 公共配置XML --&gt;</span></span><br><span class="line">			/WEB-INF/config/spring/common_Context.xml</span><br><span class="line">			/WEB-INF/config/spring/shiro_Context.xml</span><br><span class="line">			/WEB-INF/config/spring/scheduleJob_Context.xml</span><br><span class="line">   		<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">context-param</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">context-param</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- spring 中使用哪种开发配置 --&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">param-name</span>&gt;</span>spring.profiles.active<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">param-value</span>&gt;</span>$&#123;profiles.active&#125;<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">context-param</span>&gt;</span></span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>在上述文件，我们可以看到引用pom属性的值，只需使用${properties}即可</p>
-<ol>
-<li>Spring中如何配置开发环境与生产环境？<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">profile</span>=<span class="string">"development"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">context:property-placeholder</span></span><br><span class="line">			<span class="attr">location</span>=<span class="string">"/WEB-INF/config/properties/db/setting_t.properties"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">		<span class="tag">&lt;<span class="name">bean</span>  <span class="attr">id</span>=<span class="string">"messageSource"</span></span><br><span class="line">			<span class="attr">class</span>=<span class="string">"org.springframework.context.support.ReloadableResourceBundleMessageSource"</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"basenames"</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">list</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;<span class="name">value</span>&gt;</span>/WEB-INF/config/properties/db/setting_t<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;<span class="name">value</span>&gt;</span>/WEB-INF/config/properties/yangcong/yangcong<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;<span class="name">value</span>&gt;</span>/WEB-INF/config/properties/wx/wx<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;/<span class="name">list</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"cacheSeconds"</span> <span class="attr">value</span>=<span class="string">"36000"</span> /&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">beans</span> <span class="attr">profile</span>=<span class="string">"production"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">context:property-placeholder</span></span><br><span class="line">			<span class="attr">location</span>=<span class="string">"/WEB-INF/config/properties/db/setting.properties"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">		<span class="tag">&lt;<span class="name">bean</span>  <span class="attr">id</span>=<span class="string">"messageSource"</span></span><br><span class="line">			<span class="attr">class</span>=<span class="string">"org.springframework.context.support.ReloadableResourceBundleMessageSource"</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"basenames"</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">list</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;<span class="name">value</span>&gt;</span>/WEB-INF/config/properties/db/setting<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;<span class="name">value</span>&gt;</span>/WEB-INF/config/properties/yangcong/yangcong<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">					<span class="tag">&lt;<span class="name">value</span>&gt;</span>/WEB-INF/config/properties/wx/wx<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;/<span class="name">list</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"cacheSeconds"</span> <span class="attr">value</span>=<span class="string">"36000"</span> /&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	需要注意的是beans 后面不允许存在"<span class="tag">&lt;<span class="name">bean</span>&gt;</span>"级信息。</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1588,7 +1578,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">71</span>
+                <span class="site-state-item-count">72</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1601,7 +1591,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">85</span>
+                <span class="site-state-item-count">87</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

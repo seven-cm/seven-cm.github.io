@@ -103,7 +103,7 @@
 该如何入门？从网上了解到《Objective-C基础教程 第2版》该书籍对入门有很大对帮助。
 一些能帮助我们理解Object-C的摘录为何扩展名是.m?Object-C诞生之时，扩展名.m代表message；它是Object-C的一个重要特性。
 为何有很多NS前缀的类?Cocoa给">
-<meta property="og:updated_time" content="2019-05-07T15:04:48.354Z">
+<meta property="og:updated_time" content="2019-05-07T15:31:12.180Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="learn Object C">
 <meta name="twitter:description" content="前言
@@ -373,7 +373,9 @@
 <h2 id="一些能帮助我们理解Object-C的摘录"><a href="#一些能帮助我们理解Object-C的摘录" class="headerlink" title="一些能帮助我们理解Object-C的摘录"></a>一些能帮助我们理解Object-C的摘录</h2><h3 id="为何扩展名是-m"><a href="#为何扩展名是-m" class="headerlink" title="为何扩展名是.m?"></a>为何扩展名是.m?</h3><p>Object-C诞生之时，扩展名.m代表message；它是Object-C的一个重要特性。</p>
 <h3 id="为何有很多NS前缀的类"><a href="#为何有很多NS前缀的类" class="headerlink" title="为何有很多NS前缀的类?"></a>为何有很多NS前缀的类?</h3><p>Cocoa给所有的函数、常量和类都加了NS前缀；主要是避免名称冲突。还可以追溯到Cocoa工具类都前身NextSTEP。</p>
 <h3 id="为何NSLog的字符串前需要"><a href="#为何NSLog的字符串前需要" class="headerlink" title="为何NSLog的字符串前需要@"></a>为何NSLog的字符串前需要@</h3><p>@是Object-C在标准C语言基础上添加的特性之一。@符号意味着引号内的字符作为Cocoa的NSString来处理。</p>
-
+<h3 id="id是什么？"><a href="#id是什么？" class="headerlink" title="id是什么？"></a>id是什么？</h3><p>id是一种泛型，可以用来引用任何类型的对象；实际上是一个指向结构体的指针。</p>
+<h3 id="中括号的奇怪用法？"><a href="#中括号的奇怪用法？" class="headerlink" title="中括号的奇怪用法？"></a>中括号的奇怪用法？</h3><p>如 [car engineStart] 这个是Object-C有关中括号的一个用法：通知某个对象去做什么，也就是方法调用。在Object-C中，通知对象执行某种操作成为发送消息。</p>
+<h3 id="interface"><a href="#interface" class="headerlink" title="@interface"></a>@interface</h3>
       
     </div>
 
@@ -424,6 +426,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/21/代码片段-vue-自定义alert/" rel="prev" title="代码片段-vue-自定义alert">
+                代码片段-vue-自定义alert <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -497,7 +503,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">71</span>
+                <span class="site-state-item-count">72</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -510,7 +516,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">85</span>
+                <span class="site-state-item-count">87</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -556,7 +562,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一些能帮助我们理解Object-C的摘录"><span class="nav-number">1.1.</span> <span class="nav-text">一些能帮助我们理解Object-C的摘录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为何扩展名是-m"><span class="nav-number">1.1.1.</span> <span class="nav-text">为何扩展名是.m?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为何有很多NS前缀的类"><span class="nav-number">1.1.2.</span> <span class="nav-text">为何有很多NS前缀的类?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为何NSLog的字符串前需要"><span class="nav-number">1.1.3.</span> <span class="nav-text">为何NSLog的字符串前需要@</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一些能帮助我们理解Object-C的摘录"><span class="nav-number">1.1.</span> <span class="nav-text">一些能帮助我们理解Object-C的摘录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为何扩展名是-m"><span class="nav-number">1.1.1.</span> <span class="nav-text">为何扩展名是.m?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为何有很多NS前缀的类"><span class="nav-number">1.1.2.</span> <span class="nav-text">为何有很多NS前缀的类?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为何NSLog的字符串前需要"><span class="nav-number">1.1.3.</span> <span class="nav-text">为何NSLog的字符串前需要@</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#id是什么？"><span class="nav-number">1.1.4.</span> <span class="nav-text">id是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中括号的奇怪用法？"><span class="nav-number">1.1.5.</span> <span class="nav-text">中括号的奇怪用法？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#interface"><span class="nav-number">1.1.6.</span> <span class="nav-text">@interface</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

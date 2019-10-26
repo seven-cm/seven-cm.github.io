@@ -270,6 +270,144 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/12/20/git-常用命令/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/12/20/git-常用命令/" itemprop="url">
+                  git 常用命令
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-20T00:11:16+08:00">
+                2017-12-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="git？"><a href="#git？" class="headerlink" title="git？"></a>git？</h1><blockquote>
+<p>Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.</p>
+</blockquote>
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><h3 id="git-初始化"><a href="#git-初始化" class="headerlink" title="git 初始化"></a>git 初始化</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> xxx</span><br><span class="line">git init</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>你所期望的那个文件夹xxx就成为了一个Git管理的仓库了 <a href="http://git.mydoc.io/?t=180691" target="_blank" rel="external">http://git.mydoc.io/?t=180691</a></p>
+</blockquote>
+<h3 id="git-配置用户名，邮箱地址"><a href="#git-配置用户名，邮箱地址" class="headerlink" title="git 配置用户名，邮箱地址"></a>git 配置用户名，邮箱地址</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config user<span class="selector-class">.name</span> <span class="string">"xxxx"</span></span><br><span class="line">git config user<span class="selector-class">.email</span> <span class="string">"xxx@xxx"</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>如果需要配置全局用户，将在git config后面增加–global即可，如git config –global user.name “xxxx” 配置了一个全局用户名 “xxxx”</p>
+<h3 id="git-配置项目远程仓库地址"><a href="#git-配置项目远程仓库地址" class="headerlink" title="git 配置项目远程仓库地址"></a>git 配置项目远程仓库地址</h3><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote add origin <span class="string">https:</span><span class="comment">//xxxx.git</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="git-添加提交文件"><a href="#git-添加提交文件" class="headerlink" title="git 添加提交文件"></a>git 添加提交文件</h3><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">git</span> <span class="keyword">add </span>xxx</span><br><span class="line"><span class="symbol">git</span> <span class="keyword">add </span>.</span><br><span class="line"><span class="symbol">git</span> commit -m <span class="string">"注释"</span></span><br><span class="line"><span class="symbol">git</span> <span class="keyword">push </span>origin master</span><br></pre></td></tr></table></figure>
+<h3 id="git-拉取文件"><a href="#git-拉取文件" class="headerlink" title="git 拉取文件"></a>git 拉取文件</h3><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull origin <span class="literal">master</span></span><br></pre></td></tr></table></figure>
+<h3 id="git-冲突合并"><a href="#git-冲突合并" class="headerlink" title="git 冲突合并"></a>git 冲突合并</h3><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">git</span> <span class="keyword">add </span>.</span><br><span class="line"><span class="symbol">git</span> commit -m <span class="string">"fixed conflicts"</span></span><br><span class="line"><span class="symbol">git</span> <span class="keyword">push </span>origin master`</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>参考码云：<a href="http://git.mydoc.io/?t=83148" target="_blank" rel="external">http://git.mydoc.io/?t=83148</a> 其实就是把冲突文件中的冲突信息处理后，提交即可。</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/12/19/README/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1489,134 +1627,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/08/29/export-Runnable-JAR-File-UnsatisfiedLinkError/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/08/29/export-Runnable-JAR-File-UnsatisfiedLinkError/" itemprop="url">
-                  export Runnable JAR File UnsatisfiedLinkError
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-29T19:49:55+08:00">
-                2017-08-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>今天在使用<a href="http://jnetpcap.com/download" target="_blank" rel="external">http://jnetpcap.com/download</a> 进行网卡监听；直接导出可运行java文件会引发java.lang.UnsatisfiedLinkError: com.slytechs.library的异常。</p>
-<h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><p>在网上搜了，只有这个是符合我的要求<code>JAVA打成JAR包后dll的调用方法</code><a href="http://blog.csdn.net/bupt073114/article/details/52083768" target="_blank" rel="external">http://blog.csdn.net/bupt073114/article/details/52083768</a><br>参照文章中的说法，得出以下经验：<br><code>配置方法</code></p>
-<ol>
-<li>在package中新建lib包，然后放入相关的.dll或.so等文件</li>
-<li>右键工程properties,在source中编辑Native library location指向至src/lib文件夹即可</li>
-<li>在main中添加静态块<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line"></span><br><span class="line">			InputStream in = ClassicPcapExample.class</span><br><span class="line">					.getResourceAsStream(<span class="string">"/lib/jnetpcap.dll"</span>);</span><br><span class="line"></span><br><span class="line">			System.out.println(<span class="string">"ClassicPcapExample.class.getClass()"</span> + in);</span><br><span class="line"></span><br><span class="line">			File ffile = <span class="keyword">new</span> File(<span class="string">""</span>);</span><br><span class="line">			String filePath = <span class="keyword">null</span>;</span><br><span class="line">			filePath = ffile.getAbsolutePath() + File.separator + <span class="string">"jnetpcap.dll"</span>;</span><br><span class="line">			System.out.println(<span class="string">"filePath jnetpcap.dll is "</span> + filePath);</span><br><span class="line">			File dll = <span class="keyword">new</span> File(filePath);</span><br><span class="line">			FileOutputStream out = <span class="keyword">new</span> FileOutputStream(dll);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">int</span> i;</span><br><span class="line">			<span class="keyword">byte</span>[] buf = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				<span class="keyword">while</span> ((i = in.read(buf)) != -<span class="number">1</span>) &#123;</span><br><span class="line">					out.write(buf, <span class="number">0</span>, i);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">				in.close();</span><br><span class="line">				out.close();</span><br><span class="line">			&#125;</span><br><span class="line">			System.load(dll.getAbsolutePath());<span class="comment">//</span></span><br><span class="line">			dll.deleteOnExit();</span><br><span class="line"></span><br><span class="line">		&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">			System.err.println(<span class="string">"load jni error!"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1666,7 +1676,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">71</span>
+                <span class="site-state-item-count">72</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1679,7 +1689,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">85</span>
+                <span class="site-state-item-count">87</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
