@@ -366,12 +366,12 @@
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近准备把svn更换为git，为了方便管理用户权限，准备使用gitolite。</p>
 <h2 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h2><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y <span class="keyword">install</span> git</span><br></pre></td></tr></table></figure>
 <h2 id="安装gitolite依赖"><a href="#安装gitolite依赖" class="headerlink" title="安装gitolite依赖"></a>安装gitolite依赖</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum -y <span class="keyword">install</span> perl</span><br><span class="line">yum -y <span class="keyword">install</span> perl-<span class="keyword">Data</span>-Dumper.x86_64</span><br></pre></td></tr></table></figure>
-<h2 id="添加git用户"><a href="#添加git用户" class="headerlink" title="添加git用户"></a>添加git用户</h2><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">useradd</span> git</span><br></pre></td></tr></table></figure>
-<h2 id="安装gitolite"><a href="#安装gitolite" class="headerlink" title="安装gitolite"></a>安装gitolite</h2><figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">su git</span><br><span class="line">cd ~</span><br><span class="line">git clone https://github.com/sitaramc/gitolite</span><br><span class="line">mkdir bin</span><br><span class="line">./gitolite/install -<span class="keyword">to</span> $HOME/bin</span><br></pre></td></tr></table></figure>
+<h2 id="添加git用户"><a href="#添加git用户" class="headerlink" title="添加git用户"></a>添加git用户</h2><figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">useradd git</span></span><br></pre></td></tr></table></figure>
+<h2 id="安装gitolite"><a href="#安装gitolite" class="headerlink" title="安装gitolite"></a>安装gitolite</h2><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">su</span> git</span><br><span class="line"><span class="keyword">cd</span> ~</span><br><span class="line">git clone https:<span class="comment">//github.com/sitaramc/gitolite</span></span><br><span class="line"><span class="keyword">mkdir</span> bin</span><br><span class="line">./gitolite/install -to <span class="variable">$HOME</span>/bin</span><br></pre></td></tr></table></figure>
 <h2 id="下面的步骤可在客户端做或直接在git用户下操作也可以"><a href="#下面的步骤可在客户端做或直接在git用户下操作也可以" class="headerlink" title="下面的步骤可在客户端做或直接在git用户下操作也可以"></a>下面的步骤可在客户端做或直接在git用户下操作也可以</h2><blockquote>
 <p>区别是，如果你想在客户端管理（添加用户，仓库等信息）就在客户端增加；若仅仅在服务端管理，就在服务端操作即可<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#生成rsa密钥</span><br><span class="line">ssh-keygen -t rsa</span><br><span class="line">mv .ssh/id_rsa<span class="selector-class">.pub</span> admin<span class="selector-class">.pub</span></span><br><span class="line"><span class="variable">$HOME</span>/bin/gitolite setup -pk .ssh/admin.pub</span><br></pre></td></tr></table></figure></p>
 </blockquote>
-<h2 id="clone配置仓库"><a href="#clone配置仓库" class="headerlink" title="clone配置仓库"></a>clone配置仓库</h2><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone git<span class="variable">@127</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">1</span><span class="symbol">:gitolite-admin</span></span><br></pre></td></tr></table></figure>
+<h2 id="clone配置仓库"><a href="#clone配置仓库" class="headerlink" title="clone配置仓库"></a>clone配置仓库</h2><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone <span class="symbol">git@</span><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:gitolite-admin</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>clone后即可在此仓库中配置git的用户密钥、仓库、权限</p>
 <h2 id="配置说明"><a href="#配置说明" class="headerlink" title="配置说明"></a>配置说明</h2><p>相关配置，可参考网站：<br><a href="https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitolite" target="_blank" rel="external">https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitolite</a></p>
@@ -506,7 +506,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-count">74</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -519,7 +519,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">92</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

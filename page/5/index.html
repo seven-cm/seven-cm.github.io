@@ -270,6 +270,131 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/06/10/webmagic-phantomjs爬取天猫数据/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/10/webmagic-phantomjs爬取天猫数据/" itemprop="url">
+                  webmagic+phantomjs爬取天猫数据
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-10T00:37:56+08:00">
+                2017-06-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>天猫的一些数据是由前端渲染而来；直接用http请求会拿不到相关数据。故使用webmagic+phantomjs来获取。</p>
+<h2 id="webmagic"><a href="#webmagic" class="headerlink" title="webmagic"></a>webmagic</h2><p>有关webmagic的介绍，访问：<a href="http://webmagic.io/" target="_blank" rel="external">http://webmagic.io/</a> 即可</p>
+<h2 id="phantomjs"><a href="#phantomjs" class="headerlink" title="phantomjs"></a>phantomjs</h2><p>PhantomJS is a headless WebKit scriptable with a JavaScript API.</p>
+<p>一个完整的浏览器内核,包括js解析引擎,渲染引擎,请求处理等,但是不包括显示和用户交互页面的浏览器</p>
+<h2 id="集成开发"><a href="#集成开发" class="headerlink" title="集成开发"></a>集成开发</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger log = Logger.getLogger(HuabanProcessor.class);</span><br><span class="line">	<span class="comment">//设置cookies</span></span><br><span class="line">	String cookieValue=<span class="string">"xxx"</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> Site site = Site.me().addHeader(<span class="string">"cookie"</span>, cookieValue).setRetryTimes(<span class="number">3</span>).setSleepTime(<span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(Page page)</span> </span>&#123;</span><br><span class="line">		<span class="comment">//打印页面信息 </span></span><br><span class="line">		<span class="comment">//log.info(page.getHtml().get());</span></span><br><span class="line">		<span class="comment">//获取列表所有商品详情链接</span></span><br><span class="line">		List&lt;String&gt; detailUrls = page.getHtml().$(<span class="string">".productImg-wrap a"</span>).links().all();</span><br><span class="line">		<span class="comment">//商品标题</span></span><br><span class="line">		List&lt;String&gt; detailTitle = page.getHtml().$(<span class="string">".productTitle a"</span>).xpath(<span class="string">"//a/text()"</span>).all();</span><br><span class="line">		<span class="comment">//商品价格</span></span><br><span class="line">		List&lt;String&gt; detailPrice = page.getHtml().$(<span class="string">".productPrice"</span>).xpath(<span class="string">"//em/text()"</span>).all();</span><br><span class="line">		List&lt;TmallProduct&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>,len=detailUrls.size();i&lt;len;i++)&#123;</span><br><span class="line">			TmallProduct tmallProduct = <span class="keyword">new</span> TmallProduct(detailUrls.get(i), </span><br><span class="line">					detailTitle.get(i), detailPrice.get(i));</span><br><span class="line">			list.add(tmallProduct);</span><br><span class="line">		&#125;</span><br><span class="line">		page.putField(<span class="string">"detail"</span>, list);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Spider.create(<span class="keyword">new</span> HuabanProcessor())</span><br><span class="line">		<span class="comment">//天猫地址</span></span><br><span class="line">		.addUrl(<span class="string">"天猫商品搜索地址"</span>).thread(<span class="number">5</span>)</span><br><span class="line">		<span class="comment">//下载到文件</span></span><br><span class="line">		.addPipeline(<span class="keyword">new</span> JsonFilePipeline(<span class="string">"/home/sevencm/下载/tmall-detail-url"</span>))</span><br><span class="line">		<span class="comment">//使用phantomjs</span></span><br><span class="line">		.downloader(<span class="keyword">new</span> SeleniumDownloader())</span><br><span class="line">		.run();</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Site <span class="title">getSite</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> site;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="结果输出信息"><a href="#结果输出信息" class="headerlink" title="结果输出信息"></a>结果输出信息</h2><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"detail"</span>:[&#123;<span class="attr">"price"</span>:<span class="string">"5588.00"</span>,<span class="attr">"title"</span>:<span class="string">" 【5588限量抢】Apple/   128G 全网通4G智能手机正品 "</span>,<span class="attr">"url"</span>:<span class="string">"https://detail.tmall.com/item.htm?id=538207238901&amp;skuId=3216546719688&amp;user_id=2616970884&amp;cat_id=2&amp;is_b=1&amp;rn=b9d270f8286c3097bb07716a5393c5f0"</span>&#125;,&#123;<span class="attr">"price"</span>:<span class="string">"6398.00"</span>,<span class="attr">"title"</span>:<span class="string">" 【6398疯抢】Apple/   Plus 128G 全网通4G智能手机 "</span>,<span class="attr">"url"</span>:<span class="string">"https://detail.tmall.com/item.htm?id=539336903257&amp;skuId=3419763583741&amp;user_id=2616970884&amp;cat_id=2&amp;is_b=1&amp;rn=b9d270f8286c3097bb07716a5393c5f0"</span>&#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/06/07/vue2-0基础之ES6语法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -354,7 +479,7 @@
 <p>一个模块就是一个独立的文件。该文件内部的所有变量，外部无法获取。如果你希望外部能够读取模块内部的某个变量，就必须使用export关键字输出该变量。</p>
 <p>需要特别注意的是，export命令规定的是对外的接口，必须与模块内部的变量建立一一对应关系。</p>
 <h2 id="import"><a href="#import" class="headerlink" title="import"></a>import</h2><p>使用export命令定义了模块的对外接口以后，其他 JS 文件就可以通过import命令加载这个模块。</p>
-<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ES6模块</span></span><br><span class="line"><span class="keyword">import</span> &#123; stat, <span class="keyword">exists</span>, readFile &#125; from <span class="string">'fs'</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ES6模块</span></span><br><span class="line"><span class="keyword">import</span> &#123; stat, <span class="built_in">exists</span>, readFile &#125; from <span class="string">'fs'</span>;</span><br></pre></td></tr></table></figure>
 <p>上面代码的实质是从fs模块加载3个方法，其他方法不加载。这种加载称为“编译时加载”或者静态加载，即 ES6 可以在编译时就完成模块加载，效率要比 CommonJS 模块的加载方式高</p>
 <h2 id="export-default"><a href="#export-default" class="headerlink" title="export default"></a>export default</h2><p>从前面的例子可以看出，使用import命令的时候，用户需要知道所要加载的变量名或函数名，否则无法加载。但是，用户肯定希望快速上手，未必愿意阅读文档，去了解模块有哪些属性和方法。</p>
 <p>为了给用户提供方便，让他们不用阅读文档就能加载模块，就要用到export default命令，为模块指定默认输出。</p>
@@ -753,7 +878,7 @@
 <p>在上述例子中，如果ok=true则会显示<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>Paragraph 1<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>Paragraph 2<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>Yes<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
 <h2 id="vue-v-show指令"><a href="#vue-v-show指令" class="headerlink" title="vue v-show指令"></a>vue v-show指令</h2><p>带有 v-show 的元素始终会被渲染并保留在 DOM 中。v-show 是简单地切换元素的 CSS 属性 display 。<br>也就是说show只是简单的是否为：display:none<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">v-show</span>=<span class="string">"ok"</span>&gt;</span>show?<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">则会体现为：</span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">style</span>=<span class="string">"display: none;"</span>&gt;</span>show?<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>那v-if与v-show的区别是什么？在什么情况下使用v-if？什么情况下使用v-show？官方有详细说明：<a href="https://cn.vuejs.org/v2/guide/conditional.html#v-show" target="_blank" rel="external">https://cn.vuejs.org/v2/guide/conditional.html#v-show</a></p>
-<h2 id="vue-v-for指令"><a href="#vue-v-for指令" class="headerlink" title="vue v-for指令"></a>vue v-for指令</h2><p>基于源数据多次渲染元素或模板块。此指令之值，必须使用特定语法 alias in expression ，为当前遍历的元素提供别名。<br><figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;div v-<span class="keyword">for</span>=<span class="string">"item in items"</span>&gt;</span><br><span class="line">  <span class="template-variable">&#123;&#123; item.text &#125;&#125;</span></span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="vue-v-for指令"><a href="#vue-v-for指令" class="headerlink" title="vue v-for指令"></a>vue v-for指令</h2><p>基于源数据多次渲染元素或模板块。此指令之值，必须使用特定语法 alias in expression ，为当前遍历的元素提供别名。<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="keyword">div</span> v-<span class="keyword">for</span>=<span class="string">"item in items"</span>&gt;</span><br><span class="line">  &#123;&#123; <span class="built_in">item</span>.<span class="built_in">text</span> &#125;&#125;</span><br><span class="line">&lt;/<span class="keyword">div</span>&gt;</span><br></pre></td></tr></table></figure></p>
 <h2 id="vue-v-on指令"><a href="#vue-v-on指令" class="headerlink" title="vue v-on指令"></a>vue v-on指令</h2><p>绑定事件监听器；可用@作为v-on的缩写。<br>详细用法，参考：<a href="https://cn.vuejs.org/v2/api/#v-on" target="_blank" rel="external">https://cn.vuejs.org/v2/api/#v-on</a></p>
 <h2 id="vue-v-model指令"><a href="#vue-v-model指令" class="headerlink" title="vue v-model指令"></a>vue v-model指令</h2><p>在表单控件或者组件上创建双向绑定。<br>详细参考：<a href="https://cn.vuejs.org/v2/api/#v-model" target="_blank" rel="external">https://cn.vuejs.org/v2/api/#v-model</a></p>
 
@@ -1003,7 +1128,7 @@
         
           
             <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>使用maven最痛苦的事情就是下载速度太慢了;解决方法要么自己找代理。</p>
-<h2 id="在网上找到一个阿里云的maven镜像"><a href="#在网上找到一个阿里云的maven镜像" class="headerlink" title="在网上找到一个阿里云的maven镜像"></a>在网上找到一个阿里云的maven镜像</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span><span class="meta">?&gt;</span></span></span><br><span class="line"><span class="tag">&lt;<span class="name">settings</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/SETTINGS/1.0.0"</span></span><br><span class="line">          <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span><br><span class="line">          <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mirrors</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 阿里云仓库 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>alimaven<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">name</span>&gt;</span>aliyun maven<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://maven.aliyun.com/nexus/content/repositories/central/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- 中央仓库1 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>repo1<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">name</span>&gt;</span>Human Readable Name for this Mirror.<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://repo1.maven.org/maven2/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- 中央仓库2 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>repo2<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">name</span>&gt;</span>Human Readable Name for this Mirror.<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://repo2.maven.org/maven2/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mirrors</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">settings</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="在网上找到一个阿里云的maven镜像"><a href="#在网上找到一个阿里云的maven镜像" class="headerlink" title="在网上找到一个阿里云的maven镜像"></a>在网上找到一个阿里云的maven镜像</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">settings</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/SETTINGS/1.0.0"</span></span><br><span class="line">          <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span><br><span class="line">          <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mirrors</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 阿里云仓库 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>alimaven<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">name</span>&gt;</span>aliyun maven<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://maven.aliyun.com/nexus/content/repositories/central/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- 中央仓库1 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>repo1<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">name</span>&gt;</span>Human Readable Name for this Mirror.<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://repo1.maven.org/maven2/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- 中央仓库2 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>repo2<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">name</span>&gt;</span>Human Readable Name for this Mirror.<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://repo2.maven.org/maven2/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mirrors</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">settings</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <h2 id="配置方法"><a href="#配置方法" class="headerlink" title="配置方法"></a>配置方法</h2><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在.m目录下新建文件settings.<span class="keyword">xml</span> <span class="title">内容填入上述代码即可</span></span><br></pre></td></tr></table></figure>
 
           
@@ -1385,145 +1510,16 @@
           
             <ol>
 <li><p>当我们使用sed的时候，又传入路径，则会出现以下这样的错误</p>
-<figure class="highlight sml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed: -e expression #<span class="number">1</span>, <span class="built_in">char</span> <span class="number">24</span>: unknown <span class="built_in">option</span> to `s'</span><br></pre></td></tr></table></figure>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed: -e expression #<span class="number">1</span>, <span class="type">char</span> <span class="number">24</span>: <span class="type">unknown</span> <span class="keyword">option</span> <span class="keyword">to</span> `s<span class="string">'</span></span><br></pre></td></tr></table></figure>
 </li>
 <li><p>如何解决？首先是想到转义</p>
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -<span class="selector-tag">i</span> <span class="string">'s/searchStr/\/path\/home/g'</span></span><br></pre></td></tr></table></figure>
 </li>
 <li><p>上述是解决问题了，但是如果很多呢？怎么处理？</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">有人提出：使用正则表达式，把路径直接转换：</span><br><span class="line">VARPATH=<span class="string">"/var/tmp/cloud"</span>  </span><br><span class="line">VARPATHSED=$(<span class="built_in">echo</span> <span class="variable">$&#123;VARPATH&#125;</span> |sed <span class="_">-e</span> <span class="string">'s/\//\\\//g'</span> )</span><br></pre></td></tr></table></figure>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">有人提出：使用正则表达式，把路径直接转换：</span><br><span class="line">VARPATH=<span class="string">"/var/tmp/cloud"</span>  </span><br><span class="line">VARPATHSED=<span class="constructor">$(<span class="params">echo</span> $&#123;VARPATH&#125; |<span class="params">sed</span> -<span class="params">e</span> '<span class="params">s</span><span class="operator">/</span>\<span class="operator">/</span><span class="operator">/</span>\\\<span class="operator">/</span><span class="operator">/</span><span class="params">g</span>' )</span></span><br></pre></td></tr></table></figure>
 </li>
 <li><p>这是一种方法，但是有没有更加简单的呢？</p>
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">将是s<span class="comment">///修改成s###就OK了 也就是用#代替/这样就不会有冲突了，简单便捷</span></span><br><span class="line">sed -<span class="selector-tag">i</span> <span class="string">'s#searchStr#/path/home#g'</span></span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/04/11/新买AMD1700-微星B350-折腾过程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/11/新买AMD1700-微星B350-折腾过程/" itemprop="url">
-                  新买AMD1700-微星主板B350-折腾过程
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-11T21:56:38+08:00">
-                2017-04-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>因公司准备将系统的数据都同步到内网。为了节约成本，直接从京东上购买了硬件组装。</p>
-<ol>
-<li>组装过程中；发现AMD1700是没有GPU芯片，需购买一块独立显卡。</li>
-<li>在用U盘安装6.5的时候，发现把boot loader一直安装在U盘上，系统一直起不了</li>
-<li>在后续安装更改后，会发现进入不了系统，一直都是卡在光标闪的情况。</li>
-<li>强制关机后发现微星主板，会一直在检测，时间持续在5分钟。</li>
-<li>最后，安装了CentOS 7 在U盘安装中，一直检测不到机器的内存大小。最后只能在安装选项处，按下Tab键；将内存大小设置为1G<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">mem</span>=<span class="number">1</span>G</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
 
@@ -1609,7 +1605,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-count">74</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1622,7 +1618,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">92</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

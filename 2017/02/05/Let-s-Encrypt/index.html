@@ -369,13 +369,13 @@
 <li>选择相应的web服务（Apache、nginx）、系统类型（Centos、Rhel）；</li>
 <li>因服务器系统为CentOS 6，web服务为Nginx ，故进入：<a href="https://certbot.eff.org/#centos6-nginx" target="_blank" rel="external">https://certbot.eff.org/#centos6-nginx</a></li>
 <li><p>切换root用户，将Certbot-auto下载下来</p>
-<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https:<span class="comment">//dl.eff.org/certbot-auto</span></span><br><span class="line">chmod a+x certbot-<span class="keyword">auto</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https:<span class="comment">//dl.eff.org/certbot-auto</span></span><br><span class="line">chmod a+x certbot-<span class="built_in">auto</span></span><br></pre></td></tr></table></figure>
 </li>
 <li><p>下载完成后，执行</p>
-<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./certbot-<span class="keyword">auto</span> certonly --email xxx@xxx --webroot -w /<span class="built_in">home</span>/www/webroot -d xxx.xxxx.xxx</span><br></pre></td></tr></table></figure>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">./certbot-auto</span> certonly <span class="params">--email</span> xxx@xxx <span class="params">--webroot</span> -w <span class="string">/home/www/webroot</span> -d xxx.xxxx.xxx</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>需要注意的是可能会在Install Python packges 的时候卡主：解决方法</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#编辑~/.pip/pip.conf，如果文件和目录不存在的话，应当先建立文件或者目录，加入或修改以下配置</span></span><br><span class="line"><span class="section"></span><br><span class="line">[global]</span></span><br><span class="line"><span class="attr">index-url</span> = http://mirrors.aliyun.com/pypi/simple/</span><br><span class="line"><span class="section"></span><br><span class="line">[install]</span></span><br><span class="line"><span class="attr">trusted-host</span>=mirrors.aliyun.com</span><br></pre></td></tr></table></figure>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#编辑~/.pip/pip.conf，如果文件和目录不存在的话，应当先建立文件或者目录，加入或修改以下配置</span><br><span class="line"></span><br><span class="line">[<span class="keyword">global</span>]</span><br><span class="line"><span class="keyword">index</span>-url = http://mirrors.aliyun.com/pypi/simple/</span><br><span class="line"></span><br><span class="line">[install]</span><br><span class="line"><span class="keyword">trusted</span>-host=mirrors.aliyun.com</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>参考资料</p>
 </li>
@@ -504,7 +504,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-count">74</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -517,7 +517,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">92</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

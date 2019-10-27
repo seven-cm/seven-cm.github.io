@@ -367,7 +367,7 @@ exportexport命令用于规定模块的对外接口，imp">
 <p>一个模块就是一个独立的文件。该文件内部的所有变量，外部无法获取。如果你希望外部能够读取模块内部的某个变量，就必须使用export关键字输出该变量。</p>
 <p>需要特别注意的是，export命令规定的是对外的接口，必须与模块内部的变量建立一一对应关系。</p>
 <h2 id="import"><a href="#import" class="headerlink" title="import"></a>import</h2><p>使用export命令定义了模块的对外接口以后，其他 JS 文件就可以通过import命令加载这个模块。</p>
-<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ES6模块</span></span><br><span class="line"><span class="keyword">import</span> &#123; stat, <span class="keyword">exists</span>, readFile &#125; from <span class="string">'fs'</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ES6模块</span></span><br><span class="line"><span class="keyword">import</span> &#123; stat, <span class="built_in">exists</span>, readFile &#125; from <span class="string">'fs'</span>;</span><br></pre></td></tr></table></figure>
 <p>上面代码的实质是从fs模块加载3个方法，其他方法不加载。这种加载称为“编译时加载”或者静态加载，即 ES6 可以在编译时就完成模块加载，效率要比 CommonJS 模块的加载方式高</p>
 <h2 id="export-default"><a href="#export-default" class="headerlink" title="export default"></a>export default</h2><p>从前面的例子可以看出，使用import命令的时候，用户需要知道所要加载的变量名或函数名，否则无法加载。但是，用户肯定希望快速上手，未必愿意阅读文档，去了解模块有哪些属性和方法。</p>
 <p>为了给用户提供方便，让他们不用阅读文档就能加载模块，就要用到export default命令，为模块指定默认输出。</p>
@@ -499,7 +499,7 @@ exportexport命令用于规定模块的对外接口，imp">
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-count">74</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -512,7 +512,7 @@ exportexport命令用于规定模块的对外接口，imp">
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">92</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

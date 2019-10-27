@@ -360,7 +360,7 @@
         <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>今天企业微信应用一直在发警报,某个采购商不接收我们的回调数据.他们开发又没有时间处理该问题.只有对该采购商的回调回写的数据不作判断了.于是快速定位代码,加入判断逻辑语句.测试无问题,可以发布到线上了.</p>
 <p>打开Jenkins,爽快输入账号密码,点击发布.然而,tomcat停止后再也没有起来.</p>
 <h2 id="疑问"><a href="#疑问" class="headerlink" title="疑问"></a>疑问</h2><p>一直以来,使用Jenkins发布是没有任何问题的啊;会不会有是代码有问题.于是快速回滚线上代码.然而tomcat还是起不来.</p>
-<h2 id="先不管那么多-先看看tomcat的日志"><a href="#先不管那么多-先看看tomcat的日志" class="headerlink" title="先不管那么多,先看看tomcat的日志"></a>先不管那么多,先看看tomcat的日志</h2><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Java HotSpot(TM) 64-Bit Server VM warning: INFO: os::commit_memory(0x00000000c8000000, 805306368, 0) failed; <span class="keyword">error</span>='Cannot allocate <span class="keyword">memory</span>' (errno=12)</span><br><span class="line">#</span><br><span class="line"># There is insufficient <span class="keyword">memory</span> <span class="keyword">for</span> the Java Runtime Environment to <span class="keyword">continue</span>.</span><br><span class="line"># Native <span class="keyword">memory</span> allocation (malloc) failed to allocate 805306368 bytes <span class="keyword">for</span> committing reserved <span class="keyword">memory</span>.</span><br><span class="line"># <span class="keyword">An</span> <span class="keyword">error</span> <span class="keyword">report</span> <span class="keyword">file</span> with <span class="keyword">more</span> information is saved <span class="keyword">as</span>:</span><br><span class="line"># /tmp/hs_err_pid9230.<span class="built_in">log</span></span><br></pre></td></tr></table></figure>
+<h2 id="先不管那么多-先看看tomcat的日志"><a href="#先不管那么多-先看看tomcat的日志" class="headerlink" title="先不管那么多,先看看tomcat的日志"></a>先不管那么多,先看看tomcat的日志</h2><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Java HotSpot(TM) 64-Bit<span class="built_in"> Server </span>VM warning: INFO: os::commit_memory(0x00000000c8000000, 805306368, 0) failed; <span class="attribute">error</span>=<span class="string">'Cannot allocate memory'</span> (<span class="attribute">errno</span>=12)</span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># There is insufficient memory for the Java Runtime Environment to continue.</span></span><br><span class="line"><span class="comment"># Native memory allocation (malloc) failed to allocate 805306368 bytes for committing reserved memory.</span></span><br><span class="line"><span class="comment"># An error report file with more information is saved as:</span></span><br><span class="line"><span class="comment"># /tmp/hs_err_pid9230.log</span></span><br></pre></td></tr></table></figure>
 <p>一看,才知道内存不够,所以起不来:<code>Cannot allocate memory</code>;</p>
 <p>使用 <code>free -mh</code> 命令一看,果然剩下可用内存: 150M.</p>
 <blockquote>
@@ -498,7 +498,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-count">74</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -511,7 +511,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">92</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

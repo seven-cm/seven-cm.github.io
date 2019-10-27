@@ -384,13 +384,13 @@
         <ol>
 <li>安装SVN:yum install subversion</li>
 <li><p>创建svn用户</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">groupadd</span> svn</span><br><span class="line">useradd -g svn svn</span><br></pre></td></tr></table></figure>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">groupadd</span> <span class="string">svn</span></span><br><span class="line"><span class="attr">useradd</span> <span class="string">-g svn svn</span></span><br></pre></td></tr></table></figure>
 </li>
 <li><p>切换至svn用户</p>
-<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">su</span> svn</span><br><span class="line">＃创建svn仓库目录</span><br><span class="line"><span class="keyword">cd</span> /home/svn</span><br><span class="line"><span class="keyword">mkdir</span> _svn</span><br></pre></td></tr></table></figure>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">su</span> <span class="string">svn</span></span><br><span class="line"><span class="attr">＃创建svn仓库目录</span></span><br><span class="line"><span class="attr">cd</span> <span class="string">/home/svn</span></span><br><span class="line"><span class="attr">mkdir</span> <span class="string">_svn</span></span><br></pre></td></tr></table></figure>
 </li>
 <li><p>配置svn</p>
-<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vi .bash_profile</span><br><span class="line"></span><br><span class="line">SVN_HOME=/<span class="built_in">home</span>/svn/_svn</span><br><span class="line"><span class="keyword">export</span> SVN_HOME</span><br></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vi .bash_profile</span><br><span class="line"></span><br><span class="line"><span class="attribute">SVN_HOME</span>=/home/svn/_svn</span><br><span class="line"><span class="builtin-name">export</span> SVN_HOME</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>创建svn版本库</p>
 <figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#进入_svn目录</span></span><br><span class="line"><span class="meta">#创建dirname的版本库</span></span><br><span class="line">svnadmin <span class="keyword">create</span> --fs-<span class="built_in">type</span> fsfs dirname</span><br></pre></td></tr></table></figure>
@@ -399,13 +399,13 @@
 <figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#进入dirname/<span class="keyword">cnf</span>/</span><br><span class="line"><span class="keyword">vi</span> <span class="keyword">pwd</span></span><br><span class="line">用户名＝密码</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>创建用户组</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#进入dirname/cnf/</span></span><br><span class="line"><span class="attribute">vi</span> authz</span><br><span class="line"><span class="comment">#增加组</span></span><br><span class="line">[groups]</span><br><span class="line">vip_1 = 用户名<span class="number">1</span>,用户名２</span><br><span class="line"><span class="comment">#根目录授权 如果是要分目录授权，则增加具体路径授权即可</span></span><br><span class="line">[dirname:/]</span><br><span class="line"><span class="variable">@vip_1</span> = rw</span><br><span class="line">* =</span><br></pre></td></tr></table></figure>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#进入dirname/cnf/</span></span><br><span class="line">vi authz</span><br><span class="line"><span class="comment">#增加组</span></span><br><span class="line">[groups]</span><br><span class="line">vip_1 = 用户名1,用户名２</span><br><span class="line"><span class="comment">#根目录授权 如果是要分目录授权，则增加具体路径授权即可</span></span><br><span class="line"><span class="section">[dirname:/]</span></span><br><span class="line">@vip_1 = rw</span><br><span class="line">* =</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>服务配置</p>
 <figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[general]</span></span><br><span class="line"><span class="attr">anon-access</span> = none</span><br><span class="line"><span class="attr">auth-access</span> = write</span><br><span class="line"><span class="attr">authz-db</span> = authz</span><br><span class="line"><span class="attr">password-db</span> = passwd</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>svn启动服务命令</p>
-<figure class="highlight cos"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">svnserve -<span class="keyword">d</span> -<span class="keyword">r</span> /home/svn/_svn</span><br></pre></td></tr></table></figure>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">svnserve -d -r /<span class="built_in">home</span>/svn/_svn</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
 
@@ -527,7 +527,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-count">74</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -540,7 +540,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">92</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

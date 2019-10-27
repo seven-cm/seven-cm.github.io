@@ -371,13 +371,13 @@
 <li>当下的任务是用JAVA实现HTTP代理服务器.</li>
 <li>搜索中，发现LittleProxy神器：<a href="https://github.com/adamfisk/LittleProxy" target="_blank" rel="external">https://github.com/adamfisk/LittleProxy</a></li>
 <li><p>直接上代码：</p>
-<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) throws UnknownHostException &#123;</span><br><span class="line">	int port = Integer.parseInt(args[<span class="number">0</span>])<span class="comment">;</span></span><br><span class="line">	InetAddress <span class="keyword">addr </span>= InetAddress.getByName(args[<span class="number">1</span>])<span class="comment">;</span></span><br><span class="line">	InetSocketAddress <span class="keyword">address </span>= new InetSocketAddress(<span class="keyword">addr, </span>port)<span class="comment">;</span></span><br><span class="line">	HttpProxyServer server =</span><br><span class="line">		    DefaultHttpProxyServer.<span class="keyword">bootstrap()</span><br><span class="line"></span>		    .withAddress(<span class="keyword">address)</span><br><span class="line"></span>		        .start()<span class="comment">;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) throws UnknownHostException &#123;</span><br><span class="line">	int<span class="built_in"> port </span>= Integer.parseInt(args[0]);</span><br><span class="line">	InetAddress addr = InetAddress.getByName(args[1]);</span><br><span class="line">	InetSocketAddress<span class="built_in"> address </span>= new InetSocketAddress(addr, port);</span><br><span class="line">	HttpProxyServer<span class="built_in"> server </span>=</span><br><span class="line">		    DefaultHttpProxyServer.bootstrap()</span><br><span class="line">		    .withAddress(address)</span><br><span class="line">		        .start();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>编译后在web服务器运行：</p>
 <figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#此处的代理ip为可以链接外网的内网ip</span></span><br><span class="line"><span class="keyword">java </span>-<span class="keyword">jar </span>xxx.<span class="keyword">jar </span>端口 绑定的代理IP</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>在数据库内网服务器</p>
-<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vim <span class="meta-keyword">/etc/</span>yum.conf</span><br><span class="line"><span class="meta">#增加</span></span><br><span class="line">proxy=http:<span class="comment">//绑定的代理IP:端口</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vim <span class="regexp">/etc/yum</span>.conf</span><br><span class="line"><span class="comment">#增加</span></span><br><span class="line">proxy=http:<span class="regexp">//</span>绑定的代理IP:端口</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>yum 跑起来 OVER~</p>
 </li>
@@ -503,7 +503,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-count">74</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -516,7 +516,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">92</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

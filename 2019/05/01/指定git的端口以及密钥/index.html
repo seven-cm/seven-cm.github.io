@@ -359,7 +359,7 @@
       
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>为了提高服务器的安全，一般ssh 22端口都会更换为其他端口；<br>若在不是ssh为22端口的服务器中搭建git，需要指定git的端口才能正常使用。</p>
 <h2 id="指定git端口"><a href="#指定git端口" class="headerlink" title="指定git端口"></a>指定git端口</h2><figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">ssh:</span>//git<span class="subst">@192</span><span class="number">.168</span><span class="number">.1</span><span class="number">.10</span>:<span class="number">8888</span>/xxx.git</span><br></pre></td></tr></table></figure>
-<h2 id="指定git使用的密钥"><a href="#指定git使用的密钥" class="headerlink" title="指定git使用的密钥"></a>指定git使用的密钥</h2><h3 id="在-ssh目录下增加config"><a href="#在-ssh目录下增加config" class="headerlink" title="在.ssh目录下增加config"></a>在.ssh目录下增加config</h3><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cd ~</span><br><span class="line">cd .ssh</span><br><span class="line">touch config</span><br><span class="line">vi config</span><br><span class="line"><span class="comment">#config内容如下</span></span><br><span class="line">Host githost</span><br><span class="line">    HostName <span class="number">192.168</span>.<span class="number">1.10</span></span><br><span class="line">    Port <span class="number">8888</span></span><br><span class="line">    <span class="keyword">User</span> <span class="title">git</span></span><br><span class="line">    IdentityFile /Users/your/.ssh/your_id_rsa</span><br></pre></td></tr></table></figure>
+<h2 id="指定git使用的密钥"><a href="#指定git使用的密钥" class="headerlink" title="指定git使用的密钥"></a>指定git使用的密钥</h2><h3 id="在-ssh目录下增加config"><a href="#在-ssh目录下增加config" class="headerlink" title="在.ssh目录下增加config"></a>在.ssh目录下增加config</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cd ~</span><br><span class="line">cd .ssh</span><br><span class="line">touch<span class="built_in"> config</span><br><span class="line"></span>vi<span class="built_in"> config</span><br><span class="line"></span><span class="comment">#config内容如下</span></span><br><span class="line">Host githost</span><br><span class="line">    HostName 192.168.1.10</span><br><span class="line">   <span class="built_in"> Port </span>8888</span><br><span class="line">   <span class="built_in"> User </span>git</span><br><span class="line">    IdentityFile /Users/your/.ssh/your_id_rsa</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>若仓库已经clone下来，需执行以下操作</p>
 <h3 id="修改-git下的config"><a href="#修改-git下的config" class="headerlink" title="修改.git下的config"></a>修改.git下的config</h3><figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#将url修改即可</span></span><br><span class="line"><span class="meta"># url = ssh://git@192.168.1.10:8888/xxx.git</span></span><br><span class="line">url = ssh:<span class="comment">//git@githost/xxx.git</span></span><br></pre></td></tr></table></figure>
@@ -497,7 +497,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-count">74</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -510,7 +510,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">92</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

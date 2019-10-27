@@ -270,6 +270,131 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2016/10/19/maven-创建模块项目/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/10/19/maven-创建模块项目/" itemprop="url">
+                  maven-创建模块项目
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-19T22:54:01+08:00">
+                2016-10-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>１、打开eclipse新建maven项目:
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/10/19/maven-创建模块项目/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2016/09/18/CentOS-SVN服务搭建/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -350,13 +475,13 @@
             <ol>
 <li>安装SVN:yum install subversion</li>
 <li><p>创建svn用户</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">groupadd</span> svn</span><br><span class="line">useradd -g svn svn</span><br></pre></td></tr></table></figure>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">groupadd</span> <span class="string">svn</span></span><br><span class="line"><span class="attr">useradd</span> <span class="string">-g svn svn</span></span><br></pre></td></tr></table></figure>
 </li>
 <li><p>切换至svn用户</p>
-<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">su</span> svn</span><br><span class="line">＃创建svn仓库目录</span><br><span class="line"><span class="keyword">cd</span> /home/svn</span><br><span class="line"><span class="keyword">mkdir</span> _svn</span><br></pre></td></tr></table></figure>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">su</span> <span class="string">svn</span></span><br><span class="line"><span class="attr">＃创建svn仓库目录</span></span><br><span class="line"><span class="attr">cd</span> <span class="string">/home/svn</span></span><br><span class="line"><span class="attr">mkdir</span> <span class="string">_svn</span></span><br></pre></td></tr></table></figure>
 </li>
 <li><p>配置svn</p>
-<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vi .bash_profile</span><br><span class="line"></span><br><span class="line">SVN_HOME=/<span class="built_in">home</span>/svn/_svn</span><br><span class="line"><span class="keyword">export</span> SVN_HOME</span><br></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vi .bash_profile</span><br><span class="line"></span><br><span class="line"><span class="attribute">SVN_HOME</span>=/home/svn/_svn</span><br><span class="line"><span class="builtin-name">export</span> SVN_HOME</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>创建svn版本库</p>
 <figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#进入_svn目录</span></span><br><span class="line"><span class="meta">#创建dirname的版本库</span></span><br><span class="line">svnadmin <span class="keyword">create</span> --fs-<span class="built_in">type</span> fsfs dirname</span><br></pre></td></tr></table></figure>
@@ -365,13 +490,13 @@
 <figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#进入dirname/<span class="keyword">cnf</span>/</span><br><span class="line"><span class="keyword">vi</span> <span class="keyword">pwd</span></span><br><span class="line">用户名＝密码</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>创建用户组</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#进入dirname/cnf/</span></span><br><span class="line"><span class="attribute">vi</span> authz</span><br><span class="line"><span class="comment">#增加组</span></span><br><span class="line">[groups]</span><br><span class="line">vip_1 = 用户名<span class="number">1</span>,用户名２</span><br><span class="line"><span class="comment">#根目录授权 如果是要分目录授权，则增加具体路径授权即可</span></span><br><span class="line">[dirname:/]</span><br><span class="line"><span class="variable">@vip_1</span> = rw</span><br><span class="line">* =</span><br></pre></td></tr></table></figure>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#进入dirname/cnf/</span></span><br><span class="line">vi authz</span><br><span class="line"><span class="comment">#增加组</span></span><br><span class="line">[groups]</span><br><span class="line">vip_1 = 用户名1,用户名２</span><br><span class="line"><span class="comment">#根目录授权 如果是要分目录授权，则增加具体路径授权即可</span></span><br><span class="line"><span class="section">[dirname:/]</span></span><br><span class="line">@vip_1 = rw</span><br><span class="line">* =</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>服务配置</p>
 <figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[general]</span></span><br><span class="line"><span class="attr">anon-access</span> = none</span><br><span class="line"><span class="attr">auth-access</span> = write</span><br><span class="line"><span class="attr">authz-db</span> = authz</span><br><span class="line"><span class="attr">password-db</span> = passwd</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>svn启动服务命令</p>
-<figure class="highlight cos"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">svnserve -<span class="keyword">d</span> -<span class="keyword">r</span> /home/svn/_svn</span><br></pre></td></tr></table></figure>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">svnserve -d -r /<span class="built_in">home</span>/svn/_svn</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
 
@@ -1122,13 +1247,13 @@
 <figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[test<span class="variable">@localhost</span> ~]<span class="variable">$ </span>top</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>进程的栈打印到文件</p>
-<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[test<span class="symbol">@localhost</span> ~]$ jstack <span class="number">6633</span> &gt; java_jstack.<span class="built_in">log</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="symbol">test@</span>localhost ~]$ jstack <span class="number">6633</span> &gt; java_jstack.log</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>查看进程里面查看占用cpu高的线程</p>
-<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[test<span class="variable">@localhost</span> ~]<span class="variable">$ </span>top -p <span class="number">6633</span> -H</span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="symbol">test@</span>localhost ~]$ top -p <span class="number">6633</span> -H</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>将线程PID转16进制,若pid=5159</p>
-<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[test@localhost ~]$ <span class="keyword">printf</span> %0x <span class="number">5159</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="symbol">test@</span>localhost ~]$ printf %<span class="number">0</span>x <span class="number">5159</span></span><br></pre></td></tr></table></figure>
 </li>
 </ol>
           <!--noindex-->
@@ -1256,7 +1381,7 @@
       
         
           <p>1、建立备份目录<br><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/<span class="built_in">home</span>/databackup</span><br></pre></td></tr></table></figure></p>
-<p>2、编写备份文件<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">vi dbbackup.sh</span><br><span class="line"><span class="comment">#输入以下内容</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">mysqldump -uroot -p123456 <span class="built_in">test</span> | gzip &gt; /home/databackup/<span class="built_in">test</span>_`date +%Y-%m-%d_%H%M%S`.sql.gz</span><br><span class="line"><span class="built_in">cd</span> /home/databackup</span><br><span class="line">rm -rf `find . -name <span class="string">'*.sql.gz'</span> -mtime +3`  <span class="comment">#删除10天前的备份文件</span></span><br></pre></td></tr></table></figure></p>
+<p>2、编写备份文件<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">vi dbbackup.sh</span><br><span class="line"><span class="comment">#输入以下内容</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">mysqldump -uroot -p123456 <span class="built_in">test</span> | gzip &gt; /home/databackup/test_`date +%Y-%m-%d_%H%M%S`.sql.gz</span><br><span class="line"><span class="built_in">cd</span> /home/databackup</span><br><span class="line">rm -rf `find . -name <span class="string">'*.sql.gz'</span> -mtime +3`  <span class="comment">#删除10天前的备份文件</span></span><br></pre></td></tr></table></figure></p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/07/30/运维-CentOS-MySQL备份/#more" rel="contents">
@@ -1384,150 +1509,12 @@
           <p>因业务需要，需要在单张网卡配置多个公网IP。</p>
 <ol>
 <li><p>进入到/etc/sysconfig/network-scripts/;复制一份需要配置的目标网卡配置信息。</p>
-<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">cp /etc/sysconfig/network-scripts/ifcfg-eth0 /etc/sysconfig/network-scripts/ifcfg-eth0:<span class="number">0</span></span><br><span class="line">vi /etc/sysconfig/network-scripts/ifcfg-eth0:<span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="attr">DEVICE=eth0:0</span> <span class="comment">#注意Device不能重名，否则会配置到网卡中，但是是用ifconfig会看不到地址，然而又可以ping通</span></span><br><span class="line"><span class="attr">HWADDR=11:12:18:4D:B7:2C</span></span><br><span class="line"><span class="attr">TYPE=Ethernet</span></span><br><span class="line"><span class="attr">UUID=0cc484a5-defacde-ddescdd-descdde-cddea</span></span><br><span class="line"><span class="attr">ONBOOT=yes</span></span><br><span class="line"><span class="attr">NM_CONTROLLED=yes</span></span><br><span class="line"><span class="attr">BOOTPROTO=static</span></span><br><span class="line"><span class="attr">IPADDR=x.x.x.1</span> <span class="comment">#将IP地址修改</span></span><br><span class="line"><span class="attr">NETMASK=x.x.x.x</span></span><br><span class="line"><span class="attr">GATEWAY=x.x.x.x</span></span><br><span class="line"><span class="comment">#如果有多个同网段的公网IP按上述配置多个即可</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">cp /etc/sysconfig/network-scripts/ifcfg-eth0 /etc/sysconfig/network-scripts/ifcfg-eth0:0</span><br><span class="line">vi /etc/sysconfig/network-scripts/ifcfg-eth0:0</span><br><span class="line"></span><br><span class="line">DEVICE=eth0:0 <span class="comment">#注意Device不能重名，否则会配置到网卡中，但是是用ifconfig会看不到地址，然而又可以ping通</span></span><br><span class="line">HWADDR=11:12:18:4D:B7:2C</span><br><span class="line">TYPE=Ethernet</span><br><span class="line">UUID=0cc484a5-defacde-ddescdd-descdde-cddea</span><br><span class="line">ONBOOT=yes</span><br><span class="line">NM_CONTROLLED=yes</span><br><span class="line">BOOTPROTO=static</span><br><span class="line">IPADDR=x.x.x.1 <span class="comment">#将IP地址修改</span></span><br><span class="line">NETMASK=x.x.x.x</span><br><span class="line">GATEWAY=x.x.x.x</span><br><span class="line"><span class="comment">#如果有多个同网段的公网IP按上述配置多个即可</span></span><br></pre></td></tr></table></figure>
 </li>
 <li><p>配置完成后，使用ifup ifcfg-eth1:0启用配置信息
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/07/30/运维-CentOS-配置多个公网IP/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2016/07/30/运维-CentOS-搭建VPN/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/07/30/运维-CentOS-搭建VPN/" itemprop="url">
-                  运维-CentOS-搭建VPN
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-30T16:40:21+08:00">
-                2016-07-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <ol>
-<li>检测服务器是否符合搭建环境要求<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">modprobe ppp-compress-18 &amp;&amp; <span class="built_in">echo</span> ok</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>返回“ok”说明测试通过。</p>
-<ol>
-<li>执行<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cat</span> /dev/<span class="keyword">net</span>/tun</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>返回cat: /dev/net/tun: File descriptor in bad state，则表明通过。</p>
-<ol>
-<li>安装ppp<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum <span class="keyword">install</span> -y perl ppp</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/07/30/运维-CentOS-搭建VPN/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1613,7 +1600,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-count">74</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1626,7 +1613,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">92</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

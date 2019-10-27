@@ -375,21 +375,21 @@
         <ol>
 <li>存在服务器A=192.168.1.10 服务器B=192.168.1.11；需实现从A免输密码SCP文件至B服务器</li>
 <li><p>在A服务器执行如下命令</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa</span><br></pre></td></tr></table></figure>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">ssh-keygen -t rsa</span></span><br></pre></td></tr></table></figure>
 </li>
 <li><p>对于上述命令，全回车，至结束</p>
 </li>
 <li><p>进入目录</p>
-<figure class="highlight cos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cd ~/.ssh</span><br><span class="line">ls -lh</span><br><span class="line">total <span class="number">12</span><span class="keyword">K</span></span><br><span class="line">-rw------- <span class="number">1</span> root root <span class="number">1.7</span><span class="keyword">K</span> Mar <span class="number">13</span> <span class="number">14</span>:<span class="number">13</span> id_rsa</span><br><span class="line">-rw-<span class="keyword">r</span>--<span class="keyword">r</span>-- <span class="number">1</span> root root  <span class="number">400</span> Mar <span class="number">13</span> <span class="number">14</span>:<span class="number">13</span> id_rsa.pub #需要的公钥</span><br><span class="line">-rw-<span class="keyword">r</span>--<span class="keyword">r</span>-- <span class="number">1</span> root root  <span class="number">794</span> Jul <span class="number">13</span>  <span class="number">2016</span> known_hosts</span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cd ~/.ssh</span><br><span class="line">ls -lh</span><br><span class="line">total <span class="number">12</span>K</span><br><span class="line">-rw------- <span class="number">1</span> root root <span class="number">1.7</span>K Mar <span class="number">13</span> <span class="number">14</span>:<span class="number">13</span> id_rsa</span><br><span class="line">-rw-r--r-- <span class="number">1</span> root root  <span class="number">400</span> Mar <span class="number">13</span> <span class="number">14</span>:<span class="number">13</span> id_rsa.pub #需要的公钥</span><br><span class="line">-rw-r--r-- <span class="number">1</span> root root  <span class="number">794</span> Jul <span class="number">13</span>  <span class="number">2016</span> known_hosts</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>将上述的id_rsa.pub复制至B=192.168.1.11服务器</p>
-<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp .ssh/id_rsa.pub <span class="number">192.168</span>.<span class="number">1.11</span><span class="symbol">:/root/</span>.ssh/id_rsa.pub</span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp .ssh/id_rsa.pub <span class="number">192.168</span><span class="number">.1</span><span class="number">.11</span>:/root/.ssh/id_rsa.pub</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>执行</p>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat ~<span class="regexp">/.ssh/id</span>_rsa.pub <span class="meta">&gt;&gt; </span>~<span class="regexp">/.ssh/authorized</span>_keys</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>修改相关文件夹、文件权限（如果权限不对，则还是需要密码）</p>
-<figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#.ssh目录，以及/home/当前用户 需要700权限，参考以下操作调整</span></span><br><span class="line">chmod <span class="number">700</span> ~/.ssh</span><br><span class="line"><span class="meta">#.ssh目录下的authorized_keys文件需要600或644权限，参考以下操作调整</span></span><br><span class="line">chmod <span class="number">600</span> ~/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#.ssh目录，以及/home/当前用户 需要<span class="number">700</span>权限，参考以下操作调整</span><br><span class="line">chmod <span class="number">700</span> ~/.ssh</span><br><span class="line">#.ssh目录下的authorized_keys文件需要<span class="number">600</span>或<span class="number">644</span>权限，参考以下操作调整</span><br><span class="line">chmod <span class="number">600</span> ~/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>后续从A SCP文件至B服务器，则不需再输入密码</p>
 </li>
@@ -515,7 +515,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-count">74</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -528,7 +528,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">92</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

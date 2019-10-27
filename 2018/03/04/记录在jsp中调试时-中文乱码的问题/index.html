@@ -358,7 +358,7 @@
 <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"err_code"</span>:<span class="string">"PARAM_ERROR"</span>,<span class="attr">"err_code_des"</span>:<span class="string">"持卡人姓名有误，请检查"</span>,<span class="attr">"mch_id"</span>:<span class="string">"1***12"</span>,<span class="attr">"result_code"</span>:<span class="string">"FAIL"</span>,<span class="attr">"return_code"</span>:<span class="string">"SUCCESS"</span>,<span class="attr">"return_msg"</span>:<span class="string">"参数错误,请检查参数"</span>,<span class="attr">"sign_status"</span>:<span class="literal">false</span>&#125;</span><br></pre></td></tr></table></figure>
 <p>此时认为是姓名中文不是UTF-8编码的问题,故增加了new String(str.getBytes(“UTF-8”),”UTF-8”); 然而,但是还是出现同样的问题.</p>
 <p>不可能的啊…很多疑问.</p>
-<p>然后细看JSP文件,才发现自己直接把头部声明jsp编码格式的代码给去掉了:<br><figure class="highlight erb"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">%</span></span></span><span class="ruby">@page language=<span class="string">"java"</span> import=<span class="string">"java.util.*"</span> pageEncoding=<span class="string">"UTF-8"</span></span><span class="xml"><span class="tag">%&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<p>然后细看JSP文件,才发现自己直接把头部声明jsp编码格式的代码给去掉了:<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@page <span class="attribute">language</span>=<span class="string">"java"</span> <span class="attribute">import</span>=<span class="string">"java.util.*"</span> <span class="attribute">pageEncoding</span>=<span class="string">"UTF-8"</span>%&gt;</span><br></pre></td></tr></table></figure></p>
 <p>所以,还是要特别注意JSP页面的编码格式.</p>
 
       
@@ -490,7 +490,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-count">74</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -503,7 +503,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">92</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

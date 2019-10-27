@@ -372,16 +372,16 @@
         <p>今天使用ssh链接服务器的时候，老是链接不上；表现为链接上去，一下子就断开了链接。使用root登录，再用su切换用户的时候，提示”Resource temporarily unavailable”;</p>
 <ol>
 <li><p>查看系统开启的进程数量</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ps <span class="_">-e</span>L | wc <span class="_">-l</span></span><br><span class="line">1035</span><br></pre></td></tr></table></figure>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ps -eL <span class="string">| wc -l</span></span><br><span class="line"><span class="number">1035</span></span><br></pre></td></tr></table></figure>
 </li>
 <li><p>继续查看ulimit信息</p>
 <figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">ulimit -a</span><br><span class="line">core file size          (<span class="name">blocks</span>, -c) <span class="number">0</span></span><br><span class="line">data seg size           (<span class="name">kbytes</span>, -d) unlimited</span><br><span class="line">scheduling priority             (<span class="name">-e</span>) <span class="number">0</span></span><br><span class="line">file size               (<span class="name">blocks</span>, -f) unlimited</span><br><span class="line">pending signals                 (<span class="name">-i</span>) <span class="number">515256</span></span><br><span class="line">max locked memory       (<span class="name">kbytes</span>, -l) <span class="number">64</span></span><br><span class="line">max memory size         (<span class="name">kbytes</span>, -m) unlimited</span><br><span class="line">open files                      (<span class="name">-n</span>) <span class="number">65535</span></span><br><span class="line">pipe size            (<span class="number">512</span> bytes, -p) <span class="number">8</span></span><br><span class="line">POSIX message queues     (<span class="name">bytes</span>, -q) <span class="number">819200</span></span><br><span class="line">real-time priority              (<span class="name">-r</span>) <span class="number">0</span></span><br><span class="line">stack size              (<span class="name">kbytes</span>, -s) <span class="number">8192</span></span><br><span class="line">cpu time               (<span class="name">seconds</span>, -t) unlimited</span><br><span class="line">max user processes              (<span class="name">-u</span>) <span class="number">4096</span></span><br><span class="line">virtual memory          (<span class="name">kbytes</span>, -v) unlimited</span><br><span class="line">file locks                      (<span class="name">-x</span>) unlimited</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
-<p>３. 到此，max user processes没有超过数量啊；很郁闷。最后通过搜索得知，可以使用命令校验配置是否正确。<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">su</span>　-<span class="keyword">m</span>　-c 'ulimit -<span class="keyword">u</span>' nobody</span><br><span class="line">1024</span><br></pre></td></tr></table></figure></p>
+<p>３. 到此，max user processes没有超过数量啊；很郁闷。最后通过搜索得知，可以使用命令校验配置是否正确。<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">su</span>　-m　-c <span class="string">'ulimit -u'</span> nobody</span><br><span class="line"><span class="number">1024</span></span><br></pre></td></tr></table></figure></p>
 <ol>
 <li>得到的数量居然是1024怪不得一直报“Resource temporarily unavailable”</li>
-<li>解决方法：<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vi  /etc/security/limits.<span class="keyword">d</span>/90-nproc.<span class="keyword">conf</span></span><br><span class="line"><span class="comment">* soft nproc 1024</span></span><br></pre></td></tr></table></figure>
+<li>解决方法：<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vi  /etc/security/limits.d/<span class="number">90</span>-nproc.conf</span><br><span class="line">* soft nproc <span class="number">1024</span></span><br></pre></td></tr></table></figure>
 </li>
 </ol>
 <p>将1024值更改为4096后保存</p>
@@ -504,7 +504,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-count">74</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -517,7 +517,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">92</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

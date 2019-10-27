@@ -374,13 +374,13 @@
       
         <ol>
 <li><p>当我们使用sed的时候，又传入路径，则会出现以下这样的错误</p>
-<figure class="highlight sml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed: -e expression #<span class="number">1</span>, <span class="built_in">char</span> <span class="number">24</span>: unknown <span class="built_in">option</span> to `s'</span><br></pre></td></tr></table></figure>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed: -e expression #<span class="number">1</span>, <span class="type">char</span> <span class="number">24</span>: <span class="type">unknown</span> <span class="keyword">option</span> <span class="keyword">to</span> `s<span class="string">'</span></span><br></pre></td></tr></table></figure>
 </li>
 <li><p>如何解决？首先是想到转义</p>
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -<span class="selector-tag">i</span> <span class="string">'s/searchStr/\/path\/home/g'</span></span><br></pre></td></tr></table></figure>
 </li>
 <li><p>上述是解决问题了，但是如果很多呢？怎么处理？</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">有人提出：使用正则表达式，把路径直接转换：</span><br><span class="line">VARPATH=<span class="string">"/var/tmp/cloud"</span>  </span><br><span class="line">VARPATHSED=$(<span class="built_in">echo</span> <span class="variable">$&#123;VARPATH&#125;</span> |sed <span class="_">-e</span> <span class="string">'s/\//\\\//g'</span> )</span><br></pre></td></tr></table></figure>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">有人提出：使用正则表达式，把路径直接转换：</span><br><span class="line">VARPATH=<span class="string">"/var/tmp/cloud"</span>  </span><br><span class="line">VARPATHSED=<span class="constructor">$(<span class="params">echo</span> $&#123;VARPATH&#125; |<span class="params">sed</span> -<span class="params">e</span> '<span class="params">s</span><span class="operator">/</span>\<span class="operator">/</span><span class="operator">/</span>\\\<span class="operator">/</span><span class="operator">/</span><span class="params">g</span>' )</span></span><br></pre></td></tr></table></figure>
 </li>
 <li><p>这是一种方法，但是有没有更加简单的呢？</p>
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">将是s<span class="comment">///修改成s###就OK了 也就是用#代替/这样就不会有冲突了，简单便捷</span></span><br><span class="line">sed -<span class="selector-tag">i</span> <span class="string">'s#searchStr#/path/home#g'</span></span><br></pre></td></tr></table></figure>
@@ -507,7 +507,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-count">74</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -520,7 +520,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">92</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

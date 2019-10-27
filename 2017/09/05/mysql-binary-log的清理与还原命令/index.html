@@ -361,7 +361,7 @@ MySQL日志相关命令1234567891011121314151617181920212223242526272829--查看
 <ol>
 <li>如果是使用binary log来恢复日志,则需要保持日志的完整性;如果日志被清理过,则有很大可能不能通过binary log来恢复数据.</li>
 </ol>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">如</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> a <span class="keyword">values</span>(b);</span><br><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> a;</span><br><span class="line"></span><br><span class="line">如果<span class="keyword">insert</span>的数据日志被清理掉,只剩下<span class="keyword">delete</span> <span class="keyword">from</span> a的日志;则是不能从binary 日志中恢复数据.</span><br></pre></td></tr></table></figure>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">如</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> a <span class="keyword">values</span>(b);</span><br><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> a;</span><br><span class="line"></span><br><span class="line">如果<span class="keyword">insert</span>的数据日志被清理掉,只剩下<span class="keyword">delete</span> <span class="keyword">from</span> a的日志;则是不能从binary 日志中恢复数据.</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -492,7 +492,7 @@ MySQL日志相关命令1234567891011121314151617181920212223242526272829--查看
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-count">74</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -505,7 +505,7 @@ MySQL日志相关命令1234567891011121314151617181920212223242526272829--查看
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">92</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

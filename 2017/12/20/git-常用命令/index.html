@@ -369,16 +369,16 @@ Git is a free and open source distributed version control system designed to han
         <h1 id="git？"><a href="#git？" class="headerlink" title="git？"></a>git？</h1><blockquote>
 <p>Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.</p>
 </blockquote>
-<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><h3 id="git-初始化"><a href="#git-初始化" class="headerlink" title="git 初始化"></a>git 初始化</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> xxx</span><br><span class="line">git init</span><br></pre></td></tr></table></figure>
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><h3 id="git-初始化"><a href="#git-初始化" class="headerlink" title="git 初始化"></a>git 初始化</h3><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">cd</span> <span class="string">xxx</span></span><br><span class="line"><span class="attr">git</span> <span class="string">init</span></span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>你所期望的那个文件夹xxx就成为了一个Git管理的仓库了 <a href="http://git.mydoc.io/?t=180691" target="_blank" rel="external">http://git.mydoc.io/?t=180691</a></p>
 </blockquote>
-<h3 id="git-配置用户名，邮箱地址"><a href="#git-配置用户名，邮箱地址" class="headerlink" title="git 配置用户名，邮箱地址"></a>git 配置用户名，邮箱地址</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config user<span class="selector-class">.name</span> <span class="string">"xxxx"</span></span><br><span class="line">git config user<span class="selector-class">.email</span> <span class="string">"xxx@xxx"</span></span><br></pre></td></tr></table></figure>
+<h3 id="git-配置用户名，邮箱地址"><a href="#git-配置用户名，邮箱地址" class="headerlink" title="git 配置用户名，邮箱地址"></a>git 配置用户名，邮箱地址</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git<span class="built_in"> config </span>user.name <span class="string">"xxxx"</span></span><br><span class="line">git<span class="built_in"> config </span>user.email <span class="string">"xxx@xxx"</span></span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>如果需要配置全局用户，将在git config后面增加–global即可，如git config –global user.name “xxxx” 配置了一个全局用户名 “xxxx”</p>
-<h3 id="git-配置项目远程仓库地址"><a href="#git-配置项目远程仓库地址" class="headerlink" title="git 配置项目远程仓库地址"></a>git 配置项目远程仓库地址</h3><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote add origin <span class="string">https:</span><span class="comment">//xxxx.git</span></span><br></pre></td></tr></table></figure>
+<h3 id="git-配置项目远程仓库地址"><a href="#git-配置项目远程仓库地址" class="headerlink" title="git 配置项目远程仓库地址"></a>git 配置项目远程仓库地址</h3><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote <span class="keyword">add</span> origin https:<span class="comment">//xxxx.git</span></span><br></pre></td></tr></table></figure>
 </blockquote>
-<h3 id="git-添加提交文件"><a href="#git-添加提交文件" class="headerlink" title="git 添加提交文件"></a>git 添加提交文件</h3><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">git</span> <span class="keyword">add </span>xxx</span><br><span class="line"><span class="symbol">git</span> <span class="keyword">add </span>.</span><br><span class="line"><span class="symbol">git</span> commit -m <span class="string">"注释"</span></span><br><span class="line"><span class="symbol">git</span> <span class="keyword">push </span>origin master</span><br></pre></td></tr></table></figure>
+<h3 id="git-添加提交文件"><a href="#git-添加提交文件" class="headerlink" title="git 添加提交文件"></a>git 添加提交文件</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">add</span><span class="bash"> xxx</span></span><br><span class="line">git <span class="keyword">add</span><span class="bash"> .</span></span><br><span class="line">git commit -m <span class="string">"注释"</span></span><br><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
 <h3 id="git-拉取文件"><a href="#git-拉取文件" class="headerlink" title="git 拉取文件"></a>git 拉取文件</h3><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull origin <span class="literal">master</span></span><br></pre></td></tr></table></figure>
 <h3 id="git-冲突合并"><a href="#git-冲突合并" class="headerlink" title="git 冲突合并"></a>git 冲突合并</h3><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">git</span> <span class="keyword">add </span>.</span><br><span class="line"><span class="symbol">git</span> commit -m <span class="string">"fixed conflicts"</span></span><br><span class="line"><span class="symbol">git</span> <span class="keyword">push </span>origin master`</span><br></pre></td></tr></table></figure>
 <blockquote>
@@ -512,7 +512,7 @@ Git is a free and open source distributed version control system designed to han
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">73</span>
+                <span class="site-state-item-count">74</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -525,7 +525,7 @@ Git is a free and open source distributed version control system designed to han
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">92</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
