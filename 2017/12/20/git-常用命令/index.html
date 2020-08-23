@@ -721,6 +721,7 @@ Git is a free and open source distributed version control system designed to han
 
   <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
   <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+  <script src="/js/src/md5js.min.js"></script>
   <div id="gitalk-container"></div>
   <script type="text/javascript">
     var gitalk = new Gitalk({
@@ -729,7 +730,7 @@ Git is a free and open source distributed version control system designed to han
       repo: 'seven-cm.github.io',
       owner: 'seven-cm',
       admin: ['seven-cm'],
-      id: location.pathname,
+      id: md5(location.pathname),
       distractionFreeMode: 'false'
     })
     gitalk.render('gitalk-container')

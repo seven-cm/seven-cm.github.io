@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Java,ByteBuffer," />
+  <meta name="keywords" content="ByteBuffer,Java," />
 
 
 
@@ -374,9 +374,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Java/" rel="tag"># Java</a>
-          
             <a href="/tags/ByteBuffer/" rel="tag"># ByteBuffer</a>
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
           
         </div>
       
@@ -694,6 +694,7 @@
 
   <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
   <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+  <script src="/js/src/md5js.min.js"></script>
   <div id="gitalk-container"></div>
   <script type="text/javascript">
     var gitalk = new Gitalk({
@@ -702,7 +703,7 @@
       repo: 'seven-cm.github.io',
       owner: 'seven-cm',
       admin: ['seven-cm'],
-      id: location.pathname,
+      id: md5(location.pathname),
       distractionFreeMode: 'false'
     })
     gitalk.render('gitalk-container')
