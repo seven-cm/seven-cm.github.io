@@ -58,7 +58,7 @@
   
     
     
-    <link href="//fonts.css.network/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
   
 
 
@@ -95,7 +95,7 @@ MySQL日志相关命令1234567891011121314151617181920212223242526272829--查看
 <meta property="og:site_name" content="seven-cm.blog">
 <meta property="og:description" content="前言随着应用的业务量越来越大,产生的binary log 的日志越来越大.下面来介绍与MySQL日志相关的命令.
 MySQL日志相关命令1234567891011121314151617181920212223242526272829--查看当前主库日志状态show master status;--查看主库的日志列表show master logs;--查看系统log配置信息show variab">
-<meta property="og:updated_time" content="2019-02-28T16:02:19.036Z">
+<meta property="og:updated_time" content="2019-02-28T16:02:19.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mysql-binary-log的清理与还原命令">
 <meta name="twitter:description" content="前言随着应用的业务量越来越大,产生的binary log 的日志越来越大.下面来介绍与MySQL日志相关的命令.
@@ -277,7 +277,7 @@ MySQL日志相关命令1234567891011121314151617181920212223242526272829--查看
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="seven-cm">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
+      <meta itemprop="image" content="/images/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -321,16 +321,6 @@ MySQL日志相关命令1234567891011121314151617181920212223242526272829--查看
           
 
           
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a class="cloud-tie-join-count" href="/2017/09/05/mysql-binary-log的清理与还原命令/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
-                </a>
-              </span>
             
           
 
@@ -444,8 +434,6 @@ MySQL日志相关命令1234567891011121314151617181920212223242526272829--查看
           
   <div class="comments" id="comments">
     
-      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
-    
   </div>
 
 
@@ -480,7 +468,7 @@ MySQL日志相关命令1234567891011121314151617181920212223242526272829--查看
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
-               src="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg"
+               src="/images/avatar.jpg"
                alt="seven-cm" />
           <p class="site-author-name" itemprop="name">seven-cm</p>
            
@@ -574,7 +562,7 @@ MySQL日志相关命令1234567891011121314151617181920212223242526272829--查看
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -693,16 +681,17 @@ MySQL日志相关命令1234567891011121314151617181920212223242526272829--查看
 
 
   
-    
-    <script>
-      var cloudTieConfig = {
-        url: document.location.href, 
-        sourceId: "",
-        productKey: "7db79b85a7f74df5ac352d35f1c13e87",
-        target: "cloud-tie-wrapper"
-      };
-    </script>
-    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
   
 
 
@@ -710,8 +699,21 @@ MySQL日志相关命令1234567891011121314151617181920212223242526272829--查看
 
 
 
-
-
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    var gitalk = new Gitalk({
+      clientID: '0399ed5d0252ba457a47',
+      clientSecret: '2bd5994250316a50ecb15449b98c744a7f6aa117',
+      repo: 'seven-cm.github.io',
+      owner: 'seven-cm',
+      admin: ['seven-cm'],
+      id: location.pathname,
+      distractionFreeMode: 'false'
+    })
+    gitalk.render('gitalk-container')
+  </script>
 
 
   

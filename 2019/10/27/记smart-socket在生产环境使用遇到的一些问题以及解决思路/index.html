@@ -58,7 +58,7 @@
   
     
     
-    <link href="//fonts.css.network/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
   
 
 
@@ -103,7 +103,7 @@ smart-socket的使用，可按作者给出的文档即可。此处不再作介�
 
 问题1 - 对session并发写入的时候，会出现数据错乱。问题定位：12writeBuffer.writeInt(bytes.length);writeBuffer.write(bytes);
 原因是在write的时">
-<meta property="og:updated_time" content="2019-10-27T11:33:50.850Z">
+<meta property="og:updated_time" content="2019-10-27T11:42:34.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记smart-socket在生产环境使用遇到的一些问题以及解决思路">
 <meta name="twitter:description" content="前言最近需要做一些串口通讯协议；而用户量也不是很大，故直接使用smart-socket作为通讯的载体。
@@ -289,7 +289,7 @@ smart-socket的使用，可按作者给出的文档即可。此处不再作介�
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="seven-cm">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg">
+      <meta itemprop="image" content="/images/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -334,16 +334,6 @@ smart-socket的使用，可按作者给出的文档即可。此处不再作介�
 
           
             
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a class="cloud-tie-join-count" href="/2019/10/27/记smart-socket在生产环境使用遇到的一些问题以及解决思路/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -371,9 +361,10 @@ smart-socket的使用，可按作者给出的文档即可。此处不再作介�
 <p>smart-socket的使用，可按作者给出的文档即可。此处不再作介绍。</p>
 </blockquote>
 <h2 id="问题1-对session并发写入的时候，会出现数据错乱。"><a href="#问题1-对session并发写入的时候，会出现数据错乱。" class="headerlink" title="问题1 - 对session并发写入的时候，会出现数据错乱。"></a>问题1 - 对session并发写入的时候，会出现数据错乱。</h2><p>问题定位：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">writeBuffer.writeInt(bytes.length);</span><br><span class="line">writeBuffer.write(bytes);</span><br></pre></td></tr></table></figure></p>
-<p>原因是在write的时候，分两个写，则会引发并发问题；解决方法：应将所有数据都写到一个buffer中，然后再write。</p>
-<h2 id="问题2-发现接收到到数据错乱。"><a href="#问题2-发现接收到到数据错乱。" class="headerlink" title="问题2 - 发现接收到到数据错乱。"></a>问题2 - 发现接收到到数据错乱。</h2><p>一开始，自己是按串口文档的协议作定长数据处理；测试的时候并没有什么问题。然而发布到线上，却会每隔几个小时就会出现数据乱。协议的decode代码如下：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
-<p>通过日志打印，发现控制板处理的并不是一条一条地发，而是会把多条协议的结果合并一起发回来。如果一条协议去读取数据，就会有数据没有读完，引起后面的数据错乱。<br>因协议的消息是一类消息，故直接把所有数据读出来，再处理即可。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class ByteArrayNewProtocol implements Protocol&lt;byte[]&gt; &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public byte[] decode(ByteBuffer readBuffer, AioSession&lt;byte[]&gt; aioSession) &#123;</span><br><span class="line">        if (readBuffer.remaining() &gt; 0) &#123;</span><br><span class="line">            byte[] data = new byte[readBuffer.remaining()];</span><br><span class="line">            readBuffer.get(data);</span><br><span class="line">            return data;</span><br><span class="line">        &#125;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>原因是在write的时候，分两个写，会引发并发问题；解决方法：应将所有数据都写到一个buffer中，然后再write。</p>
+<h2 id="问题2-发现接收到到数据错乱。"><a href="#问题2-发现接收到到数据错乱。" class="headerlink" title="问题2 - 发现接收到到数据错乱。"></a>问题2 - 发现接收到到数据错乱。</h2><p>一开始，是按串口文档的协议作定长数据处理；测试的时候并没有什么问题。然而发布到线上，却会每隔几个小时就会出现数据乱。协议的decode代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">byte</span>[] decode(ByteBuffer readBuffer, AioSession&lt;<span class="keyword">byte</span>[]&gt; aioSession) &#123;</span><br><span class="line">    <span class="keyword">byte</span> lengthByte = readBuffer.get(<span class="number">1</span>);<span class="comment">//获取消息数据长度信息</span></span><br><span class="line">    String lengthHex = HexUtils.byteToHex(lengthByte);</span><br><span class="line">    <span class="keyword">int</span> length = Integer.parseInt(lengthHex, <span class="number">16</span>) + <span class="number">3</span>;</span><br><span class="line">    <span class="keyword">if</span>(readBuffer.remaining() &lt; length) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">byte</span>[] data = <span class="keyword">new</span> <span class="keyword">byte</span>[length];</span><br><span class="line">    readBuffer.get(data);</span><br><span class="line">    <span class="keyword">return</span> data;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过日志打印，发现控制板返回并不是一条一条地发，而是会把多条协议的结果合并一起发回来。如果一条协议去读取数据，就会有数据没有读完，引起后面的数据错乱。<br>因协议的消息是一类消息，故直接把所有数据读出来，后面再根据协议分割数据，再处理即可。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class ByteArrayNewProtocol implements Protocol&lt;byte[]&gt; &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public byte[] decode(ByteBuffer readBuffer, AioSession&lt;byte[]&gt; aioSession) &#123;</span><br><span class="line">        if (readBuffer.remaining() &gt; 0) &#123;</span><br><span class="line">            byte[] data = new byte[readBuffer.remaining()];</span><br><span class="line">            readBuffer.get(data);</span><br><span class="line">            return data;</span><br><span class="line">        &#125;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
@@ -454,8 +445,6 @@ smart-socket的使用，可按作者给出的文档即可。此处不再作介�
           
   <div class="comments" id="comments">
     
-      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
-    
   </div>
 
 
@@ -490,7 +479,7 @@ smart-socket的使用，可按作者给出的文档即可。此处不再作介�
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
-               src="http://7xjykn.com1.z0.glb.clouddn.com/blog/head.jpg"
+               src="/images/avatar.jpg"
                alt="seven-cm" />
           <p class="site-author-name" itemprop="name">seven-cm</p>
            
@@ -584,7 +573,7 @@ smart-socket的使用，可按作者给出的文档即可。此处不再作介�
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -703,16 +692,17 @@ smart-socket的使用，可按作者给出的文档即可。此处不再作介�
 
 
   
-    
-    <script>
-      var cloudTieConfig = {
-        url: document.location.href, 
-        sourceId: "",
-        productKey: "7db79b85a7f74df5ac352d35f1c13e87",
-        target: "cloud-tie-wrapper"
-      };
-    </script>
-    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
   
 
 
@@ -720,8 +710,21 @@ smart-socket的使用，可按作者给出的文档即可。此处不再作介�
 
 
 
-
-
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    var gitalk = new Gitalk({
+      clientID: '0399ed5d0252ba457a47',
+      clientSecret: '2bd5994250316a50ecb15449b98c744a7f6aa117',
+      repo: 'seven-cm.github.io',
+      owner: 'seven-cm',
+      admin: ['seven-cm'],
+      id: location.pathname,
+      distractionFreeMode: 'false'
+    })
+    gitalk.render('gitalk-container')
+  </script>
 
 
   
