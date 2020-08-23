@@ -270,6 +270,398 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2019/03/19/swagger-ui-排序问题-接上篇/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/03/19/swagger-ui-排序问题-接上篇/" itemprop="url">
+                  swagger ui 排序问题-接上篇
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-19T22:56:44+08:00">
+                2019-03-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我们已经将后端所需的Swagger已经按position排序，但是通过swagger-ui.html看的结果还是按path排序，那么肯定是在前端展示的时候，又做了排序。唯有修改swagger-ui源码来解决该问题～</p>
+<h2 id="下载swagger-ui前端源码"><a href="#下载swagger-ui前端源码" class="headerlink" title="下载swagger-ui前端源码"></a>下载swagger-ui前端源码</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.springfox<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springfox-swagger-ui<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.9.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>我们查看上述jar包的MANIFEST.MF文件的信息<br><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Manifest-Version: <span class="number">1.0</span></span><br><span class="line">Implementation-Title: springfox-swagger-ui</span><br><span class="line">Built-With: gradle<span class="number">-4.6</span>, groovy<span class="number">-2.4</span><span class="number">.12</span></span><br><span class="line">Implementation-Version: <span class="number">2.9</span><span class="number">.2</span></span><br><span class="line">SwaggerUi-Version: <span class="number">3.17</span><span class="number">.1</span></span><br><span class="line">Built-By: d_krishnan</span><br><span class="line">Build-Time: <span class="number">2018</span><span class="number">-06</span><span class="number">-23</span>T17:<span class="number">02</span>:<span class="number">09</span><span class="number">-0500</span></span><br><span class="line">Created-By: <span class="number">1.8</span><span class="number">.0</span>_151 (Oracle Corporation)</span><br><span class="line">Built-On: ISDV161716L.local/<span class="number">192.168</span><span class="number">.1</span><span class="number">.163</span></span><br></pre></td></tr></table></figure></p>
+<p>由此可见，此jar包中的swagger-ui是根据3.17.1版本构建的。我们来看看swagger-ui在github上的信息<br><a href="https://github.com/swagger-api/swagger-ui" target="_blank" rel="external">https://github.com/swagger-api/swagger-ui</a><br>查看tag标签，找到3.17.1版本 <a href="https://github.com/swagger-api/swagger-ui/tree/v3.17.1" target="_blank" rel="external">https://github.com/swagger-api/swagger-ui/tree/v3.17.1</a><br>下载下来。</p>
+<h2 id="调试源码"><a href="#调试源码" class="headerlink" title="调试源码"></a>调试源码</h2><blockquote>
+<p>源码的调试，涉及node环境的安装，此处不再叙述。只是简单展示相关的调试步骤。</p>
+</blockquote>
+<h3 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h3><p>使用vscode 打开文件夹 swagger-ui-3.17.1；在终端输入<br><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm <span class="keyword">install</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="配置获取swagger信息的url"><a href="#配置获取swagger信息的url" class="headerlink" title="配置获取swagger信息的url"></a>配置获取swagger信息的url</h3><p>我们可以在dev-helpers文件夹下的index.html配置<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// Build a system</span><br><span class="line">      const ui = SwaggerUIBundle(&#123;</span><br><span class="line">        url: "http://localhost:8080/cms/v2/api-docs",</span><br><span class="line">        dom_id: '#swagger-ui',</span><br><span class="line">        presets: [</span><br><span class="line">          SwaggerUIBundle.presets.apis,</span><br><span class="line">          SwaggerUIStandalonePreset</span><br><span class="line">        ],</span><br><span class="line">        plugins: [</span><br><span class="line">          SwaggerUIBundle.plugins.DownloadUrl</span><br><span class="line">        ],</span><br><span class="line">        layout: "StandaloneLayout"</span><br><span class="line">      &#125;)</span><br></pre></td></tr></table></figure></p>
+<p>在url中配置获取swagger的url即可。</p>
+<h3 id="出现Failed-to-load-API-definition"><a href="#出现Failed-to-load-API-definition" class="headerlink" title="出现Failed to load API definition."></a>出现Failed to load API definition.</h3><figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Errors</span><br><span class="line">Hide</span><br><span class="line">Fetch errorFailed <span class="built_in">to</span> fetch <span class="keyword">http</span>://localhost:<span class="number">8080</span>/cms/v2/api-docs</span><br><span class="line">Fetch errorPossible cross-origin (CORS) issue? The <span class="built_in">URL</span> origin (<span class="keyword">http</span>://localhost:<span class="number">8080</span>) does <span class="keyword">not</span> match <span class="keyword">the</span> page (<span class="keyword">http</span>://localhost:<span class="number">3200</span>). Check <span class="keyword">the</span> server returns <span class="keyword">the</span> correct <span class="string">'Access-Control-Allow-*'</span> headers.</span><br></pre></td></tr></table></figure>
+<h3 id="看来是跨越的问题，我们增加其他方法来处理"><a href="#看来是跨越的问题，我们增加其他方法来处理" class="headerlink" title="看来是跨越的问题，我们增加其他方法来处理"></a>看来是跨越的问题，我们增加其他方法来处理</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.sevencm.cms.swagger;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Primary;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.env.Environment;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.ResponseEntity;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Controller;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.CrossOrigin;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMethod;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.ResponseBody;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.annotations.ApiIgnore;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.spring.web.DocumentationCache;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.spring.web.json.Json;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.spring.web.json.JsonSerializer;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.swagger2.mappers.ServiceModelToSwagger2Mapper;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.swagger2.web.Swagger2Controller;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;</span><br><span class="line"></span><br><span class="line"><span class="meta">@CrossOrigin</span>(origins = &#123;<span class="string">"http://localhost:3200"</span>, <span class="string">"null"</span>&#125;)</span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@ApiIgnore</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Swagger2ControllerCORS</span> <span class="keyword">extends</span> <span class="title">Swagger2Controller</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEFAULT_URL = <span class="string">"/v2/api-docs/CORS"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Swagger2ControllerCORS</span><span class="params">(Environment environment,</span><br><span class="line">                                  DocumentationCache documentationCache,</span><br><span class="line">                                  ServiceModelToSwagger2Mapper mapper,</span><br><span class="line">                                  JsonSerializer jsonSerializer)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(environment, documentationCache, mapper, jsonSerializer);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(</span><br><span class="line">            value = DEFAULT_URL,</span><br><span class="line">            method = RequestMethod.GET,</span><br><span class="line">            produces = &#123; APPLICATION_JSON_VALUE &#125;)</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ResponseEntity&lt;Json&gt; <span class="title">getDocumentation</span><span class="params">(String swaggerGroup, HttpServletRequest servletRequest)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.getDocumentation(swaggerGroup, servletRequest);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以在<br>swagger-ui的前端源代码中，修改以下代码，则可以修改前端又自动排序的问题<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 文件：swagger-ui-3.17.1/src/core/plugins/spec/selectors.js </span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> taggedOperations = <span class="function">(<span class="params">state</span>) =&gt;</span> <span class="function">(<span class="params">&#123; getConfigs &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> &#123; tagsSorter, operationsSorter &#125; = getConfigs()</span><br><span class="line">  <span class="keyword">return</span> operationsWithTags(state)</span><br><span class="line">    <span class="comment">// .sortBy(</span></span><br><span class="line">    <span class="comment">//   (val, key) =&gt; key, // get the name of the tag to be passed to the sorter</span></span><br><span class="line">    <span class="comment">//   (tagA, tagB) =&gt; &#123;</span></span><br><span class="line">    <span class="comment">//     let sortFn = (typeof tagsSorter === "function" ? tagsSorter : sorters.tagsSorter[ tagsSorter ])</span></span><br><span class="line">    <span class="comment">//     return (!sortFn ? null : sortFn(tagA, tagB))</span></span><br><span class="line">    <span class="comment">//   &#125;</span></span><br><span class="line">    <span class="comment">// )</span></span><br><span class="line">    .map(<span class="function">(<span class="params">ops, tag</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">// let sortFn = (typeof operationsSorter === "function" ? operationsSorter : sorters.operationsSorter[ operationsSorter ])</span></span><br><span class="line">      <span class="comment">// let operations = (!sortFn ? ops : ops.sort(sortFn))</span></span><br><span class="line">      <span class="keyword">let</span> operations = ops</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">Map</span>(&#123; <span class="attr">tagDetails</span>: tagDetails(state, tag), <span class="attr">operations</span>: operations &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2019/03/14/swagger-ui-排序问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/03/14/swagger-ui-排序问题/" itemprop="url">
+                  swagger-ui 排序问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-14T23:17:56+08:00">
+                2019-03-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近使用了最新版本的springfox-swagger2做api接口文档；但是发现之前的position已过时，而且即使修改了springfox的java代码，排序还是按api的path排序。故，有了修改swagger-ui代码的想法。</p>
+<h2 id="依赖信息"><a href="#依赖信息" class="headerlink" title="依赖信息"></a>依赖信息</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.springfox<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springfox-swagger2<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.9.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.springfox<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springfox-swagger-ui<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.9.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h2><p>我们启动工程后，访问swagger-ui.html能看到获取api信息的url地址:<a href="http://localhost:8080/cms/v2/api-docs" target="_blank" rel="external">http://localhost:8080/cms/v2/api-docs</a><br>我们使用idea搜索（ctrl+shitf+F）一下api-docs，范围选择scope会发现一个Swagger2Controller的类。打开，可见到如下代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(</span><br><span class="line">    value = DEFAULT_URL,</span><br><span class="line">    method = RequestMethod.GET,</span><br><span class="line">    produces = &#123; APPLICATION_JSON_VALUE, HAL_MEDIA_TYPE &#125;)</span><br><span class="line"><span class="meta">@PropertySourcedMapping</span>(</span><br><span class="line">    value = <span class="string">"$&#123;springfox.documentation.swagger.v2.path&#125;"</span>,</span><br><span class="line">    propertyKey = <span class="string">"springfox.documentation.swagger.v2.path"</span>)</span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ResponseEntity&lt;Json&gt; <span class="title">getDocumentation</span><span class="params">(</span><br><span class="line">    @RequestParam(value = <span class="string">"group"</span>, required = <span class="keyword">false</span>)</span> String swaggerGroup,</span><br><span class="line">    HttpServletRequest servletRequest) </span>&#123;</span><br><span class="line"></span><br><span class="line">  String groupName = Optional.fromNullable(swaggerGroup).or(Docket.DEFAULT_GROUP_NAME);</span><br><span class="line">  Documentation documentation = documentationCache.documentationByGroup(groupName);</span><br><span class="line">  <span class="keyword">if</span> (documentation == <span class="keyword">null</span>) &#123;</span><br><span class="line">    LOGGER.warn(<span class="string">"Unable to find specification for group &#123;&#125;"</span>, groupName);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ResponseEntity&lt;Json&gt;(HttpStatus.NOT_FOUND);</span><br><span class="line">  &#125;</span><br><span class="line">  Swagger swagger = mapper.mapDocumentation(documentation);</span><br><span class="line">  UriComponents uriComponents = componentsFrom(servletRequest, swagger.getBasePath());</span><br><span class="line">  swagger.basePath(Strings.isNullOrEmpty(uriComponents.getPath()) ? <span class="string">"/"</span> : uriComponents.getPath());</span><br><span class="line">  <span class="keyword">if</span> (isNullOrEmpty(swagger.getHost())) &#123;</span><br><span class="line">    swagger.host(hostName(uriComponents));</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> ResponseEntity&lt;Json&gt;(jsonSerializer.toJson(swagger), HttpStatus.OK);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>从代码上看，我们可了解到，前端swagger-ui所需的api接口信息都是由Swagger对象提供。我们进入此方法</p>
+<blockquote>
+<p>Swagger swagger = mapper.mapDocumentation(documentation);<br>可看到此方法的实现代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Swagger <span class="title">mapDocumentation</span><span class="params">(Documentation from)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( from == <span class="keyword">null</span> ) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Swagger swagger = <span class="keyword">new</span> Swagger();</span><br><span class="line"></span><br><span class="line">        swagger.setVendorExtensions( vendorExtensionsMapper.mapExtensions( from.getVendorExtensions() ) );</span><br><span class="line">        swagger.setSchemes( mapSchemes( from.getSchemes() ) );</span><br><span class="line">        swagger.setPaths( mapApiListings( from.getApiListings() ) );</span><br><span class="line">        swagger.setHost( from.getHost() );</span><br><span class="line">        swagger.setDefinitions( modelMapper.modelsFromApiListings( from.getApiListings() ) );</span><br><span class="line">        swagger.setSecurityDefinitions( securityMapper.toSecuritySchemeDefinitions( from.getResourceListing() ) );</span><br><span class="line">        ApiInfo info = fromResourceListingInfo( from );</span><br><span class="line">        <span class="keyword">if</span> ( info != <span class="keyword">null</span> ) &#123;</span><br><span class="line">            swagger.setInfo( mapApiInfo( info ) );</span><br><span class="line">        &#125;</span><br><span class="line">        swagger.setBasePath( from.getBasePath() );</span><br><span class="line">        swagger.setTags( tagSetToTagList( from.getTags() ) );</span><br><span class="line">        List&lt;String&gt; list2 = from.getConsumes();</span><br><span class="line">        <span class="keyword">if</span> ( list2 != <span class="keyword">null</span> ) &#123;</span><br><span class="line">            swagger.setConsumes( <span class="keyword">new</span> ArrayList&lt;String&gt;( list2 ) );</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            swagger.setConsumes( <span class="keyword">null</span> );</span><br><span class="line">        &#125;</span><br><span class="line">        List&lt;String&gt; list3 = from.getProduces();</span><br><span class="line">        <span class="keyword">if</span> ( list3 != <span class="keyword">null</span> ) &#123;</span><br><span class="line">            swagger.setProduces( <span class="keyword">new</span> ArrayList&lt;String&gt;( list3 ) );</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            swagger.setProduces( <span class="keyword">null</span> );</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> swagger;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>从代码上的字面看，可以估计到api的请求的url等信息主要由下面的方法得到。</p>
+<blockquote>
+<p>swagger.setPaths( mapApiListings( from.getApiListings() ) );<br>为了查看具体的信息，我们先在此处打个断点。运行工程看看swagger paths里面的数据信息。某次执行后，debug的信息如下<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">paths = &#123;TreeMap@<span class="number">7288</span>&#125;  size = <span class="number">4</span></span><br><span class="line"> <span class="number">0</span> = &#123;TreeMap$Entry@<span class="number">7292</span>&#125; <span class="string">"/generator.cmd/a/generator"</span> -&gt; </span><br><span class="line">  <span class="type">key</span> = <span class="string">"/generator.cmd/a/generator"</span></span><br><span class="line">  value = &#123;Path@<span class="number">7297</span>&#125; </span><br><span class="line"> <span class="number">1</span> = &#123;TreeMap$Entry@<span class="number">7293</span>&#125; <span class="string">"/generator.cmd/b/generator"</span> -&gt; </span><br><span class="line">  <span class="type">key</span> = <span class="string">"/generator.cmd/b/generator"</span></span><br><span class="line">  value = &#123;Path@<span class="number">7299</span>&#125; </span><br><span class="line"> <span class="number">2</span> = &#123;TreeMap$Entry@<span class="number">7294</span>&#125; <span class="string">"/generator.cmd/c/generator"</span> -&gt; </span><br><span class="line">  <span class="type">key</span> = <span class="string">"/generator.cmd/c/generator"</span></span><br><span class="line">  value = &#123;Path@<span class="number">7301</span>&#125; </span><br><span class="line"> <span class="number">3</span> = &#123;TreeMap$Entry@<span class="number">7295</span>&#125; <span class="string">"/generator.cmd/generator"</span> -&gt; </span><br><span class="line">  <span class="type">key</span> = <span class="string">"/generator.cmd/generator"</span></span><br><span class="line">  value = &#123;Path@<span class="number">7303</span>&#125;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>由此可见，在生成sagger信息的时候，就已经默认使用了TreeMap方法来排序；故返回给前端的信息都是由url的path排序的。所以为实现按position排序，估计可以由此着手修改。<br>为此我们重写该方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> xxx.swagger;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.google.common.base.Optional;</span><br><span class="line"><span class="keyword">import</span> com.google.common.collect.LinkedListMultimap;</span><br><span class="line"><span class="keyword">import</span> com.google.common.collect.Multimap;</span><br><span class="line"><span class="keyword">import</span> io.swagger.models.Operation;</span><br><span class="line"><span class="keyword">import</span> io.swagger.models.Path;</span><br><span class="line"><span class="keyword">import</span> io.swagger.models.Swagger;</span><br><span class="line"><span class="keyword">import</span> io.swagger.models.Tag;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Primary;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.service.ApiDescription;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.service.ApiListing;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.service.Documentation;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.swagger2.mappers.ServiceModelToSwagger2MapperImpl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.Collections;</span><br><span class="line"><span class="keyword">import</span> java.util.Comparator;</span><br><span class="line"><span class="keyword">import</span> java.util.Iterator;</span><br><span class="line"><span class="keyword">import</span> java.util.LinkedHashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> springfox.documentation.builders.BuilderDefaults.nullToEmptyList;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Primary</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceModelToSwagger2MapperImplExt</span> <span class="keyword">extends</span> <span class="title">ServiceModelToSwagger2MapperImpl</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span>  <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(ServiceModelToSwagger2MapperImplExt.class);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Swagger <span class="title">mapDocumentation</span><span class="params">(Documentation from)</span> </span>&#123;</span><br><span class="line">        Swagger swagger = <span class="keyword">super</span>.mapDocumentation(from);</span><br><span class="line">        swagger.setPaths( mapApiListings( from.getApiListings() ) );</span><br><span class="line">        <span class="comment">// 可自定义tag的排序</span></span><br><span class="line">        <span class="comment">// List&lt;Tag&gt; tags = swagger.getTags();</span></span><br><span class="line">        <span class="comment">// Collections.sort(tags, new Comparator&lt;Tag&gt;() &#123;</span></span><br><span class="line">        <span class="comment">//     @Override</span></span><br><span class="line">        <span class="comment">//     public int compare(Tag left, Tag right) &#123;</span></span><br><span class="line">        <span class="comment">//         String leftTag = left.getName().split("、")[0];</span></span><br><span class="line">        <span class="comment">//         String rightTag = right.getName().split("、")[0];</span></span><br><span class="line">        <span class="comment">//         int leftNum = 0;</span></span><br><span class="line">        <span class="comment">//         int rightNum = 0;</span></span><br><span class="line">        <span class="comment">//         try&#123;</span></span><br><span class="line">        <span class="comment">//             leftNum = Integer.parseInt(leftTag);</span></span><br><span class="line">        <span class="comment">//             rightNum = Integer.parseInt(rightTag);</span></span><br><span class="line">        <span class="comment">//         &#125;catch (Exception e)&#123;&#125;</span></span><br><span class="line">        <span class="comment">//         int position = Integer.compare(leftNum, rightNum);</span></span><br><span class="line">        <span class="comment">//         return position;</span></span><br><span class="line">        <span class="comment">//     &#125;</span></span><br><span class="line">        <span class="comment">// &#125;);</span></span><br><span class="line">        <span class="comment">// swagger.setTags(tags);</span></span><br><span class="line">        <span class="keyword">return</span> swagger;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Map&lt;String, Path&gt; <span class="title">mapApiListings</span><span class="params">(Multimap&lt;String, ApiListing&gt; apiListings)</span> </span>&#123;</span><br><span class="line">        Map&lt;String, Path&gt; paths = <span class="keyword">new</span> LinkedHashMap&lt;&gt;();</span><br><span class="line">        Multimap&lt;String, ApiListing&gt; apiListingMap = LinkedListMultimap.create();</span><br><span class="line">        Iterator iter = apiListings.entries().iterator();</span><br><span class="line">        <span class="keyword">while</span>(iter.hasNext())</span><br><span class="line">        &#123;</span><br><span class="line">            Map.Entry&lt;String, ApiListing&gt; entry = (Map.Entry&lt;String, ApiListing&gt;)iter.next();</span><br><span class="line">            ApiListing apis =  entry.getValue();</span><br><span class="line">            List&lt;ApiDescription&gt; apiDesc = apis.getApis();</span><br><span class="line">            List&lt;ApiDescription&gt; newApi = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">            <span class="keyword">for</span>(ApiDescription a:apiDesc)&#123;</span><br><span class="line">                newApi.add(a);</span><br><span class="line">            &#125;</span><br><span class="line">            Collections.sort(newApi, <span class="keyword">new</span> Comparator&lt;ApiDescription&gt;() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(ApiDescription left, ApiDescription right)</span> </span>&#123;</span><br><span class="line">                    <span class="keyword">int</span> leftPos = left.getOperations().size() == <span class="number">1</span> ? left.getOperations().get(<span class="number">0</span>).getPosition() : <span class="number">0</span>;</span><br><span class="line">                    <span class="keyword">int</span> rightPos = right.getOperations().size() == <span class="number">1</span> ? right.getOperations().get(<span class="number">0</span>).getPosition() : <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">int</span> position = Integer.compare(leftPos, rightPos);</span><br><span class="line">                    <span class="keyword">if</span>(position == <span class="number">0</span>) &#123;</span><br><span class="line">                        position = left.getPath().compareTo(right.getPath());</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">return</span> position;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">//因ApiListing的属性都是final故需要通过反射来修改值</span></span><br><span class="line">                ModifyFinalUtils.modify(apis, <span class="string">"apis"</span>, newApi);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            apiListingMap.put(entry.getKey(),apis);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (ApiListing each : apiListingMap.values()) &#123;</span><br><span class="line">            <span class="keyword">for</span> (ApiDescription api : each.getApis()) &#123;</span><br><span class="line">                paths.put(api.getPath(), mapOperations(api, Optional.fromNullable(paths.get(api.getPath()))));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> paths;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Path <span class="title">mapOperations</span><span class="params">(ApiDescription api, Optional&lt;Path&gt; existingPath)</span> </span>&#123;</span><br><span class="line">        Path path = existingPath.or(<span class="keyword">new</span> Path());</span><br><span class="line">        <span class="keyword">for</span> (springfox.documentation.service.Operation each : nullToEmptyList(api.getOperations())) &#123;</span><br><span class="line">            Operation operation = mapOperation(each);</span><br><span class="line">            path.set(each.getMethod().toString().toLowerCase(), operation);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> path;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ModifyFinalUtils</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">modify</span><span class="params">(Object object, String fieldName, Object newFieldValue)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Field field = object.getClass().getDeclaredField(fieldName);</span><br><span class="line"></span><br><span class="line">        Field modifiersField = Field.class.getDeclaredField(<span class="string">"modifiers"</span>);</span><br><span class="line">        modifiersField.setAccessible(<span class="keyword">true</span>); <span class="comment">//Field 的 modifiers 是私有的</span></span><br><span class="line">        modifiersField.setInt(field, field.getModifiers() &amp; ~Modifier.FINAL);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(!field.isAccessible()) &#123;</span><br><span class="line">            field.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        field.set(object, newFieldValue);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>执行后，我们debug可以得到以下信息<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">paths = &#123;LinkedHashMap@<span class="number">7364</span>&#125;  size = <span class="number">4</span></span><br><span class="line"> <span class="number">0</span> = &#123;LinkedHashMap$Entry@<span class="number">7370</span>&#125; <span class="string">"/generator.cmd/b/generator"</span> -&gt; </span><br><span class="line">  <span class="type">key</span> = <span class="string">"/generator.cmd/b/generator"</span></span><br><span class="line">  value = &#123;Path@<span class="number">7374</span>&#125; </span><br><span class="line"> <span class="number">1</span> = &#123;LinkedHashMap$Entry@<span class="number">7371</span>&#125; <span class="string">"/generator.cmd/generator"</span> -&gt; </span><br><span class="line">  <span class="type">key</span> = <span class="string">"/generator.cmd/generator"</span></span><br><span class="line">  value = &#123;Path@<span class="number">7375</span>&#125; </span><br><span class="line"> <span class="number">2</span> = &#123;LinkedHashMap$Entry@<span class="number">7372</span>&#125; <span class="string">"/generator.cmd/c/generator"</span> -&gt; </span><br><span class="line">  <span class="type">key</span> = <span class="string">"/generator.cmd/c/generator"</span></span><br><span class="line">  value = &#123;Path@<span class="number">7376</span>&#125; </span><br><span class="line"> <span class="number">3</span> = &#123;LinkedHashMap$Entry@<span class="number">7373</span>&#125; <span class="string">"/generator.cmd/a/generator"</span> -&gt; </span><br><span class="line">  <span class="type">key</span> = <span class="string">"/generator.cmd/a/generator"</span></span><br><span class="line">  value = &#123;Path@<span class="number">7377</span>&#125;</span><br></pre></td></tr></table></figure></p>
+<p>看来，按position排序已经生效。<br>然而我们打开网页访问，却发现排序功能没有实现～～～<br>待续。。。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2019/03/02/Java-ByteBuffer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/03/02/Java-ByteBuffer/" itemprop="url">
+                  Java ByteBuffer
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-02T23:44:25+08:00">
+                2019-03-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="ByteBuffer"><a href="#ByteBuffer" class="headerlink" title="ByteBuffer"></a>ByteBuffer</h1><p><code>ByteBuffer</code>是一个抽象类，继承<code>Buffer</code>类；我们先来看看Buffer在Java doc中的定义 <a href="https://docs.oracle.com/javase/8/docs/api/" target="_blank" rel="external">https://docs.oracle.com/javase/8/docs/api/</a><br><figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">A container <span class="keyword">for</span> data <span class="keyword">of</span> a specific primitive <span class="keyword">type</span>.</span><br><span class="line">A <span class="keyword">buffer</span> <span class="keyword">is</span> a linear, finite <span class="keyword">sequence</span> <span class="keyword">of</span> elements <span class="keyword">of</span> a specific primitive <span class="keyword">type</span>. Aside from its content, the essential properties <span class="keyword">of</span> a <span class="keyword">buffer</span> are its capacity, limit, <span class="keyword">and</span> position:</span><br><span class="line"></span><br><span class="line">A <span class="keyword">buffer</span><span class="symbol">'s</span> capacity <span class="keyword">is</span> the number <span class="keyword">of</span> elements it contains. The capacity <span class="keyword">of</span> a <span class="keyword">buffer</span> <span class="keyword">is</span> never negative <span class="keyword">and</span> never changes.</span><br><span class="line"></span><br><span class="line">A <span class="keyword">buffer</span><span class="symbol">'s</span> limit <span class="keyword">is</span> the index <span class="keyword">of</span> the first element that should <span class="keyword">not</span> be read <span class="keyword">or</span> written. A <span class="keyword">buffer</span><span class="symbol">'s</span> limit <span class="keyword">is</span> never negative <span class="keyword">and</span> <span class="keyword">is</span> never greater than its capacity.</span><br><span class="line"></span><br><span class="line">A <span class="keyword">buffer</span><span class="symbol">'s</span> position <span class="keyword">is</span> the index <span class="keyword">of</span> the <span class="keyword">next</span> element <span class="keyword">to</span> be read <span class="keyword">or</span> written. A <span class="keyword">buffer</span><span class="symbol">'s</span> position <span class="keyword">is</span> never negative <span class="keyword">and</span> <span class="keyword">is</span> never greater than its limit.</span><br><span class="line"></span><br><span class="line">There <span class="keyword">is</span> one subclass <span class="keyword">of</span> this class <span class="keyword">for</span> each non-<span class="built_in">boolean</span> primitive <span class="keyword">type</span>.</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Buffer：可以看作是Java基本类型的数据的容器。包含<span class="number">4</span>个属性：</span><br><span class="line">capacity：容器的大小</span><br><span class="line"><span class="built_in">limit</span>：读写的边界，当<span class="built_in">position</span>到达<span class="built_in">limit</span>时，就表示将Buffer中的内容读完，或者将Buffer写满</span><br><span class="line"><span class="built_in">position</span>：表示当前可读写的指针，如果向Buffer对象中写入一个字节，那么就会向<span class="built_in">position</span>所指向的地址写入这个字节；如果是从Buffer读出一个字节，那么就会读出<span class="built_in">position</span>所指向的地址读出这个字节，读写完成后，<span class="built_in">position</span>+<span class="number">1</span></span><br><span class="line"></span><br><span class="line">上面几个属性的大小关系</span><br><span class="line"><span class="number">0</span> &lt;= mark &lt;= <span class="built_in">position</span> &lt;= <span class="built_in">limit</span> &lt;= capacity</span><br></pre></td></tr></table></figure>
+<p>下面我们拿 smart-socket 来做一个说明。<br>大家也可以看看smart-socket的doc；链接在此<br><a href="https://smartboot.gitee.io/docs/smart-socket/quickStart.html" target="_blank" rel="external">https://smartboot.gitee.io/docs/smart-socket/quickStart.html</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.smartboot.socket.Protocol;</span><br><span class="line"><span class="keyword">import</span> org.smartboot.socket.transport.AioSession;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.nio.ByteBuffer;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span><br><span class="line"> * <span class="doctag">@author</span> 三刀</span><br><span class="line"> * <span class="doctag">@version</span> V1.0 , 2018/8/25</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StringProtocol</span> <span class="keyword">implements</span> <span class="title">Protocol</span>&lt;<span class="title">String</span>&gt; </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> INT_LENGTH = <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * 解码方法</span><br><span class="line">     * <span class="doctag">@param</span> readBuffer AIO默认readBuffer到长度是512字节</span><br><span class="line">     * <span class="doctag">@param</span> session</span><br><span class="line">     * <span class="doctag">@param</span> eof</span><br><span class="line">     * <span class="doctag">@return</span></span><br><span class="line">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">decode</span><span class="params">(ByteBuffer readBuffer, AioSession&lt;String&gt; session, <span class="keyword">boolean</span> eof)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//识别消息长度 这个判断是否有必要？</span></span><br><span class="line">        <span class="keyword">if</span> (readBuffer.remaining() &lt; INT_LENGTH) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//判断是否存在半包情况</span></span><br><span class="line">        <span class="keyword">int</span> len = readBuffer.getInt(<span class="number">0</span>);<span class="comment">//绝对读，获取整个byteBuffer的信息长度，具体构造看encode</span></span><br><span class="line">        <span class="keyword">if</span> (readBuffer.remaining() &lt; len) &#123;<span class="comment">//position到limit到距离位置</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        readBuffer.getInt();<span class="comment">//跳过byteBuffer前面4个字节用于记录msg的长度</span></span><br><span class="line">        <span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[len - INT_LENGTH];</span><br><span class="line">        readBuffer.get(bytes);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> String(bytes);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ByteBuffer <span class="title">encode</span><span class="params">(String msg, AioSession&lt;String&gt; session)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">byte</span>[] bytes = msg.getBytes();</span><br><span class="line">        <span class="comment">//创建一个buffer容量为 数据长度（前面4个字节，用于存放消息长度） + 内容到长度</span></span><br><span class="line">        ByteBuffer buffer = ByteBuffer.allocate(INT_LENGTH + bytes.length);</span><br><span class="line">        buffer.putInt(INT_LENGTH+bytes.length);<span class="comment">//注意此处，增加4的长度（恰好是int在byte的长度），用于解码的时候，直接减掉4个字节的长度构造byte</span></span><br><span class="line">        buffer.put(bytes);</span><br><span class="line">        buffer.flip();</span><br><span class="line">        <span class="keyword">return</span> buffer;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2019/03/01/最近思考/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1226,396 +1618,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2018/03/09/生产环境Tomcat启动失败/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/03/09/生产环境Tomcat启动失败/" itemprop="url">
-                  生产环境Tomcat启动失败
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-09T20:36:01+08:00">
-                2018-03-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>今天企业微信应用一直在发警报,某个采购商不接收我们的回调数据.他们开发又没有时间处理该问题.只有对该采购商的回调回写的数据不作判断了.于是快速定位代码,加入判断逻辑语句.测试无问题,可以发布到线上了.</p>
-<p>打开Jenkins,爽快输入账号密码,点击发布.然而,tomcat停止后再也没有起来.</p>
-<h2 id="疑问"><a href="#疑问" class="headerlink" title="疑问"></a>疑问</h2><p>一直以来,使用Jenkins发布是没有任何问题的啊;会不会有是代码有问题.于是快速回滚线上代码.然而tomcat还是起不来.</p>
-<h2 id="先不管那么多-先看看tomcat的日志"><a href="#先不管那么多-先看看tomcat的日志" class="headerlink" title="先不管那么多,先看看tomcat的日志"></a>先不管那么多,先看看tomcat的日志</h2><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Java HotSpot(TM) 64-Bit<span class="built_in"> Server </span>VM warning: INFO: os::commit_memory(0x00000000c8000000, 805306368, 0) failed; <span class="attribute">error</span>=<span class="string">'Cannot allocate memory'</span> (<span class="attribute">errno</span>=12)</span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># There is insufficient memory for the Java Runtime Environment to continue.</span></span><br><span class="line"><span class="comment"># Native memory allocation (malloc) failed to allocate 805306368 bytes for committing reserved memory.</span></span><br><span class="line"><span class="comment"># An error report file with more information is saved as:</span></span><br><span class="line"><span class="comment"># /tmp/hs_err_pid9230.log</span></span><br></pre></td></tr></table></figure>
-<p>一看,才知道内存不够,所以起不来:<code>Cannot allocate memory</code>;</p>
-<p>使用 <code>free -mh</code> 命令一看,果然剩下可用内存: 150M.</p>
-<blockquote>
-<p>因是生产环境的发单业务,故先把自用的Admin给停了,保证发单业务正常运行.</p>
-</blockquote>
-<p>重启tomcat, 此时业务日志已正常输出.</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>重启服务的时候,不能单单看业务日志,还要看tomcat的启动日志.这样才能快速定位问题所在.而在此事件中,我仅仅是看业务日志,一开始还以为是业务日志的路径定位到错的位置了.找来找去,浪费7 8分钟.</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2018/03/08/有关IDEA的一些设置/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/03/08/有关IDEA的一些设置/" itemprop="url">
-                  有关IDEA的一些设置
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-08T23:03:12+08:00">
-                2018-03-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近想用体验一下IDEA,故下载了社区版进行体验.</p>
-<h2 id="发现问题"><a href="#发现问题" class="headerlink" title="发现问题"></a>发现问题</h2><ol>
-<li>快捷键和中文输入法冲突;</li>
-<li>引入的包下的类,在类&gt;3个的时候会自动变成*引入.</li>
-</ol>
-<h2 id="解决引入-的问题"><a href="#解决引入-的问题" class="headerlink" title="解决引入*的问题"></a>解决引入*的问题</h2><p>在使用 Idea 的引入包的快捷键 <code>Ctrl+Alt+O</code> 的时候，当同一个包下的类引入超过3个就会自动变为*。这个方式看起来很怪异。解决方法：</p>
-<blockquote>
-<p>Editor-&gt;Code Style-&gt;Java-&gt;Imports<br>  <code>Class count to use import with &#39;*&#39;</code> 设置成 300  <code>Names count to use static import with &#39;*&#39;</code> 设置成300</p>
-</blockquote>
-<h2 id="解决智能提示的快捷与中文输入法冲突"><a href="#解决智能提示的快捷与中文输入法冲突" class="headerlink" title="解决智能提示的快捷与中文输入法冲突"></a>解决智能提示的快捷与中文输入法冲突</h2><h3 id="先设置智能示：忽略大小写敏感"><a href="#先设置智能示：忽略大小写敏感" class="headerlink" title="先设置智能示：忽略大小写敏感"></a>先设置智能示：忽略大小写敏感</h3><blockquote>
-<p>Editor-&gt;General-&gt;Code Completion  <code>Case sensitive completion</code> 修改为 <code>None</code> 然后点击 <code>Apply</code></p>
-</blockquote>
-<h3 id="设置智能提示快捷键为-Alt-‘-‘"><a href="#设置智能提示快捷键为-Alt-‘-‘" class="headerlink" title="设置智能提示快捷键为 Alt + ‘/‘"></a>设置智能提示快捷键为 Alt + ‘/‘</h3><blockquote>
-<p>Keymap-&gt; Main menu -&gt; Completion -&gt; 右键 <code>Clyclic Expand Word</code>  <code>移除Alt+&#39;/&#39;</code>的占用<br>    Keymap-&gt; Main menu -&gt; Completion -&gt; 右键<code>Basic Add Keyboard Shortcut</code> 然后按下 快捷键即可</p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2018/03/08/URLConnection中文问题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/03/08/URLConnection中文问题/" itemprop="url">
-                  URLConnection中文问题
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-08T22:49:36+08:00">
-                2018-03-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>今天在做开发的时候,发现服务器上接受不了中文的post.先看看测试的代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">sendPost</span><span class="params">(String url, String param)</span> </span>&#123;</span><br><span class="line">		PrintWriter out = <span class="keyword">null</span>;</span><br><span class="line">		BufferedReader in = <span class="keyword">null</span>;</span><br><span class="line">		String result = <span class="string">""</span>;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			URL realUrl = <span class="keyword">new</span> URL(url);</span><br><span class="line">			<span class="comment">// 打开和URL之间的连接</span></span><br><span class="line">			URLConnection conn = realUrl.openConnection();</span><br><span class="line">			<span class="comment">// 设置通用的请求属性</span></span><br><span class="line">			conn.setRequestProperty(<span class="string">"accept"</span>, <span class="string">"*/*"</span>);</span><br><span class="line">			conn.setRequestProperty(<span class="string">"connection"</span>, <span class="string">"Keep-Alive"</span>);</span><br><span class="line">			conn.setRequestProperty(<span class="string">"user-agent"</span>, <span class="string">"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)"</span>);</span><br><span class="line">			<span class="comment">// 发送POST请求必须设置如下两行</span></span><br><span class="line">			conn.setDoOutput(<span class="keyword">true</span>);</span><br><span class="line">			conn.setDoInput(<span class="keyword">true</span>);</span><br><span class="line">			<span class="comment">// 获取URLConnection对象对应的输出流</span></span><br><span class="line">			out = <span class="keyword">new</span> PrintWriter(conn.getOutputStream());</span><br><span class="line">			<span class="comment">// 发送请求参数</span></span><br><span class="line">			out.print(param);</span><br><span class="line">			<span class="comment">// flush输出流的缓冲</span></span><br><span class="line">			out.flush();</span><br><span class="line">			<span class="comment">// 定义BufferedReader输入流来读取URL的响应</span></span><br><span class="line">			in = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(conn.getInputStream()));</span><br><span class="line">			String line;</span><br><span class="line">			<span class="keyword">while</span> ((line = in.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">				result += line;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">			System.out.println(<span class="string">"发送 POST 请求出现异常！"</span> + e);</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 使用finally块来关闭输出流、输入流</span></span><br><span class="line">		<span class="keyword">finally</span> &#123;</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				<span class="keyword">if</span> (out != <span class="keyword">null</span>) &#123;</span><br><span class="line">					out.close();</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">if</span> (in != <span class="keyword">null</span>) &#123;</span><br><span class="line">					in.close();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125; <span class="keyword">catch</span> (IOException ex) &#123;</span><br><span class="line">				ex.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> result;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
-<p>使用上述代码,从windows环境下发送post数据到线上服务器,如果post数据中存在中文,则会抛出错误,接受不到数据的问题<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">java.nio.charset.MalformedInputException: Input length = <span class="number">1</span>  </span><br><span class="line">    at java.nio.charset.CoderResult.throwException(CoderResult.java:<span class="number">260</span>)  </span><br><span class="line">    at java.nio.charset.CharsetDecoder.decode(CharsetDecoder.java:<span class="number">781</span>)  </span><br><span class="line">    at cn.fuxi.nio.ReadFile.main(ReadFile.java:<span class="number">37</span>)</span><br></pre></td></tr></table></figure></p>
-<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>对<code>PrintWriter</code>的内容设置编码,代码如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> PrintWriter(<span class="keyword">new</span> OutputStreamWriter(conn.getOutputStream(), httpBuilder.getEncode()));</span><br></pre></td></tr></table></figure></p>
-<h3 id="or-直接使用OutputStreamWriter"><a href="#or-直接使用OutputStreamWriter" class="headerlink" title="or 直接使用OutputStreamWriter"></a>or 直接使用OutputStreamWriter</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">sendPostWithContentType</span><span class="params">(String url, String param ,String content_type)</span> </span>&#123;</span><br><span class="line">    	OutputStreamWriter out = <span class="keyword">null</span>;</span><br><span class="line">        BufferedReader in = <span class="keyword">null</span>;</span><br><span class="line">        String result = <span class="string">""</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            URL realUrl = <span class="keyword">new</span> URL(url);</span><br><span class="line">            <span class="comment">// 打开和URL之间的连接</span></span><br><span class="line">            URLConnection conn = realUrl.openConnection();</span><br><span class="line">            <span class="comment">// 设置通用的请求属性</span></span><br><span class="line">            conn.setRequestProperty(<span class="string">"accept"</span>, <span class="string">"*/*"</span>);</span><br><span class="line">            conn.setRequestProperty(<span class="string">"connection"</span>, <span class="string">"Keep-Alive"</span>);</span><br><span class="line">            conn.setRequestProperty(<span class="string">"Content-Type"</span>, content_type);</span><br><span class="line">            conn.setRequestProperty(<span class="string">"user-agent"</span>,<span class="string">"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)"</span>);</span><br><span class="line"></span><br><span class="line">            conn.setConnectTimeout(<span class="number">50000</span>);</span><br><span class="line">            conn.setReadTimeout(<span class="number">50000</span>);</span><br><span class="line">            <span class="comment">// 发送POST请求必须设置如下两行</span></span><br><span class="line">            conn.setDoOutput(<span class="keyword">true</span>);</span><br><span class="line">            conn.setDoInput(<span class="keyword">true</span>);</span><br><span class="line">            <span class="comment">// 获取URLConnection对象对应的输出流</span></span><br><span class="line">             out = <span class="keyword">new</span> OutputStreamWriter(conn  </span><br><span class="line">                    .getOutputStream(), <span class="string">"UTF-8"</span>);</span><br><span class="line">            <span class="comment">// 发送请求参数</span></span><br><span class="line">            out.write(param);</span><br><span class="line">            <span class="comment">// flush输出流的缓冲</span></span><br><span class="line">            out.flush();</span><br><span class="line">            <span class="comment">// 定义BufferedReader输入流来读取URL的响应</span></span><br><span class="line">            in = <span class="keyword">new</span> BufferedReader(</span><br><span class="line">                    <span class="keyword">new</span> InputStreamReader(conn.getInputStream()));</span><br><span class="line">            String line;</span><br><span class="line">            <span class="keyword">while</span> ((line = in.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                result += line;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        	 log.info(e.getMessage(),e);</span><br><span class="line">             log.error(e.getMessage(),e);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//使用finally块来关闭输出流、输入流</span></span><br><span class="line">        <span class="keyword">finally</span>&#123;</span><br><span class="line">            <span class="keyword">try</span>&#123;</span><br><span class="line">                <span class="keyword">if</span>(out!=<span class="keyword">null</span>)&#123;</span><br><span class="line">                    out.close();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span>(in!=<span class="keyword">null</span>)&#123;</span><br><span class="line">                    in.close();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span>(IOException e)&#123;</span><br><span class="line">            	 log.info(e.getMessage(),e);</span><br><span class="line">                 log.error(e.getMessage(),e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1665,7 +1667,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">74</span>
+                <span class="site-state-item-count">77</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1678,7 +1680,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">92</span>
+                <span class="site-state-item-count">96</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

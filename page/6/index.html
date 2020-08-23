@@ -270,6 +270,398 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/04/21/hexo-搭建过程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/21/hexo-搭建过程/" itemprop="url">
+                  hexo-搭建过程
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-21T00:18:30+08:00">
+                2017-04-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>因为ubuntu的规划不完整，故重装了一下ubuntu的系统。而随之而来的问题就是，要重装一次hexo。</p>
+<h1 id="打开hexo官网"><a href="#打开hexo官网" class="headerlink" title="打开hexo官网"></a>打开hexo官网</h1><p><a href="https://hexo.io/zh-cn/" target="_blank" rel="external">https://hexo.io/zh-cn/</a></p>
+<h2 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h2><p>sudo apt-get install git-core</p>
+<h2 id="安装Node-js"><a href="#安装Node-js" class="headerlink" title="安装Node.js"></a>安装Node.js</h2><p>wget -qO- <a href="https://raw.github.com/creationix/nvm/master/install.sh" target="_blank" rel="external">https://raw.github.com/creationix/nvm/master/install.sh</a> | sh<br>安装完成后，重启终端并执行下列命令即可安装 Node.js。<br>nvm install stable</p>
+<h2 id="安装完成后，更换npm源"><a href="#安装完成后，更换npm源" class="headerlink" title="安装完成后，更换npm源"></a>安装完成后，更换npm源</h2><p>npm install -gd express –registry=<a href="http://registry.npm.taobao.org" target="_blank" rel="external">http://registry.npm.taobao.org</a><br>避免每次安装都需要–registry参数，可以使用以下命令进行永久设置：<br>npm config set registry <a href="http://registry.npm.taobao.org" target="_blank" rel="external">http://registry.npm.taobao.org</a></p>
+<h2 id="后续步骤参照官网操作即可"><a href="#后续步骤参照官网操作即可" class="headerlink" title="后续步骤参照官网操作即可"></a>后续步骤参照官网操作即可</h2><h1 id="配置自动化发布"><a href="#配置自动化发布" class="headerlink" title="配置自动化发布"></a>配置自动化发布</h1><p>详细过程可参考：<a href="http://www.paopaoche.net/jiaocheng/85988.html" target="_blank" rel="external">http://www.paopaoche.net/jiaocheng/85988.html</a></p>
+<p>参考文章：</p>
+<ol>
+<li><a href="https://hexo.io/zh-cn/" target="_blank" rel="external">https://hexo.io/zh-cn/</a></li>
+<li><a href="http://blog.csdn.net/rongbo_j/article/details/52106580" target="_blank" rel="external">http://blog.csdn.net/rongbo_j/article/details/52106580</a></li>
+<li><a href="http://www.paopaoche.net/jiaocheng/85988.html" target="_blank" rel="external">http://www.paopaoche.net/jiaocheng/85988.html</a></li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/04/18/自动化构建-jenkins-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/18/自动化构建-jenkins-1/" itemprop="url">
+                  自动化构建-jenkins-1
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-18T19:43:25+08:00">
+                2017-04-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在项目不断增加的情况下，手工发布显得越来越吃力了。每次更新都要手工maven build, ssh 服务器，更新。为了解放双手，需将自动化构建功能引入。随手记录下搭建jenkins的过程。</p>
+<h3 id="1-下载jenkins"><a href="#1-下载jenkins" class="headerlink" title="1.下载jenkins"></a>1.下载jenkins</h3><p>这里直接下载war包，直接部署到tomcat中：<a href="http://mirrors.jenkins.io/war-stable/latest/jenkins.war" target="_blank" rel="external">http://mirrors.jenkins.io/war-stable/latest/jenkins.war</a></p>
+<h3 id="2-启动"><a href="#2-启动" class="headerlink" title="2.启动"></a>2.启动</h3><p>将war包放置在tomcat的weapps目录下。启动tomcat。</p>
+<h3 id="3-访问"><a href="#3-访问" class="headerlink" title="3.访问"></a>3.访问</h3><p><a href="http://localhost:8080/jenkins" target="_blank" rel="external">http://localhost:8080/jenkins</a><br>jenkins启动后，会在用户下生成一串秘钥。复制该串秘钥即可登录。在后续步骤配置相关的账号密码。</p>
+<h3 id="4-安装插件"><a href="#4-安装插件" class="headerlink" title="4.安装插件"></a>4.安装插件</h3><p>选择推荐安装打插件即可</p>
+<h3 id="5-新建工程"><a href="#5-新建工程" class="headerlink" title="5.新建工程"></a>5.新建工程</h3><p>输入工程名称;选择新建Maven工程;选择OK</p>
+<h3 id="6"><a href="#6" class="headerlink" title="6."></a>6.</h3>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/04/18/shell-sed-遇到路径处理方式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/18/shell-sed-遇到路径处理方式/" itemprop="url">
+                  shell sed 遇到路径处理方式
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-18T00:37:38+08:00">
+                2017-04-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li><p>当我们使用sed的时候，又传入路径，则会出现以下这样的错误</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed: -e expression #<span class="number">1</span>, <span class="type">char</span> <span class="number">24</span>: <span class="type">unknown</span> <span class="keyword">option</span> <span class="keyword">to</span> `s<span class="string">'</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如何解决？首先是想到转义</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -<span class="selector-tag">i</span> <span class="string">'s/searchStr/\/path\/home/g'</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>上述是解决问题了，但是如果很多呢？怎么处理？</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">有人提出：使用正则表达式，把路径直接转换：</span><br><span class="line">VARPATH=<span class="string">"/var/tmp/cloud"</span>  </span><br><span class="line">VARPATHSED=<span class="constructor">$(<span class="params">echo</span> $&#123;VARPATH&#125; |<span class="params">sed</span> -<span class="params">e</span> '<span class="params">s</span><span class="operator">/</span>\<span class="operator">/</span><span class="operator">/</span>\\\<span class="operator">/</span><span class="operator">/</span><span class="params">g</span>' )</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>这是一种方法，但是有没有更加简单的呢？</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">将是s<span class="comment">///修改成s###就OK了 也就是用#代替/这样就不会有冲突了，简单便捷</span></span><br><span class="line">sed -<span class="selector-tag">i</span> <span class="string">'s#searchStr#/path/home#g'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/04/11/新买AMD1700-微星B350-折腾过程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1186,404 +1578,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/01/05/CentOS升级OpenSSL/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/01/05/CentOS升级OpenSSL/" itemprop="url">
-                  CentOS升级OpenSSL
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-05T23:44:20+08:00">
-                2017-01-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>因Tomcat8的APR需OpenSSL 1.0.2+的版本；而且最近暴露了OpenSSL的漏洞也较多；故记录下将OpenSSL升级到最新版本的过程。</p>
-<ol>
-<li><p>下载最新源码</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">wget https:<span class="regexp">//</span>www.openssl.org<span class="regexp">/source/</span>openssl-<span class="number">1.1</span>.<span class="number">0</span>c.tar.gz</span><br><span class="line">tar zxvf openssl-<span class="number">1.1</span>.<span class="number">0</span>c.tar.gz</span><br><span class="line">cd openssl-<span class="number">1.1</span>.<span class="number">0</span>c</span><br><span class="line">.<span class="regexp">/config --prefix=/u</span>sr<span class="regexp">/local/</span>ssl-<span class="number">1.1</span>.<span class="number">0</span>c shared zlib</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">mv <span class="regexp">/usr/</span>bin<span class="regexp">/openssl /u</span>sr<span class="regexp">/bin/</span>openssl.bak</span><br><span class="line">mv <span class="regexp">/usr/i</span>nclude<span class="regexp">/openssl /u</span>sr<span class="regexp">/include/</span>openssl.bak</span><br><span class="line">ln -s <span class="regexp">/usr/</span>local<span class="regexp">/ssl-1.1.0c/</span>bin<span class="regexp">/openssl /u</span>sr<span class="regexp">/bin/</span>openssl</span><br><span class="line">ln -s <span class="regexp">/usr/</span>local<span class="regexp">/ssl-1.1.0c/i</span>nclude<span class="regexp">/openssl /u</span>sr<span class="regexp">/include/</span>openssl</span><br><span class="line">echo <span class="string">"/usr/local/ssl-1.1.0c/lib"</span> &gt;&gt; <span class="regexp">/etc/</span>ld.so.conf</span><br><span class="line">ldconfig -v</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>到此算是安装完成；可以运行一下openssl version获取版本信息</p>
-</li>
-<li>但是在编译tomcat8的APR lib的时候，你会发现还是用了老版本的SSL会导致tomcat8运行不了。</li>
-<li>解决方法：<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>增加with-ssl指定ssl安装的文件目录</span><br><span class="line">./configure --prefix=/<span class="keyword">opt</span>/tomcat/apr --with-ssl=/usr/local/ssl-<span class="number">1.1</span>.<span class="number">0</span><span class="keyword">c</span> --with-apr=/<span class="keyword">opt</span>/tomcat/apr --with-java-home=$JAVA_HOME</span><br><span class="line"><span class="number">2</span> 或者说直接修改ssl指定的版本</span><br><span class="line"><span class="keyword">cd</span> /usr/lib64/</span><br><span class="line"><span class="keyword">ls</span> -<span class="keyword">lh</span> |<span class="keyword">grep</span> libssl</span><br><span class="line">修改libssl.<span class="keyword">so</span>的软链接</span><br><span class="line"><span class="keyword">ln</span> -s xxxx/libssl.<span class="keyword">so</span>.<span class="number">1.1</span> /usr/lib64/libssl.<span class="keyword">so</span></span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/01/04/Resource-temporarily-unavailable/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/01/04/Resource-temporarily-unavailable/" itemprop="url">
-                  Resource temporarily unavailable
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-04T00:05:55+08:00">
-                2017-01-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>今天使用ssh链接服务器的时候，老是链接不上；表现为链接上去，一下子就断开了链接。使用root登录，再用su切换用户的时候，提示”Resource temporarily unavailable”;</p>
-<ol>
-<li><p>查看系统开启的进程数量</p>
-<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ps -eL <span class="string">| wc -l</span></span><br><span class="line"><span class="number">1035</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>继续查看ulimit信息</p>
-<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">ulimit -a</span><br><span class="line">core file size          (<span class="name">blocks</span>, -c) <span class="number">0</span></span><br><span class="line">data seg size           (<span class="name">kbytes</span>, -d) unlimited</span><br><span class="line">scheduling priority             (<span class="name">-e</span>) <span class="number">0</span></span><br><span class="line">file size               (<span class="name">blocks</span>, -f) unlimited</span><br><span class="line">pending signals                 (<span class="name">-i</span>) <span class="number">515256</span></span><br><span class="line">max locked memory       (<span class="name">kbytes</span>, -l) <span class="number">64</span></span><br><span class="line">max memory size         (<span class="name">kbytes</span>, -m) unlimited</span><br><span class="line">open files                      (<span class="name">-n</span>) <span class="number">65535</span></span><br><span class="line">pipe size            (<span class="number">512</span> bytes, -p) <span class="number">8</span></span><br><span class="line">POSIX message queues     (<span class="name">bytes</span>, -q) <span class="number">819200</span></span><br><span class="line">real-time priority              (<span class="name">-r</span>) <span class="number">0</span></span><br><span class="line">stack size              (<span class="name">kbytes</span>, -s) <span class="number">8192</span></span><br><span class="line">cpu time               (<span class="name">seconds</span>, -t) unlimited</span><br><span class="line">max user processes              (<span class="name">-u</span>) <span class="number">4096</span></span><br><span class="line">virtual memory          (<span class="name">kbytes</span>, -v) unlimited</span><br><span class="line">file locks                      (<span class="name">-x</span>) unlimited</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>３. 到此，max user processes没有超过数量啊；很郁闷。最后通过搜索得知，可以使用命令校验配置是否正确。<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">su</span>　-m　-c <span class="string">'ulimit -u'</span> nobody</span><br><span class="line"><span class="number">1024</span></span><br></pre></td></tr></table></figure></p>
-<ol>
-<li>得到的数量居然是1024怪不得一直报“Resource temporarily unavailable”</li>
-<li>解决方法：<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vi  /etc/security/limits.d/<span class="number">90</span>-nproc.conf</span><br><span class="line">* soft nproc <span class="number">1024</span></span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>将1024值更改为4096后保存</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/01/01/运维-CentOS-Tomcat单机多实例配置/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/01/01/运维-CentOS-Tomcat单机多实例配置/" itemprop="url">
-                  运维-CentOS-Tomcat单机多实例配置
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-01T18:40:25+08:00">
-                2017-01-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <ol>
-<li><p>下载tomcat-8 最新版本</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget http:<span class="regexp">//mi</span>rrors.cnnic.cn<span class="regexp">/apache/</span>tomcat<span class="regexp">/tomcat-8/</span>v8.<span class="number">5.9</span><span class="regexp">/bin/</span>apache-tomcat-<span class="number">8.5</span>.<span class="number">9</span>.tar.gz</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>解压到当前目录，得到apache-tomcat-8.5.9目录。</p>
-</li>
-<li><p>在opt中创建tomcat文件夹
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/01/01/运维-CentOS-Tomcat单机多实例配置/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1633,7 +1627,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">74</span>
+                <span class="site-state-item-count">77</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1646,7 +1640,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">92</span>
+                <span class="site-state-item-count">96</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

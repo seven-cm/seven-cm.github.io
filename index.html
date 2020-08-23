@@ -270,6 +270,403 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2020/08/23/阿里云RDS到期切换记录/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2020/08/23/阿里云RDS到期切换记录/" itemprop="url">
+                  阿里云RDS到期切换记录
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-23T22:43:48+08:00">
+                2020-08-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>因阿里云RDS快到期了；而因业务线的调整，我们打算不再继续对RDS续费，故需对线上的RDS进行一次数据库转移。</p>
+<h2 id="转移方法"><a href="#转移方法" class="headerlink" title="转移方法"></a>转移方法</h2><p>为了方便快捷地转换，我们是在ECS建立数据库，然后对RDS进行主从同步。</p>
+<h3 id="数据库版本"><a href="#数据库版本" class="headerlink" title="数据库版本"></a>数据库版本</h3><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 阿里云RDS</span></span><br><span class="line"><span class="attr">MySQL</span> <span class="string">5.6</span></span><br><span class="line"><span class="comment"></span><br><span class="line"># ECS </span></span><br><span class="line"><span class="attr">MySQL</span> <span class="string">5.7</span></span><br></pre></td></tr></table></figure>
+<h3 id="从库my-cnf配置"><a href="#从库my-cnf配置" class="headerlink" title="从库my.cnf配置"></a>从库my.cnf配置</h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line">[client]</span><br><span class="line">port            = 3306</span><br><span class="line">socket          = /tmp/mysql.sock</span><br><span class="line">default-character-set=utf8mb4</span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">server-id       = 100</span><br><span class="line">port            = 3306</span><br><span class="line">user            = mysql</span><br><span class="line">socket          = /tmp/mysql.sock</span><br><span class="line">datadir         = /data/mysql/data</span><br><span class="line">character_set_server=utf8mb4</span><br><span class="line">default-storage-engine = InnoDB</span><br><span class="line"></span><br><span class="line">back_log = 50</span><br><span class="line">max_connections = 1000</span><br><span class="line">max_connect_errors = 6000</span><br><span class="line">open_files_limit = 65535</span><br><span class="line">table_open_cache = 128</span><br><span class="line">max_allowed_packet = 4M</span><br><span class="line">binlog_cache_size = 1M</span><br><span class="line">max_heap_table_size = 8M</span><br><span class="line">tmp_table_size = 16M</span><br><span class="line">read_buffer_size = 2M</span><br><span class="line">read_rnd_buffer_size = 8M</span><br><span class="line">sort_buffer_size = 8M</span><br><span class="line">join_buffer_size = 8M</span><br><span class="line">thread_cache_size = 8</span><br><span class="line">query_cache_size = 0</span><br><span class="line">query_cache_limit = 2M</span><br><span class="line">key_buffer_size = 16M</span><br><span class="line">transaction_isolation = READ-COMMITTED</span><br><span class="line">log_bin = /data/mysql/log/binlog/mysql-bin</span><br><span class="line">binlog_format = ROW</span><br><span class="line">log-error= /data/mysql/log/log/error.log</span><br><span class="line">slow_query_log = 1</span><br><span class="line">long_query_time = 3</span><br><span class="line"></span><br><span class="line">slow_query_log_file = /data/mysql/log/log/slow.log</span><br><span class="line">innodb_buffer_pool_size = 128M</span><br><span class="line">innodb_write_io_threads = 4</span><br><span class="line">innodb_read_io_threads = 4</span><br><span class="line"><span class="comment"># 5.7.2版本已经过时</span></span><br><span class="line">innodb_thread_concurrency = 0</span><br><span class="line">innodb_flush_log_at_trx_commit = 2</span><br><span class="line">innodb_purge_threads = 1</span><br><span class="line">innodb_log_buffer_size = 2M</span><br><span class="line">innodb_log_file_size = 256M</span><br><span class="line">innodb_log_files_in_group = 3</span><br><span class="line">innodb_max_dirty_pages_pct = 90</span><br><span class="line">innodb_lock_wait_timeout = 120</span><br><span class="line">bulk_insert_buffer_size = 8M</span><br><span class="line">myisam_sort_buffer_size = 8M</span><br><span class="line">innodb_file_per_table = 1</span><br><span class="line">innodb_data_file_path = ibdata0:2G;ibdata1:2G;</span><br><span class="line">innodb_data_home_dir = /data/mysql/data</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">gtid_mode=on</span><br><span class="line">enforce_gtid_consistency=on</span><br><span class="line">log-slave-updates=1</span><br><span class="line"><span class="comment">#配置</span></span><br><span class="line">replicate-do-db         =  aaa</span><br><span class="line">replicate-ignore-db     =  mysql</span><br><span class="line">replicate-ignore-db     =  information_schema</span><br><span class="line">replicate-ignore-db     =  performance_schema</span><br><span class="line">replicate-ignore-db     =  bbb</span><br><span class="line"><span class="comment">#replicate-wild-ignore-table     = mysql.% //不需要同步的表（可选）</span></span><br><span class="line"><span class="comment">#replicate-wild-ignore-table     = test.% //不需要同步的表（可选）</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[mysqldump]</span><br><span class="line">quick</span><br><span class="line">max_allowed_packet = 16M</span><br><span class="line"></span><br><span class="line">[mysqld_safe]</span><br><span class="line">open-files-limit = 8192</span><br></pre></td></tr></table></figure>
+<h3 id="导出RDS上的数据"><a href="#导出RDS上的数据" class="headerlink" title="导出RDS上的数据"></a>导出RDS上的数据</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -usuper_db -p <span class="attribute">--set-gtid-purged</span>=OFF -hrm-xxx.mysql.rds.aliyuncs.com <span class="attribute">--ignore-table</span>=xxx.aaa <span class="attribute">--ignore-table</span>=xxx.bbb --single-transaction <span class="attribute">--master-data</span>=2 xxx | gzip &gt; ./xxx_0800.sql.gz</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>因某个数据表的数据量太大了，故直接忽略该不重要的数据；注意语句中需使用–master-data=2获得导出数据时的POS信息：</p>
+</blockquote>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-- CHANGE MASTER <span class="keyword">TO</span> <span class="attribute">MASTER_LOG_FILE</span>=<span class="string">'mysql-bin.000009'</span>, <span class="attribute">MASTER_LOG_POS</span>=185396519;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>使用–master-data的时候需使用RDS的超级用户权限</p>
+</blockquote>
+<h3 id="ECS中对mysql导入数据"><a href="#ECS中对mysql导入数据" class="headerlink" title="ECS中对mysql导入数据"></a>ECS中对mysql导入数据</h3><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">source</span> <span class="regexp">/xxx/</span>xxx<span class="regexp">/xxx.sql</span></span><br></pre></td></tr></table></figure>
+<h3 id="ECS开始主从同步"><a href="#ECS开始主从同步" class="headerlink" title="ECS开始主从同步"></a>ECS开始主从同步</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">change</span> <span class="keyword">master</span> <span class="keyword">to</span> master_host=<span class="string">'rm-xxx.mysql.rds.aliyuncs.com'</span>,master_port=<span class="number">3306</span>,master_user=<span class="string">'xxx'</span>,master_password=<span class="string">'xxxxx'</span>,master_log_file=<span class="string">'mysql-bin.000009'</span>,master_log_pos=<span class="number">185396519</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开始同步</span></span><br><span class="line"><span class="keyword">start</span> <span class="keyword">slave</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看同步状态</span></span><br><span class="line"><span class="keyword">show</span> <span class="keyword">slave</span> <span class="keyword">status</span> \G;</span><br></pre></td></tr></table></figure>
+<h3 id="可能遇到的问题"><a href="#可能遇到的问题" class="headerlink" title="可能遇到的问题"></a>可能遇到的问题</h3><blockquote>
+<p>Last_Error: The incident LOST_EVENTS occured on the master. Message: REVOKE/GRANT failed while granting/revoking privileges in databases.</p>
+</blockquote>
+<p>原因：在对主库作grant的时候，因为出错，导致从库同步失败。</p>
+<h4 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h4><p>先查看同步的信息<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">show</span> <span class="string">slave</span> <span class="string">status</span> <span class="string">\G;</span></span><br><span class="line"><span class="string">***************************</span> <span class="number">1.</span> <span class="string">row</span> <span class="string">***************************</span></span><br><span class="line"><span class="attr">               Slave_IO_State:</span> <span class="string">Waiting</span> <span class="string">for</span> <span class="string">master</span> <span class="string">to</span> <span class="string">send</span> <span class="string">event</span></span><br><span class="line"><span class="attr">                  Master_Host:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line"><span class="attr">                  Master_User:</span> <span class="string">replica</span></span><br><span class="line"><span class="attr">                  Master_Port:</span> <span class="number">3306</span></span><br><span class="line"><span class="attr">                Connect_Retry:</span> <span class="number">60</span></span><br><span class="line"><span class="attr">              Master_Log_File:</span> <span class="string">mysql-bin.000010</span></span><br><span class="line"><span class="attr">          Read_Master_Log_Pos:</span> <span class="number">89679008</span></span><br><span class="line"><span class="attr">               Relay_Log_File:</span> <span class="string">test-relay-bin.000002</span></span><br><span class="line"><span class="attr">                Relay_Log_Pos:</span> <span class="number">96157454</span></span><br><span class="line"><span class="attr">        Relay_Master_Log_File:</span> <span class="string">mysql-bin.000009</span></span><br><span class="line"><span class="attr">             Slave_IO_Running:</span> <span class="literal">Yes</span></span><br><span class="line"><span class="attr">            Slave_SQL_Running:</span> <span class="literal">No</span></span><br><span class="line"><span class="attr">              Replicate_Do_DB:</span> <span class="string">aaa</span></span><br><span class="line"><span class="attr">          Replicate_Ignore_DB:</span> <span class="string">mysql,information_schema,performance_schema,qiqiim,egg_old</span></span><br><span class="line"><span class="attr">           Replicate_Do_Table:</span> </span><br><span class="line"><span class="attr">       Replicate_Ignore_Table:</span> </span><br><span class="line"><span class="attr">      Replicate_Wild_Do_Table:</span> </span><br><span class="line"><span class="attr">  Replicate_Wild_Ignore_Table:</span> <span class="string">aaa.test1,aaa.test2</span></span><br><span class="line"><span class="attr">                   Last_Errno:</span> <span class="number">1590</span></span><br><span class="line"><span class="attr">                   Last_Error:</span> <span class="string">The</span> <span class="string">incident</span> <span class="string">LOST_EVENTS</span> <span class="string">occured</span> <span class="string">on</span> <span class="string">the</span> <span class="string">master.</span> <span class="attr">Message:</span> <span class="string">REVOKE/GRANT</span> <span class="string">failed</span> <span class="string">while</span> <span class="string">granting/revoking</span> <span class="string">privileges</span> <span class="string">in</span> <span class="string">databases.</span></span><br><span class="line"><span class="attr">                 Skip_Counter:</span> <span class="number">0</span></span><br><span class="line"><span class="attr">          Exec_Master_Log_Pos:</span> <span class="number">281553653</span></span><br><span class="line"><span class="attr">              Relay_Log_Space:</span> <span class="number">185837413</span></span><br><span class="line"><span class="attr">              Until_Condition:</span> <span class="string">None</span></span><br><span class="line"><span class="attr">               Until_Log_File:</span> </span><br><span class="line"><span class="attr">                Until_Log_Pos:</span> <span class="number">0</span></span><br><span class="line"><span class="attr">           Master_SSL_Allowed:</span> <span class="literal">No</span></span><br><span class="line"><span class="attr">           Master_SSL_CA_File:</span> </span><br><span class="line"><span class="attr">           Master_SSL_CA_Path:</span> </span><br><span class="line"><span class="attr">              Master_SSL_Cert:</span> </span><br><span class="line"><span class="attr">            Master_SSL_Cipher:</span> </span><br><span class="line"><span class="attr">               Master_SSL_Key:</span> </span><br><span class="line"><span class="attr">        Seconds_Behind_Master:</span> <span class="literal">NULL</span></span><br><span class="line"><span class="attr">Master_SSL_Verify_Server_Cert:</span> <span class="literal">No</span></span><br><span class="line"><span class="attr">                Last_IO_Errno:</span> <span class="number">0</span></span><br><span class="line"><span class="attr">                Last_IO_Error:</span> </span><br><span class="line"><span class="attr">               Last_SQL_Errno:</span> <span class="number">1590</span></span><br><span class="line"><span class="attr">               Last_SQL_Error:</span> <span class="string">The</span> <span class="string">incident</span> <span class="string">LOST_EVENTS</span> <span class="string">occured</span> <span class="string">on</span> <span class="string">the</span> <span class="string">master.</span> <span class="attr">Message:</span> <span class="string">REVOKE/GRANT</span> <span class="string">failed</span> <span class="string">while</span> <span class="string">granting/revoking</span> <span class="string">privileges</span> <span class="string">in</span> <span class="string">databases.</span></span><br><span class="line"><span class="attr">  Replicate_Ignore_Server_Ids:</span> </span><br><span class="line"><span class="attr">             Master_Server_Id:</span> <span class="number">101</span></span><br><span class="line"><span class="attr">                  Master_UUID:</span> <span class="number">0</span><span class="string">ca4a659-d53a-11ea-b6e9-00163e0c6331</span></span><br><span class="line"><span class="attr">             Master_Info_File:</span> <span class="string">/var/lib/mysql/master.info</span></span><br><span class="line"><span class="attr">                    SQL_Delay:</span> <span class="number">0</span></span><br><span class="line"><span class="attr">          SQL_Remaining_Delay:</span> <span class="literal">NULL</span></span><br><span class="line"><span class="attr">      Slave_SQL_Running_State:</span> </span><br><span class="line"><span class="attr">           Master_Retry_Count:</span> <span class="number">86400</span></span><br><span class="line"><span class="attr">                  Master_Bind:</span> </span><br><span class="line"><span class="attr">      Last_IO_Error_Timestamp:</span> </span><br><span class="line"><span class="attr">     Last_SQL_Error_Timestamp:</span> <span class="number">200822</span> <span class="number">11</span><span class="string">:55:36</span></span><br><span class="line"><span class="attr">               Master_SSL_Crl:</span> </span><br><span class="line"><span class="attr">           Master_SSL_Crlpath:</span> </span><br><span class="line"><span class="attr">           Retrieved_Gtid_Set:</span> <span class="number">0</span><span class="attr">ca4a659-d53a-11ea-b6e9-00163e0c6331:14478471-14877986</span></span><br><span class="line"><span class="attr">            Executed_Gtid_Set:</span> <span class="number">0</span><span class="attr">ca4a659-d53a-11ea-b6e9-00163e0c6331:14478471-14688606,</span></span><br><span class="line"><span class="number">11</span><span class="attr">cb8e59-e41e-11ea-b249-0242ac130002:1-4042</span></span><br><span class="line"><span class="attr">                Auto_Position:</span> <span class="number">0</span></span><br><span class="line"><span class="attr">         Replicate_Rewrite_DB:</span> </span><br><span class="line"><span class="attr">                 Channel_Name:</span> </span><br><span class="line"><span class="attr">           Master_TLS_Version:</span> </span><br><span class="line"><span class="number">1</span> <span class="string">row</span> <span class="string">in</span> <span class="string">set</span> <span class="string">(0.00</span> <span class="string">sec)</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>注意 Exec_Master_Log_Pos: 281553653 说明我们已经执行到 281553653 之后出现了问题。</p>
+</blockquote>
+<h4 id="查看binlog信息"><a href="#查看binlog信息" class="headerlink" title="查看binlog信息"></a>查看binlog信息</h4><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">mysqlbinlog --no-defaults mysql-bin<span class="number">.000009</span> |tail <span class="number">-40</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># at <span class="number">281553622</span></span><br><span class="line">#<span class="number">200822</span> <span class="number">11</span>:<span class="number">38</span>:<span class="number">18</span> server id <span class="number">101</span>  end_log_pos <span class="number">281553653</span> CRC32 <span class="number">0x6abd8fc2</span>  Xid = <span class="number">266891639</span></span><br><span class="line">COMMIT<span class="comment">/*!*/</span>;</span><br><span class="line"># at <span class="number">281553653</span></span><br><span class="line">#<span class="number">200822</span> <span class="number">11</span>:<span class="number">38</span>:<span class="number">18</span> server id <span class="number">101</span>  end_log_pos <span class="number">281553718</span> CRC32 <span class="number">0xe3dcaa94</span>  GTID [commit=yes]</span><br><span class="line">SET @@SESSION.GTID_NEXT= <span class="string">'0ca4a659-d53a-11ea-b6e9-00163e0c6331:14688607'</span><span class="comment">/*!*/</span>;</span><br><span class="line"># at <span class="number">281553718</span></span><br><span class="line">#<span class="number">200822</span> <span class="number">11</span>:<span class="number">38</span>:<span class="number">18</span> server id <span class="number">101</span>  end_log_pos <span class="number">281553816</span> CRC32 <span class="number">0xa0997e79</span> </span><br><span class="line"># Incident: LOST_EVENTS</span><br><span class="line">RELOAD DATABASE; # Shall generate syntax error</span><br><span class="line"># at <span class="number">281553816</span></span><br><span class="line">#<span class="number">200822</span> <span class="number">11</span>:<span class="number">38</span>:<span class="number">18</span> server id <span class="number">101</span>  end_log_pos <span class="number">281553863</span> CRC32 <span class="number">0x3b237165</span>  Rotate to mysql-bin<span class="number">.000010</span>  pos: <span class="number">4</span></span><br><span class="line">DELIMITER ;</span><br><span class="line"># End of log file</span><br><span class="line">ROLLBACK <span class="comment">/* added by mysqlbinlog */</span>;</span><br><span class="line"><span class="comment">/*!50003 SET COMPLETION_TYPE=@OLD_COMPLETION_TYPE*/</span>;</span><br><span class="line"><span class="comment">/*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=0*/</span>;</span><br></pre></td></tr></table></figure>
+<p>可了解到出现错误后，主库重新开启了一个新的binlog日志；起始的pos为：4<br><code>#200822 11:38:18 server id 101  end_log_pos 281553863 CRC32 0x3b237165  Rotate to mysql-bin.000010  pos: 4</code></p>
+<p>恢复同步<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">stop</span> <span class="keyword">slave</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">change</span> <span class="keyword">master</span> <span class="keyword">to</span> master_host=<span class="string">'rm-xxx.mysql.rds.aliyuncs.com'</span>,master_port=<span class="number">3306</span>,master_user=<span class="string">'xxx'</span>,master_password=<span class="string">'xxxxx'</span>,master_log_file=<span class="string">'mysql-bin.000010'</span>,master_log_pos=<span class="number">4</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">start</span> <span class="keyword">slave</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">show</span> <span class="keyword">slave</span> <span class="keyword">status</span> \G;</span><br></pre></td></tr></table></figure></p>
+<h4 id="tips"><a href="#tips" class="headerlink" title="tips"></a>tips</h4><p>如果不习惯使用mysqlbinlog命令，可以直接在数据库中执行<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">binlog</span> <span class="keyword">events</span> <span class="keyword">in</span> <span class="string">'mysql-bin.000009'</span> <span class="keyword">from</span> <span class="number">185396519</span> <span class="keyword">limit</span> <span class="number">30</span>;</span><br></pre></td></tr></table></figure></p>
+<p>可查看binlog的相关信息。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2020/08/23/gitalk-Validation-Failed-问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2020/08/23/gitalk-Validation-Failed-问题/" itemprop="url">
+                  gitalk Validation Failed 问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-23T22:39:25+08:00">
+                2020-08-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>在按网上的教程搭建好gitalk后，出现“gitalk Validation Failed”的问题。</p>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>【csdn-death05】<a href="https://blog.csdn.net/death05/article/details/83618887" target="_blank" rel="external">https://blog.csdn.net/death05/article/details/83618887</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2020/08/23/Host-key-verification-failed-问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2020/08/23/Host-key-verification-failed-问题/" itemprop="url">
+                  Host key verification failed 问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-23T22:34:46+08:00">
+                2020-08-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>今天在 win 10 做 hexo d 的时候，提示”Host key verification failed”。</p>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">ssh</span> <span class="selector-tag">-T</span> <span class="selector-tag">git</span>@<span class="keyword">github</span>.<span class="keyword">com</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>回车后，输入yes</p>
+</blockquote>
+<p>参考来源：</p>
+<p>【知乎】<a href="https://zhuanlan.zhihu.com/p/113420658?from_voters_page=true" target="_blank" rel="external">https://zhuanlan.zhihu.com/p/113420658?from_voters_page=true</a></p>
+<p>【stackoverflow】<a href="https://stackoverflow.com/questions/13363553/git-error-host-key-verification-failed-when-connecting-to-remote-repository/29908140#29908140" target="_blank" rel="external">https://stackoverflow.com/questions/13363553/git-error-host-key-verification-failed-when-connecting-to-remote-repository/29908140#29908140</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2019/10/27/记smart-socket在生产环境使用遇到的一些问题以及解决思路/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1154,398 +1551,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2019/03/19/swagger-ui-排序问题-接上篇/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/03/19/swagger-ui-排序问题-接上篇/" itemprop="url">
-                  swagger ui 排序问题-接上篇
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-19T22:56:44+08:00">
-                2019-03-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我们已经将后端所需的Swagger已经按position排序，但是通过swagger-ui.html看的结果还是按path排序，那么肯定是在前端展示的时候，又做了排序。唯有修改swagger-ui源码来解决该问题～</p>
-<h2 id="下载swagger-ui前端源码"><a href="#下载swagger-ui前端源码" class="headerlink" title="下载swagger-ui前端源码"></a>下载swagger-ui前端源码</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.springfox<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springfox-swagger-ui<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.9.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>我们查看上述jar包的MANIFEST.MF文件的信息<br><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Manifest-Version: <span class="number">1.0</span></span><br><span class="line">Implementation-Title: springfox-swagger-ui</span><br><span class="line">Built-With: gradle<span class="number">-4.6</span>, groovy<span class="number">-2.4</span><span class="number">.12</span></span><br><span class="line">Implementation-Version: <span class="number">2.9</span><span class="number">.2</span></span><br><span class="line">SwaggerUi-Version: <span class="number">3.17</span><span class="number">.1</span></span><br><span class="line">Built-By: d_krishnan</span><br><span class="line">Build-Time: <span class="number">2018</span><span class="number">-06</span><span class="number">-23</span>T17:<span class="number">02</span>:<span class="number">09</span><span class="number">-0500</span></span><br><span class="line">Created-By: <span class="number">1.8</span><span class="number">.0</span>_151 (Oracle Corporation)</span><br><span class="line">Built-On: ISDV161716L.local/<span class="number">192.168</span><span class="number">.1</span><span class="number">.163</span></span><br></pre></td></tr></table></figure></p>
-<p>由此可见，此jar包中的swagger-ui是根据3.17.1版本构建的。我们来看看swagger-ui在github上的信息<br><a href="https://github.com/swagger-api/swagger-ui" target="_blank" rel="external">https://github.com/swagger-api/swagger-ui</a><br>查看tag标签，找到3.17.1版本 <a href="https://github.com/swagger-api/swagger-ui/tree/v3.17.1" target="_blank" rel="external">https://github.com/swagger-api/swagger-ui/tree/v3.17.1</a><br>下载下来。</p>
-<h2 id="调试源码"><a href="#调试源码" class="headerlink" title="调试源码"></a>调试源码</h2><blockquote>
-<p>源码的调试，涉及node环境的安装，此处不再叙述。只是简单展示相关的调试步骤。</p>
-</blockquote>
-<h3 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h3><p>使用vscode 打开文件夹 swagger-ui-3.17.1；在终端输入<br><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm <span class="keyword">install</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="配置获取swagger信息的url"><a href="#配置获取swagger信息的url" class="headerlink" title="配置获取swagger信息的url"></a>配置获取swagger信息的url</h3><p>我们可以在dev-helpers文件夹下的index.html配置<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// Build a system</span><br><span class="line">      const ui = SwaggerUIBundle(&#123;</span><br><span class="line">        url: "http://localhost:8080/cms/v2/api-docs",</span><br><span class="line">        dom_id: '#swagger-ui',</span><br><span class="line">        presets: [</span><br><span class="line">          SwaggerUIBundle.presets.apis,</span><br><span class="line">          SwaggerUIStandalonePreset</span><br><span class="line">        ],</span><br><span class="line">        plugins: [</span><br><span class="line">          SwaggerUIBundle.plugins.DownloadUrl</span><br><span class="line">        ],</span><br><span class="line">        layout: "StandaloneLayout"</span><br><span class="line">      &#125;)</span><br></pre></td></tr></table></figure></p>
-<p>在url中配置获取swagger的url即可。</p>
-<h3 id="出现Failed-to-load-API-definition"><a href="#出现Failed-to-load-API-definition" class="headerlink" title="出现Failed to load API definition."></a>出现Failed to load API definition.</h3><figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Errors</span><br><span class="line">Hide</span><br><span class="line">Fetch errorFailed <span class="built_in">to</span> fetch <span class="keyword">http</span>://localhost:<span class="number">8080</span>/cms/v2/api-docs</span><br><span class="line">Fetch errorPossible cross-origin (CORS) issue? The <span class="built_in">URL</span> origin (<span class="keyword">http</span>://localhost:<span class="number">8080</span>) does <span class="keyword">not</span> match <span class="keyword">the</span> page (<span class="keyword">http</span>://localhost:<span class="number">3200</span>). Check <span class="keyword">the</span> server returns <span class="keyword">the</span> correct <span class="string">'Access-Control-Allow-*'</span> headers.</span><br></pre></td></tr></table></figure>
-<h3 id="看来是跨越的问题，我们增加其他方法来处理"><a href="#看来是跨越的问题，我们增加其他方法来处理" class="headerlink" title="看来是跨越的问题，我们增加其他方法来处理"></a>看来是跨越的问题，我们增加其他方法来处理</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.sevencm.cms.swagger;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Primary;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.env.Environment;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.ResponseEntity;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Controller;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.CrossOrigin;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMethod;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.ResponseBody;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.annotations.ApiIgnore;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.spring.web.DocumentationCache;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.spring.web.json.Json;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.spring.web.json.JsonSerializer;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.swagger2.mappers.ServiceModelToSwagger2Mapper;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.swagger2.web.Swagger2Controller;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;</span><br><span class="line"></span><br><span class="line"><span class="meta">@CrossOrigin</span>(origins = &#123;<span class="string">"http://localhost:3200"</span>, <span class="string">"null"</span>&#125;)</span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@ApiIgnore</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Swagger2ControllerCORS</span> <span class="keyword">extends</span> <span class="title">Swagger2Controller</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEFAULT_URL = <span class="string">"/v2/api-docs/CORS"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Swagger2ControllerCORS</span><span class="params">(Environment environment,</span><br><span class="line">                                  DocumentationCache documentationCache,</span><br><span class="line">                                  ServiceModelToSwagger2Mapper mapper,</span><br><span class="line">                                  JsonSerializer jsonSerializer)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(environment, documentationCache, mapper, jsonSerializer);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(</span><br><span class="line">            value = DEFAULT_URL,</span><br><span class="line">            method = RequestMethod.GET,</span><br><span class="line">            produces = &#123; APPLICATION_JSON_VALUE &#125;)</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ResponseEntity&lt;Json&gt; <span class="title">getDocumentation</span><span class="params">(String swaggerGroup, HttpServletRequest servletRequest)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.getDocumentation(swaggerGroup, servletRequest);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我们可以在<br>swagger-ui的前端源代码中，修改以下代码，则可以修改前端又自动排序的问题<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 文件：swagger-ui-3.17.1/src/core/plugins/spec/selectors.js </span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> taggedOperations = <span class="function">(<span class="params">state</span>) =&gt;</span> <span class="function">(<span class="params">&#123; getConfigs &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> &#123; tagsSorter, operationsSorter &#125; = getConfigs()</span><br><span class="line">  <span class="keyword">return</span> operationsWithTags(state)</span><br><span class="line">    <span class="comment">// .sortBy(</span></span><br><span class="line">    <span class="comment">//   (val, key) =&gt; key, // get the name of the tag to be passed to the sorter</span></span><br><span class="line">    <span class="comment">//   (tagA, tagB) =&gt; &#123;</span></span><br><span class="line">    <span class="comment">//     let sortFn = (typeof tagsSorter === "function" ? tagsSorter : sorters.tagsSorter[ tagsSorter ])</span></span><br><span class="line">    <span class="comment">//     return (!sortFn ? null : sortFn(tagA, tagB))</span></span><br><span class="line">    <span class="comment">//   &#125;</span></span><br><span class="line">    <span class="comment">// )</span></span><br><span class="line">    .map(<span class="function">(<span class="params">ops, tag</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">// let sortFn = (typeof operationsSorter === "function" ? operationsSorter : sorters.operationsSorter[ operationsSorter ])</span></span><br><span class="line">      <span class="comment">// let operations = (!sortFn ? ops : ops.sort(sortFn))</span></span><br><span class="line">      <span class="keyword">let</span> operations = ops</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">Map</span>(&#123; <span class="attr">tagDetails</span>: tagDetails(state, tag), <span class="attr">operations</span>: operations &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2019/03/14/swagger-ui-排序问题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/03/14/swagger-ui-排序问题/" itemprop="url">
-                  swagger-ui 排序问题
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-14T23:17:56+08:00">
-                2019-03-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近使用了最新版本的springfox-swagger2做api接口文档；但是发现之前的position已过时，而且即使修改了springfox的java代码，排序还是按api的path排序。故，有了修改swagger-ui代码的想法。</p>
-<h2 id="依赖信息"><a href="#依赖信息" class="headerlink" title="依赖信息"></a>依赖信息</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.springfox<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springfox-swagger2<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.9.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.springfox<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springfox-swagger-ui<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.9.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h2 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h2><p>我们启动工程后，访问swagger-ui.html能看到获取api信息的url地址:<a href="http://localhost:8080/cms/v2/api-docs" target="_blank" rel="external">http://localhost:8080/cms/v2/api-docs</a><br>我们使用idea搜索（ctrl+shitf+F）一下api-docs，范围选择scope会发现一个Swagger2Controller的类。打开，可见到如下代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(</span><br><span class="line">    value = DEFAULT_URL,</span><br><span class="line">    method = RequestMethod.GET,</span><br><span class="line">    produces = &#123; APPLICATION_JSON_VALUE, HAL_MEDIA_TYPE &#125;)</span><br><span class="line"><span class="meta">@PropertySourcedMapping</span>(</span><br><span class="line">    value = <span class="string">"$&#123;springfox.documentation.swagger.v2.path&#125;"</span>,</span><br><span class="line">    propertyKey = <span class="string">"springfox.documentation.swagger.v2.path"</span>)</span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ResponseEntity&lt;Json&gt; <span class="title">getDocumentation</span><span class="params">(</span><br><span class="line">    @RequestParam(value = <span class="string">"group"</span>, required = <span class="keyword">false</span>)</span> String swaggerGroup,</span><br><span class="line">    HttpServletRequest servletRequest) </span>&#123;</span><br><span class="line"></span><br><span class="line">  String groupName = Optional.fromNullable(swaggerGroup).or(Docket.DEFAULT_GROUP_NAME);</span><br><span class="line">  Documentation documentation = documentationCache.documentationByGroup(groupName);</span><br><span class="line">  <span class="keyword">if</span> (documentation == <span class="keyword">null</span>) &#123;</span><br><span class="line">    LOGGER.warn(<span class="string">"Unable to find specification for group &#123;&#125;"</span>, groupName);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ResponseEntity&lt;Json&gt;(HttpStatus.NOT_FOUND);</span><br><span class="line">  &#125;</span><br><span class="line">  Swagger swagger = mapper.mapDocumentation(documentation);</span><br><span class="line">  UriComponents uriComponents = componentsFrom(servletRequest, swagger.getBasePath());</span><br><span class="line">  swagger.basePath(Strings.isNullOrEmpty(uriComponents.getPath()) ? <span class="string">"/"</span> : uriComponents.getPath());</span><br><span class="line">  <span class="keyword">if</span> (isNullOrEmpty(swagger.getHost())) &#123;</span><br><span class="line">    swagger.host(hostName(uriComponents));</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> ResponseEntity&lt;Json&gt;(jsonSerializer.toJson(swagger), HttpStatus.OK);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>从代码上看，我们可了解到，前端swagger-ui所需的api接口信息都是由Swagger对象提供。我们进入此方法</p>
-<blockquote>
-<p>Swagger swagger = mapper.mapDocumentation(documentation);<br>可看到此方法的实现代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Swagger <span class="title">mapDocumentation</span><span class="params">(Documentation from)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ( from == <span class="keyword">null</span> ) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Swagger swagger = <span class="keyword">new</span> Swagger();</span><br><span class="line"></span><br><span class="line">        swagger.setVendorExtensions( vendorExtensionsMapper.mapExtensions( from.getVendorExtensions() ) );</span><br><span class="line">        swagger.setSchemes( mapSchemes( from.getSchemes() ) );</span><br><span class="line">        swagger.setPaths( mapApiListings( from.getApiListings() ) );</span><br><span class="line">        swagger.setHost( from.getHost() );</span><br><span class="line">        swagger.setDefinitions( modelMapper.modelsFromApiListings( from.getApiListings() ) );</span><br><span class="line">        swagger.setSecurityDefinitions( securityMapper.toSecuritySchemeDefinitions( from.getResourceListing() ) );</span><br><span class="line">        ApiInfo info = fromResourceListingInfo( from );</span><br><span class="line">        <span class="keyword">if</span> ( info != <span class="keyword">null</span> ) &#123;</span><br><span class="line">            swagger.setInfo( mapApiInfo( info ) );</span><br><span class="line">        &#125;</span><br><span class="line">        swagger.setBasePath( from.getBasePath() );</span><br><span class="line">        swagger.setTags( tagSetToTagList( from.getTags() ) );</span><br><span class="line">        List&lt;String&gt; list2 = from.getConsumes();</span><br><span class="line">        <span class="keyword">if</span> ( list2 != <span class="keyword">null</span> ) &#123;</span><br><span class="line">            swagger.setConsumes( <span class="keyword">new</span> ArrayList&lt;String&gt;( list2 ) );</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            swagger.setConsumes( <span class="keyword">null</span> );</span><br><span class="line">        &#125;</span><br><span class="line">        List&lt;String&gt; list3 = from.getProduces();</span><br><span class="line">        <span class="keyword">if</span> ( list3 != <span class="keyword">null</span> ) &#123;</span><br><span class="line">            swagger.setProduces( <span class="keyword">new</span> ArrayList&lt;String&gt;( list3 ) );</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            swagger.setProduces( <span class="keyword">null</span> );</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> swagger;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<p>从代码上的字面看，可以估计到api的请求的url等信息主要由下面的方法得到。</p>
-<blockquote>
-<p>swagger.setPaths( mapApiListings( from.getApiListings() ) );<br>为了查看具体的信息，我们先在此处打个断点。运行工程看看swagger paths里面的数据信息。某次执行后，debug的信息如下<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">paths = &#123;TreeMap@<span class="number">7288</span>&#125;  size = <span class="number">4</span></span><br><span class="line"> <span class="number">0</span> = &#123;TreeMap$Entry@<span class="number">7292</span>&#125; <span class="string">"/generator.cmd/a/generator"</span> -&gt; </span><br><span class="line">  <span class="type">key</span> = <span class="string">"/generator.cmd/a/generator"</span></span><br><span class="line">  value = &#123;Path@<span class="number">7297</span>&#125; </span><br><span class="line"> <span class="number">1</span> = &#123;TreeMap$Entry@<span class="number">7293</span>&#125; <span class="string">"/generator.cmd/b/generator"</span> -&gt; </span><br><span class="line">  <span class="type">key</span> = <span class="string">"/generator.cmd/b/generator"</span></span><br><span class="line">  value = &#123;Path@<span class="number">7299</span>&#125; </span><br><span class="line"> <span class="number">2</span> = &#123;TreeMap$Entry@<span class="number">7294</span>&#125; <span class="string">"/generator.cmd/c/generator"</span> -&gt; </span><br><span class="line">  <span class="type">key</span> = <span class="string">"/generator.cmd/c/generator"</span></span><br><span class="line">  value = &#123;Path@<span class="number">7301</span>&#125; </span><br><span class="line"> <span class="number">3</span> = &#123;TreeMap$Entry@<span class="number">7295</span>&#125; <span class="string">"/generator.cmd/generator"</span> -&gt; </span><br><span class="line">  <span class="type">key</span> = <span class="string">"/generator.cmd/generator"</span></span><br><span class="line">  value = &#123;Path@<span class="number">7303</span>&#125;</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<p>由此可见，在生成sagger信息的时候，就已经默认使用了TreeMap方法来排序；故返回给前端的信息都是由url的path排序的。所以为实现按position排序，估计可以由此着手修改。<br>为此我们重写该方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> xxx.swagger;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.google.common.base.Optional;</span><br><span class="line"><span class="keyword">import</span> com.google.common.collect.LinkedListMultimap;</span><br><span class="line"><span class="keyword">import</span> com.google.common.collect.Multimap;</span><br><span class="line"><span class="keyword">import</span> io.swagger.models.Operation;</span><br><span class="line"><span class="keyword">import</span> io.swagger.models.Path;</span><br><span class="line"><span class="keyword">import</span> io.swagger.models.Swagger;</span><br><span class="line"><span class="keyword">import</span> io.swagger.models.Tag;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Primary;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.service.ApiDescription;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.service.ApiListing;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.service.Documentation;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.swagger2.mappers.ServiceModelToSwagger2MapperImpl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.Collections;</span><br><span class="line"><span class="keyword">import</span> java.util.Comparator;</span><br><span class="line"><span class="keyword">import</span> java.util.Iterator;</span><br><span class="line"><span class="keyword">import</span> java.util.LinkedHashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> springfox.documentation.builders.BuilderDefaults.nullToEmptyList;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Primary</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceModelToSwagger2MapperImplExt</span> <span class="keyword">extends</span> <span class="title">ServiceModelToSwagger2MapperImpl</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span>  <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(ServiceModelToSwagger2MapperImplExt.class);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Swagger <span class="title">mapDocumentation</span><span class="params">(Documentation from)</span> </span>&#123;</span><br><span class="line">        Swagger swagger = <span class="keyword">super</span>.mapDocumentation(from);</span><br><span class="line">        swagger.setPaths( mapApiListings( from.getApiListings() ) );</span><br><span class="line">        <span class="comment">// 可自定义tag的排序</span></span><br><span class="line">        <span class="comment">// List&lt;Tag&gt; tags = swagger.getTags();</span></span><br><span class="line">        <span class="comment">// Collections.sort(tags, new Comparator&lt;Tag&gt;() &#123;</span></span><br><span class="line">        <span class="comment">//     @Override</span></span><br><span class="line">        <span class="comment">//     public int compare(Tag left, Tag right) &#123;</span></span><br><span class="line">        <span class="comment">//         String leftTag = left.getName().split("、")[0];</span></span><br><span class="line">        <span class="comment">//         String rightTag = right.getName().split("、")[0];</span></span><br><span class="line">        <span class="comment">//         int leftNum = 0;</span></span><br><span class="line">        <span class="comment">//         int rightNum = 0;</span></span><br><span class="line">        <span class="comment">//         try&#123;</span></span><br><span class="line">        <span class="comment">//             leftNum = Integer.parseInt(leftTag);</span></span><br><span class="line">        <span class="comment">//             rightNum = Integer.parseInt(rightTag);</span></span><br><span class="line">        <span class="comment">//         &#125;catch (Exception e)&#123;&#125;</span></span><br><span class="line">        <span class="comment">//         int position = Integer.compare(leftNum, rightNum);</span></span><br><span class="line">        <span class="comment">//         return position;</span></span><br><span class="line">        <span class="comment">//     &#125;</span></span><br><span class="line">        <span class="comment">// &#125;);</span></span><br><span class="line">        <span class="comment">// swagger.setTags(tags);</span></span><br><span class="line">        <span class="keyword">return</span> swagger;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Map&lt;String, Path&gt; <span class="title">mapApiListings</span><span class="params">(Multimap&lt;String, ApiListing&gt; apiListings)</span> </span>&#123;</span><br><span class="line">        Map&lt;String, Path&gt; paths = <span class="keyword">new</span> LinkedHashMap&lt;&gt;();</span><br><span class="line">        Multimap&lt;String, ApiListing&gt; apiListingMap = LinkedListMultimap.create();</span><br><span class="line">        Iterator iter = apiListings.entries().iterator();</span><br><span class="line">        <span class="keyword">while</span>(iter.hasNext())</span><br><span class="line">        &#123;</span><br><span class="line">            Map.Entry&lt;String, ApiListing&gt; entry = (Map.Entry&lt;String, ApiListing&gt;)iter.next();</span><br><span class="line">            ApiListing apis =  entry.getValue();</span><br><span class="line">            List&lt;ApiDescription&gt; apiDesc = apis.getApis();</span><br><span class="line">            List&lt;ApiDescription&gt; newApi = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">            <span class="keyword">for</span>(ApiDescription a:apiDesc)&#123;</span><br><span class="line">                newApi.add(a);</span><br><span class="line">            &#125;</span><br><span class="line">            Collections.sort(newApi, <span class="keyword">new</span> Comparator&lt;ApiDescription&gt;() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(ApiDescription left, ApiDescription right)</span> </span>&#123;</span><br><span class="line">                    <span class="keyword">int</span> leftPos = left.getOperations().size() == <span class="number">1</span> ? left.getOperations().get(<span class="number">0</span>).getPosition() : <span class="number">0</span>;</span><br><span class="line">                    <span class="keyword">int</span> rightPos = right.getOperations().size() == <span class="number">1</span> ? right.getOperations().get(<span class="number">0</span>).getPosition() : <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">int</span> position = Integer.compare(leftPos, rightPos);</span><br><span class="line">                    <span class="keyword">if</span>(position == <span class="number">0</span>) &#123;</span><br><span class="line">                        position = left.getPath().compareTo(right.getPath());</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">return</span> position;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">//因ApiListing的属性都是final故需要通过反射来修改值</span></span><br><span class="line">                ModifyFinalUtils.modify(apis, <span class="string">"apis"</span>, newApi);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            apiListingMap.put(entry.getKey(),apis);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (ApiListing each : apiListingMap.values()) &#123;</span><br><span class="line">            <span class="keyword">for</span> (ApiDescription api : each.getApis()) &#123;</span><br><span class="line">                paths.put(api.getPath(), mapOperations(api, Optional.fromNullable(paths.get(api.getPath()))));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> paths;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Path <span class="title">mapOperations</span><span class="params">(ApiDescription api, Optional&lt;Path&gt; existingPath)</span> </span>&#123;</span><br><span class="line">        Path path = existingPath.or(<span class="keyword">new</span> Path());</span><br><span class="line">        <span class="keyword">for</span> (springfox.documentation.service.Operation each : nullToEmptyList(api.getOperations())) &#123;</span><br><span class="line">            Operation operation = mapOperation(each);</span><br><span class="line">            path.set(each.getMethod().toString().toLowerCase(), operation);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> path;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ModifyFinalUtils</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">modify</span><span class="params">(Object object, String fieldName, Object newFieldValue)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Field field = object.getClass().getDeclaredField(fieldName);</span><br><span class="line"></span><br><span class="line">        Field modifiersField = Field.class.getDeclaredField(<span class="string">"modifiers"</span>);</span><br><span class="line">        modifiersField.setAccessible(<span class="keyword">true</span>); <span class="comment">//Field 的 modifiers 是私有的</span></span><br><span class="line">        modifiersField.setInt(field, field.getModifiers() &amp; ~Modifier.FINAL);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(!field.isAccessible()) &#123;</span><br><span class="line">            field.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        field.set(object, newFieldValue);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>执行后，我们debug可以得到以下信息<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">paths = &#123;LinkedHashMap@<span class="number">7364</span>&#125;  size = <span class="number">4</span></span><br><span class="line"> <span class="number">0</span> = &#123;LinkedHashMap$Entry@<span class="number">7370</span>&#125; <span class="string">"/generator.cmd/b/generator"</span> -&gt; </span><br><span class="line">  <span class="type">key</span> = <span class="string">"/generator.cmd/b/generator"</span></span><br><span class="line">  value = &#123;Path@<span class="number">7374</span>&#125; </span><br><span class="line"> <span class="number">1</span> = &#123;LinkedHashMap$Entry@<span class="number">7371</span>&#125; <span class="string">"/generator.cmd/generator"</span> -&gt; </span><br><span class="line">  <span class="type">key</span> = <span class="string">"/generator.cmd/generator"</span></span><br><span class="line">  value = &#123;Path@<span class="number">7375</span>&#125; </span><br><span class="line"> <span class="number">2</span> = &#123;LinkedHashMap$Entry@<span class="number">7372</span>&#125; <span class="string">"/generator.cmd/c/generator"</span> -&gt; </span><br><span class="line">  <span class="type">key</span> = <span class="string">"/generator.cmd/c/generator"</span></span><br><span class="line">  value = &#123;Path@<span class="number">7376</span>&#125; </span><br><span class="line"> <span class="number">3</span> = &#123;LinkedHashMap$Entry@<span class="number">7373</span>&#125; <span class="string">"/generator.cmd/a/generator"</span> -&gt; </span><br><span class="line">  <span class="type">key</span> = <span class="string">"/generator.cmd/a/generator"</span></span><br><span class="line">  value = &#123;Path@<span class="number">7377</span>&#125;</span><br></pre></td></tr></table></figure></p>
-<p>看来，按position排序已经生效。<br>然而我们打开网页访问，却发现排序功能没有实现～～～<br>待续。。。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2019/03/02/Java-ByteBuffer/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/03/02/Java-ByteBuffer/" itemprop="url">
-                  Java ByteBuffer
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-02T23:44:25+08:00">
-                2019-03-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="ByteBuffer"><a href="#ByteBuffer" class="headerlink" title="ByteBuffer"></a>ByteBuffer</h1><p><code>ByteBuffer</code>是一个抽象类，继承<code>Buffer</code>类；我们先来看看Buffer在Java doc中的定义 <a href="https://docs.oracle.com/javase/8/docs/api/" target="_blank" rel="external">https://docs.oracle.com/javase/8/docs/api/</a><br><figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">A container <span class="keyword">for</span> data <span class="keyword">of</span> a specific primitive <span class="keyword">type</span>.</span><br><span class="line">A <span class="keyword">buffer</span> <span class="keyword">is</span> a linear, finite <span class="keyword">sequence</span> <span class="keyword">of</span> elements <span class="keyword">of</span> a specific primitive <span class="keyword">type</span>. Aside from its content, the essential properties <span class="keyword">of</span> a <span class="keyword">buffer</span> are its capacity, limit, <span class="keyword">and</span> position:</span><br><span class="line"></span><br><span class="line">A <span class="keyword">buffer</span><span class="symbol">'s</span> capacity <span class="keyword">is</span> the number <span class="keyword">of</span> elements it contains. The capacity <span class="keyword">of</span> a <span class="keyword">buffer</span> <span class="keyword">is</span> never negative <span class="keyword">and</span> never changes.</span><br><span class="line"></span><br><span class="line">A <span class="keyword">buffer</span><span class="symbol">'s</span> limit <span class="keyword">is</span> the index <span class="keyword">of</span> the first element that should <span class="keyword">not</span> be read <span class="keyword">or</span> written. A <span class="keyword">buffer</span><span class="symbol">'s</span> limit <span class="keyword">is</span> never negative <span class="keyword">and</span> <span class="keyword">is</span> never greater than its capacity.</span><br><span class="line"></span><br><span class="line">A <span class="keyword">buffer</span><span class="symbol">'s</span> position <span class="keyword">is</span> the index <span class="keyword">of</span> the <span class="keyword">next</span> element <span class="keyword">to</span> be read <span class="keyword">or</span> written. A <span class="keyword">buffer</span><span class="symbol">'s</span> position <span class="keyword">is</span> never negative <span class="keyword">and</span> <span class="keyword">is</span> never greater than its limit.</span><br><span class="line"></span><br><span class="line">There <span class="keyword">is</span> one subclass <span class="keyword">of</span> this class <span class="keyword">for</span> each non-<span class="built_in">boolean</span> primitive <span class="keyword">type</span>.</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Buffer：可以看作是Java基本类型的数据的容器。包含<span class="number">4</span>个属性：</span><br><span class="line">capacity：容器的大小</span><br><span class="line"><span class="built_in">limit</span>：读写的边界，当<span class="built_in">position</span>到达<span class="built_in">limit</span>时，就表示将Buffer中的内容读完，或者将Buffer写满</span><br><span class="line"><span class="built_in">position</span>：表示当前可读写的指针，如果向Buffer对象中写入一个字节，那么就会向<span class="built_in">position</span>所指向的地址写入这个字节；如果是从Buffer读出一个字节，那么就会读出<span class="built_in">position</span>所指向的地址读出这个字节，读写完成后，<span class="built_in">position</span>+<span class="number">1</span></span><br><span class="line"></span><br><span class="line">上面几个属性的大小关系</span><br><span class="line"><span class="number">0</span> &lt;= mark &lt;= <span class="built_in">position</span> &lt;= <span class="built_in">limit</span> &lt;= capacity</span><br></pre></td></tr></table></figure>
-<p>下面我们拿 smart-socket 来做一个说明。<br>大家也可以看看smart-socket的doc；链接在此<br><a href="https://smartboot.gitee.io/docs/smart-socket/quickStart.html" target="_blank" rel="external">https://smartboot.gitee.io/docs/smart-socket/quickStart.html</a></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.smartboot.socket.Protocol;</span><br><span class="line"><span class="keyword">import</span> org.smartboot.socket.transport.AioSession;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.nio.ByteBuffer;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span><br><span class="line"> * <span class="doctag">@author</span> 三刀</span><br><span class="line"> * <span class="doctag">@version</span> V1.0 , 2018/8/25</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StringProtocol</span> <span class="keyword">implements</span> <span class="title">Protocol</span>&lt;<span class="title">String</span>&gt; </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> INT_LENGTH = <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * 解码方法</span><br><span class="line">     * <span class="doctag">@param</span> readBuffer AIO默认readBuffer到长度是512字节</span><br><span class="line">     * <span class="doctag">@param</span> session</span><br><span class="line">     * <span class="doctag">@param</span> eof</span><br><span class="line">     * <span class="doctag">@return</span></span><br><span class="line">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">decode</span><span class="params">(ByteBuffer readBuffer, AioSession&lt;String&gt; session, <span class="keyword">boolean</span> eof)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//识别消息长度 这个判断是否有必要？</span></span><br><span class="line">        <span class="keyword">if</span> (readBuffer.remaining() &lt; INT_LENGTH) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//判断是否存在半包情况</span></span><br><span class="line">        <span class="keyword">int</span> len = readBuffer.getInt(<span class="number">0</span>);<span class="comment">//绝对读，获取整个byteBuffer的信息长度，具体构造看encode</span></span><br><span class="line">        <span class="keyword">if</span> (readBuffer.remaining() &lt; len) &#123;<span class="comment">//position到limit到距离位置</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        readBuffer.getInt();<span class="comment">//跳过byteBuffer前面4个字节用于记录msg的长度</span></span><br><span class="line">        <span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[len - INT_LENGTH];</span><br><span class="line">        readBuffer.get(bytes);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> String(bytes);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ByteBuffer <span class="title">encode</span><span class="params">(String msg, AioSession&lt;String&gt; session)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">byte</span>[] bytes = msg.getBytes();</span><br><span class="line">        <span class="comment">//创建一个buffer容量为 数据长度（前面4个字节，用于存放消息长度） + 内容到长度</span></span><br><span class="line">        ByteBuffer buffer = ByteBuffer.allocate(INT_LENGTH + bytes.length);</span><br><span class="line">        buffer.putInt(INT_LENGTH+bytes.length);<span class="comment">//注意此处，增加4的长度（恰好是int在byte的长度），用于解码的时候，直接减掉4个字节的长度构造byte</span></span><br><span class="line">        buffer.put(bytes);</span><br><span class="line">        buffer.flip();</span><br><span class="line">        <span class="keyword">return</span> buffer;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1595,7 +1600,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">74</span>
+                <span class="site-state-item-count">77</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1608,7 +1613,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">92</span>
+                <span class="site-state-item-count">96</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

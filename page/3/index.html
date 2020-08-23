@@ -270,6 +270,396 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2018/03/09/生产环境Tomcat启动失败/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/03/09/生产环境Tomcat启动失败/" itemprop="url">
+                  生产环境Tomcat启动失败
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-09T20:36:01+08:00">
+                2018-03-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>今天企业微信应用一直在发警报,某个采购商不接收我们的回调数据.他们开发又没有时间处理该问题.只有对该采购商的回调回写的数据不作判断了.于是快速定位代码,加入判断逻辑语句.测试无问题,可以发布到线上了.</p>
+<p>打开Jenkins,爽快输入账号密码,点击发布.然而,tomcat停止后再也没有起来.</p>
+<h2 id="疑问"><a href="#疑问" class="headerlink" title="疑问"></a>疑问</h2><p>一直以来,使用Jenkins发布是没有任何问题的啊;会不会有是代码有问题.于是快速回滚线上代码.然而tomcat还是起不来.</p>
+<h2 id="先不管那么多-先看看tomcat的日志"><a href="#先不管那么多-先看看tomcat的日志" class="headerlink" title="先不管那么多,先看看tomcat的日志"></a>先不管那么多,先看看tomcat的日志</h2><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Java HotSpot(TM) 64-Bit<span class="built_in"> Server </span>VM warning: INFO: os::commit_memory(0x00000000c8000000, 805306368, 0) failed; <span class="attribute">error</span>=<span class="string">'Cannot allocate memory'</span> (<span class="attribute">errno</span>=12)</span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># There is insufficient memory for the Java Runtime Environment to continue.</span></span><br><span class="line"><span class="comment"># Native memory allocation (malloc) failed to allocate 805306368 bytes for committing reserved memory.</span></span><br><span class="line"><span class="comment"># An error report file with more information is saved as:</span></span><br><span class="line"><span class="comment"># /tmp/hs_err_pid9230.log</span></span><br></pre></td></tr></table></figure>
+<p>一看,才知道内存不够,所以起不来:<code>Cannot allocate memory</code>;</p>
+<p>使用 <code>free -mh</code> 命令一看,果然剩下可用内存: 150M.</p>
+<blockquote>
+<p>因是生产环境的发单业务,故先把自用的Admin给停了,保证发单业务正常运行.</p>
+</blockquote>
+<p>重启tomcat, 此时业务日志已正常输出.</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>重启服务的时候,不能单单看业务日志,还要看tomcat的启动日志.这样才能快速定位问题所在.而在此事件中,我仅仅是看业务日志,一开始还以为是业务日志的路径定位到错的位置了.找来找去,浪费7 8分钟.</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2018/03/08/有关IDEA的一些设置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/03/08/有关IDEA的一些设置/" itemprop="url">
+                  有关IDEA的一些设置
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-08T23:03:12+08:00">
+                2018-03-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近想用体验一下IDEA,故下载了社区版进行体验.</p>
+<h2 id="发现问题"><a href="#发现问题" class="headerlink" title="发现问题"></a>发现问题</h2><ol>
+<li>快捷键和中文输入法冲突;</li>
+<li>引入的包下的类,在类&gt;3个的时候会自动变成*引入.</li>
+</ol>
+<h2 id="解决引入-的问题"><a href="#解决引入-的问题" class="headerlink" title="解决引入*的问题"></a>解决引入*的问题</h2><p>在使用 Idea 的引入包的快捷键 <code>Ctrl+Alt+O</code> 的时候，当同一个包下的类引入超过3个就会自动变为*。这个方式看起来很怪异。解决方法：</p>
+<blockquote>
+<p>Editor-&gt;Code Style-&gt;Java-&gt;Imports<br>  <code>Class count to use import with &#39;*&#39;</code> 设置成 300  <code>Names count to use static import with &#39;*&#39;</code> 设置成300</p>
+</blockquote>
+<h2 id="解决智能提示的快捷与中文输入法冲突"><a href="#解决智能提示的快捷与中文输入法冲突" class="headerlink" title="解决智能提示的快捷与中文输入法冲突"></a>解决智能提示的快捷与中文输入法冲突</h2><h3 id="先设置智能示：忽略大小写敏感"><a href="#先设置智能示：忽略大小写敏感" class="headerlink" title="先设置智能示：忽略大小写敏感"></a>先设置智能示：忽略大小写敏感</h3><blockquote>
+<p>Editor-&gt;General-&gt;Code Completion  <code>Case sensitive completion</code> 修改为 <code>None</code> 然后点击 <code>Apply</code></p>
+</blockquote>
+<h3 id="设置智能提示快捷键为-Alt-‘-‘"><a href="#设置智能提示快捷键为-Alt-‘-‘" class="headerlink" title="设置智能提示快捷键为 Alt + ‘/‘"></a>设置智能提示快捷键为 Alt + ‘/‘</h3><blockquote>
+<p>Keymap-&gt; Main menu -&gt; Completion -&gt; 右键 <code>Clyclic Expand Word</code>  <code>移除Alt+&#39;/&#39;</code>的占用<br>    Keymap-&gt; Main menu -&gt; Completion -&gt; 右键<code>Basic Add Keyboard Shortcut</code> 然后按下 快捷键即可</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2018/03/08/URLConnection中文问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/03/08/URLConnection中文问题/" itemprop="url">
+                  URLConnection中文问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-08T22:49:36+08:00">
+                2018-03-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>今天在做开发的时候,发现服务器上接受不了中文的post.先看看测试的代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">sendPost</span><span class="params">(String url, String param)</span> </span>&#123;</span><br><span class="line">		PrintWriter out = <span class="keyword">null</span>;</span><br><span class="line">		BufferedReader in = <span class="keyword">null</span>;</span><br><span class="line">		String result = <span class="string">""</span>;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			URL realUrl = <span class="keyword">new</span> URL(url);</span><br><span class="line">			<span class="comment">// 打开和URL之间的连接</span></span><br><span class="line">			URLConnection conn = realUrl.openConnection();</span><br><span class="line">			<span class="comment">// 设置通用的请求属性</span></span><br><span class="line">			conn.setRequestProperty(<span class="string">"accept"</span>, <span class="string">"*/*"</span>);</span><br><span class="line">			conn.setRequestProperty(<span class="string">"connection"</span>, <span class="string">"Keep-Alive"</span>);</span><br><span class="line">			conn.setRequestProperty(<span class="string">"user-agent"</span>, <span class="string">"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)"</span>);</span><br><span class="line">			<span class="comment">// 发送POST请求必须设置如下两行</span></span><br><span class="line">			conn.setDoOutput(<span class="keyword">true</span>);</span><br><span class="line">			conn.setDoInput(<span class="keyword">true</span>);</span><br><span class="line">			<span class="comment">// 获取URLConnection对象对应的输出流</span></span><br><span class="line">			out = <span class="keyword">new</span> PrintWriter(conn.getOutputStream());</span><br><span class="line">			<span class="comment">// 发送请求参数</span></span><br><span class="line">			out.print(param);</span><br><span class="line">			<span class="comment">// flush输出流的缓冲</span></span><br><span class="line">			out.flush();</span><br><span class="line">			<span class="comment">// 定义BufferedReader输入流来读取URL的响应</span></span><br><span class="line">			in = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(conn.getInputStream()));</span><br><span class="line">			String line;</span><br><span class="line">			<span class="keyword">while</span> ((line = in.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">				result += line;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">			System.out.println(<span class="string">"发送 POST 请求出现异常！"</span> + e);</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 使用finally块来关闭输出流、输入流</span></span><br><span class="line">		<span class="keyword">finally</span> &#123;</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				<span class="keyword">if</span> (out != <span class="keyword">null</span>) &#123;</span><br><span class="line">					out.close();</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">if</span> (in != <span class="keyword">null</span>) &#123;</span><br><span class="line">					in.close();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125; <span class="keyword">catch</span> (IOException ex) &#123;</span><br><span class="line">				ex.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> result;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用上述代码,从windows环境下发送post数据到线上服务器,如果post数据中存在中文,则会抛出错误,接受不到数据的问题<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">java.nio.charset.MalformedInputException: Input length = <span class="number">1</span>  </span><br><span class="line">    at java.nio.charset.CoderResult.throwException(CoderResult.java:<span class="number">260</span>)  </span><br><span class="line">    at java.nio.charset.CharsetDecoder.decode(CharsetDecoder.java:<span class="number">781</span>)  </span><br><span class="line">    at cn.fuxi.nio.ReadFile.main(ReadFile.java:<span class="number">37</span>)</span><br></pre></td></tr></table></figure></p>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>对<code>PrintWriter</code>的内容设置编码,代码如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> PrintWriter(<span class="keyword">new</span> OutputStreamWriter(conn.getOutputStream(), httpBuilder.getEncode()));</span><br></pre></td></tr></table></figure></p>
+<h3 id="or-直接使用OutputStreamWriter"><a href="#or-直接使用OutputStreamWriter" class="headerlink" title="or 直接使用OutputStreamWriter"></a>or 直接使用OutputStreamWriter</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">sendPostWithContentType</span><span class="params">(String url, String param ,String content_type)</span> </span>&#123;</span><br><span class="line">    	OutputStreamWriter out = <span class="keyword">null</span>;</span><br><span class="line">        BufferedReader in = <span class="keyword">null</span>;</span><br><span class="line">        String result = <span class="string">""</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            URL realUrl = <span class="keyword">new</span> URL(url);</span><br><span class="line">            <span class="comment">// 打开和URL之间的连接</span></span><br><span class="line">            URLConnection conn = realUrl.openConnection();</span><br><span class="line">            <span class="comment">// 设置通用的请求属性</span></span><br><span class="line">            conn.setRequestProperty(<span class="string">"accept"</span>, <span class="string">"*/*"</span>);</span><br><span class="line">            conn.setRequestProperty(<span class="string">"connection"</span>, <span class="string">"Keep-Alive"</span>);</span><br><span class="line">            conn.setRequestProperty(<span class="string">"Content-Type"</span>, content_type);</span><br><span class="line">            conn.setRequestProperty(<span class="string">"user-agent"</span>,<span class="string">"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)"</span>);</span><br><span class="line"></span><br><span class="line">            conn.setConnectTimeout(<span class="number">50000</span>);</span><br><span class="line">            conn.setReadTimeout(<span class="number">50000</span>);</span><br><span class="line">            <span class="comment">// 发送POST请求必须设置如下两行</span></span><br><span class="line">            conn.setDoOutput(<span class="keyword">true</span>);</span><br><span class="line">            conn.setDoInput(<span class="keyword">true</span>);</span><br><span class="line">            <span class="comment">// 获取URLConnection对象对应的输出流</span></span><br><span class="line">             out = <span class="keyword">new</span> OutputStreamWriter(conn  </span><br><span class="line">                    .getOutputStream(), <span class="string">"UTF-8"</span>);</span><br><span class="line">            <span class="comment">// 发送请求参数</span></span><br><span class="line">            out.write(param);</span><br><span class="line">            <span class="comment">// flush输出流的缓冲</span></span><br><span class="line">            out.flush();</span><br><span class="line">            <span class="comment">// 定义BufferedReader输入流来读取URL的响应</span></span><br><span class="line">            in = <span class="keyword">new</span> BufferedReader(</span><br><span class="line">                    <span class="keyword">new</span> InputStreamReader(conn.getInputStream()));</span><br><span class="line">            String line;</span><br><span class="line">            <span class="keyword">while</span> ((line = in.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                result += line;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        	 log.info(e.getMessage(),e);</span><br><span class="line">             log.error(e.getMessage(),e);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//使用finally块来关闭输出流、输入流</span></span><br><span class="line">        <span class="keyword">finally</span>&#123;</span><br><span class="line">            <span class="keyword">try</span>&#123;</span><br><span class="line">                <span class="keyword">if</span>(out!=<span class="keyword">null</span>)&#123;</span><br><span class="line">                    out.close();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span>(in!=<span class="keyword">null</span>)&#123;</span><br><span class="line">                    in.close();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span>(IOException e)&#123;</span><br><span class="line">            	 log.info(e.getMessage(),e);</span><br><span class="line">                 log.error(e.getMessage(),e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2018/03/04/记录在jsp中调试时-中文乱码的问题/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1237,399 +1627,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/11/10/WEB前端开发之-viewport/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/11/10/WEB前端开发之-viewport/" itemprop="url">
-                  WEB前端开发之-viewport
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-10T08:35:24+08:00">
-                2017-11-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我们做移动端的H5开发都会有用到viewport,那viewport究竟是什么呢?不着急,我们先看几篇文章:</p>
-<ol>
-<li><a href="http://weizhifeng.net/viewports.html" target="_blank" rel="external">两个viewport的故事</a></li>
-<li><a href="http://www.css88.com/archives/5975" target="_blank" rel="external">说说移动前端中 viewport</a></li>
-<li><a href="https://www.cnblogs.com/pigtail/archive/2013/03/15/2961631.html" target="_blank" rel="external">HTML meta viewport属性说明</a></li>
-</ol>
-<h2 id="viewport是什么"><a href="#viewport是什么" class="headerlink" title="viewport是什么?"></a>viewport是什么?</h2><p><code>手机浏览器是把页面放在一个虚拟的“窗口”（viewport）中，窗口可大于或小于手机的可视区域，一般手机默认viewport大于可视区域。这样不会破坏没有针对手机浏览器优化的网页的布局，用户可以通过平移和缩放来看网页的其他部分。</code></p>
-<h2 id="viewport元素内容介绍"><a href="#viewport元素内容介绍" class="headerlink" title="viewport元素内容介绍"></a>viewport元素内容介绍</h2><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;meta <span class="attribute">name</span>=”viewport” <span class="attribute">content</span>=”width=device-width, <span class="attribute">initial-scale</span>=1, <span class="attribute">maximum-scale</span>=1″&gt;</span><br></pre></td></tr></table></figure>
-<p>我们从上面常见的viewport元素中,看看:</p>
-<ol>
-<li>width：控制 viewport 的大小，可以指定的一个值，如果 600，或者特殊的值，如 device-width 为设备的宽度（单位为缩放为 100% 时的 CSS 的像素）。</li>
-<li>height：和 width 相对应，指定高度。</li>
-<li>initial-scale：初始缩放比例，也即是当页面第一次 load 的时候缩放比例。</li>
-<li>maximum-scale：允许用户缩放到的最大比例。</li>
-<li>minimum-scale：允许用户缩放到的最小比例。</li>
-<li>user-scalable：用户是否可以手动缩放。</li>
-<li>有关viewport兼容的写法如下:<br><code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no&quot; /&gt;</code></li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/11/02/tomcat安装脚本/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/11/02/tomcat安装脚本/" itemprop="url">
-                  tomcat安装脚本
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-02T20:31:16+08:00">
-                2017-11-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>….</p>
-<h2 id="脚本如下"><a href="#脚本如下" class="headerlink" title="脚本如下"></a>脚本如下</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/sh</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> init tomcat7.X</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 20170417</span></span><br><span class="line"><span class="meta"></span><br><span class="line">#</span><span class="bash"> 检查是否为root用户，脚本必须在root权限下运行</span></span><br><span class="line">if [[ "$(whoami)" != "root" ]]; then</span><br><span class="line">    echo "please run this script as root !" &gt;&amp;2</span><br><span class="line">    exit 1</span><br><span class="line">fi</span><br><span class="line">echo -e "\033[31m the script only Support CentOS_6 x86_64 \033[0m"</span><br><span class="line">echo -e "\033[31m system initialization script, Please Seriously. press ctrl+C to cancel \033[0m"</span><br><span class="line"><span class="meta"></span><br><span class="line">#</span><span class="bash"> 检查是否为64位系统，这个脚本只支持64位脚本</span></span><br><span class="line">platform=`uname -i`</span><br><span class="line">if [ $platform != "x86_64" ];then</span><br><span class="line">    echo "this script is only for 64bit Operating System !"</span><br><span class="line">    exit 1</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">cat &lt;&lt; EOF</span><br><span class="line">+---------------------------------------+</span><br><span class="line">|   your system is CentOS 6 x86_64      |</span><br><span class="line">|           start tomcat7 init          |</span><br><span class="line">+---------------------------------------+</span><br><span class="line">EOF</span><br><span class="line">sleep 1</span><br><span class="line"><span class="meta"></span><br><span class="line">#</span><span class="bash">配置tomcat安装的路径及版本</span></span><br><span class="line">tomcatPathVersion="/opt/tomcat7"</span><br><span class="line"><span class="meta">#</span><span class="bash"> 下载tomcat openssl 配置tomcat apr</span></span><br><span class="line">download_tomcat()&#123;</span><br><span class="line">  yum install -y perl gcc zlib-devel</span><br><span class="line">  wget http://mirror.bit.edu.cn/apache/tomcat/tomcat-7/v7.0.77/bin/apache-tomcat-7.0.77.tar.gz</span><br><span class="line">  wget https://www.openssl.org/source/openssl-1.1.0c.tar.gz</span><br><span class="line">  tar zxvf openssl-1.1.0c.tar.gz</span><br><span class="line">  cd openssl-1.1.0c</span><br><span class="line">  ./config --prefix=/usr/local/ssl-1.1.0c shared zlib</span><br><span class="line">  make &amp;&amp; make install</span><br><span class="line">  cd ../</span><br><span class="line">  wget http://mirrors.cnnic.cn/apache//apr/apr-1.5.2.tar.gz</span><br><span class="line">  wget http://mirrors.cnnic.cn/apache//apr/apr-util-1.5.4.tar.gz</span><br><span class="line">  wget http://mirrors.cnnic.cn/apache//apr/apr-iconv-1.2.1.tar.gz</span><br><span class="line">  tar zxvf apache-tomcat-7.0.77.tar.gz</span><br><span class="line">  cd apache-tomcat-7.0.77</span><br><span class="line">  mkdir -p $tomcatPathVersion/bin</span><br><span class="line">  mkdir -p $tomcatPathVersion/lib</span><br><span class="line">  cp -R bin/* $tomcatPathVersion/bin</span><br><span class="line">  cp -R lib/* $tomcatPathVersion/lib</span><br><span class="line">  cd ../</span><br><span class="line">  tar zxvf apr-1.5.2.tar.gz</span><br><span class="line">  cd apr-1.5.2</span><br><span class="line">  ./configure --prefix=$tomcatPathVersion/apr</span><br><span class="line">  make &amp;&amp; make install</span><br><span class="line">  cd ../</span><br><span class="line">  tar zxvf apr-iconv-1.2.1.tar.gz</span><br><span class="line">  cd apr-iconv-1.2.1</span><br><span class="line">  ./configure --prefix=$tomcatPathVersion/apr-iconv --with-apr=$tomcatPathVersion/apr</span><br><span class="line">  make &amp;&amp; make install</span><br><span class="line">  cd ../</span><br><span class="line">  tar zxvf apr-util-1.5.4.tar.gz</span><br><span class="line">  cd apr-util-1.5.4</span><br><span class="line">  ./configure --prefix=$tomcatPathVersion/apr-util --with-apr=$tomcatPathVersion/apr --with-apr-iconv=$tomcatPathVersion/apr-iconv/bin/apriconv</span><br><span class="line">  make &amp;&amp; make install</span><br><span class="line">  cd $tomcatPathVersion/bin/</span><br><span class="line">  tar zxvf tomcat-native.tar.gz</span><br><span class="line">  cd $tomcatPathVersion/bin/tomcat-native-1.2.12-src/native</span><br><span class="line">  ./configure --prefix=$tomcatPathVersion/apr --with-ssl=/usr/local/ssl-1.1.0c --with-apr=$tomcatPathVersion/apr --with-java-home=$JAVA_HOME</span><br><span class="line">  make &amp;&amp; make install</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta"></span><br><span class="line">#</span><span class="bash"> <span class="keyword">done</span></span></span><br><span class="line">done_ok()&#123;</span><br><span class="line">cat &lt;&lt; EOF</span><br><span class="line">  +-------------------------------------------------+</span><br><span class="line">  |       tomcat7 optimizer is done                 |</span><br><span class="line">  +-------------------------------------------------+</span><br><span class="line">EOF</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta"></span><br><span class="line">#</span><span class="bash"> main</span></span><br><span class="line">main()&#123;</span><br><span class="line">    download_tomcat</span><br><span class="line">    done_ok</span><br><span class="line">&#125;</span><br><span class="line">main</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/10/16/CentOS-搭建WordPress环境-nginx/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/10/16/CentOS-搭建WordPress环境-nginx/" itemprop="url">
-                  CentOS 搭建WordPress环境(nginx)
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-16T23:26:14+08:00">
-                2017-10-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>之前一直都是在用阿里云提供的WordPress镜像.最近需要在阿里云之外的服务器上搭建一套WordPress环境.环境信息如下:<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">系统<span class="selector-pseudo">:CentOS</span> 6<span class="selector-class">.5</span></span><br><span class="line">数据库<span class="selector-pseudo">:MySQL(</span>已安装)</span><br><span class="line"><span class="selector-tag">Nginx</span>:已搭建</span><br></pre></td></tr></table></figure></p>
-<p>故,只需要搭建php环境即可</p>
-<h2 id="安装php"><a href="#安装php" class="headerlink" title="安装php"></a>安装php</h2><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum <span class="keyword">install</span> -y php php-fpm</span><br></pre></td></tr></table></figure>
-<h2 id="安装PHP组件"><a href="#安装PHP组件" class="headerlink" title="安装PHP组件"></a>安装PHP组件</h2><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install php-mysql php-gd libjpeg* php-imap php-ldap php-odbc php-pear php-<span class="keyword">xml</span> <span class="title">php-xmlrpc</span> php-mbstring php-mcrypt php-bcmath php-mhash libmcrypt</span><br></pre></td></tr></table></figure>
-<p><code>然而</code>报<code>mysql-libs-*</code> conflicts with file <code>MySQL-server-*</code></p>
-<p>解决方法:<br><code>安装:MySQL-shared-compat-*组件即可</code>;后续继续安装PHP组件</p>
-<h2 id="nginx配置"><a href="#nginx配置" class="headerlink" title="nginx配置"></a>nginx配置</h2><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span> <span class="number">80</span> ;</span><br><span class="line">        <span class="attribute">server_name</span> www.test.com;</span><br><span class="line">        <span class="attribute">error_page</span> <span class="number">404</span> <span class="number">502</span> = <span class="variable">@fetch</span>;</span><br><span class="line">        <span class="attribute">location</span>  <span class="variable">@fetch</span> &#123;</span><br><span class="line">           <span class="attribute">default_type</span> application/json;</span><br><span class="line">           <span class="attribute">return</span> <span class="number">200</span> <span class="string">'&#123;"result_Code":110,"result":110,"state":false,"msg":"service unavailable..."&#125;'</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="attribute">location</span>  <span class="regexp">~ \.(js|css|gif|jpg|jpeg|png|svg|woff2|woff|ttf)$</span> &#123;</span><br><span class="line">                <span class="attribute">root</span> /data/mall/wwwroot/www.test.com;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="attribute">location</span> <span class="regexp">~ /</span> &#123;</span><br><span class="line">                        <span class="attribute">root</span> /data/mall/wwwroot/www.test.com;</span><br><span class="line">                        <span class="attribute">fastcgi_pass</span> <span class="number">127.0.0.1:9000</span>;</span><br><span class="line">                        <span class="attribute">fastcgi_index</span> index.php;</span><br><span class="line">                        <span class="attribute">fastcgi_param</span> SCRIPT_FILENAME <span class="variable">$document_root</span><span class="variable">$fastcgi_script_name</span>;</span><br><span class="line">                        <span class="attribute">include</span> fastcgi_params;</span><br><span class="line">                &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="下载WordPress"><a href="#下载WordPress" class="headerlink" title="下载WordPress"></a>下载WordPress</h2><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget <span class="string">https:</span><span class="comment">//cn.wordpress.org/wordpress-4.8.1-zh_CN.tar.gz</span></span><br></pre></td></tr></table></figure>
-<p>解压至:/data/mall/wwwroot/www.test.com</p>
-<h2 id="您的PHP似乎没有安装运行WordPress所必需的MySQL扩展"><a href="#您的PHP似乎没有安装运行WordPress所必需的MySQL扩展" class="headerlink" title="您的PHP似乎没有安装运行WordPress所必需的MySQL扩展"></a>您的PHP似乎没有安装运行WordPress所必需的MySQL扩展</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vi <span class="regexp">/etc/</span>php.ini</span><br><span class="line"><span class="comment">#设置 extension_dir</span></span><br><span class="line">extension_dir = “<span class="regexp">/usr/</span>lib64<span class="regexp">/php/m</span>odules”</span><br></pre></td></tr></table></figure>
-<h2 id="配置php-fpm运行用户"><a href="#配置php-fpm运行用户" class="headerlink" title="配置php-fpm运行用户"></a>配置php-fpm运行用户</h2><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vi <span class="meta-keyword">/etc/</span>php-fpm.d/www.conf</span><br><span class="line"><span class="meta">#修改相关的group user即可</span></span><br></pre></td></tr></table></figure>
-<p>最后往MySQL中增加网站的数据库以及用户后启动php-fpm即可.</p>
-<p>#访问出现403<br>此问题一般是wordpress的根目录权限没有设置为755造成；需检查是否被错误配置为700</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1679,7 +1676,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">74</span>
+                <span class="site-state-item-count">77</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1692,7 +1689,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">92</span>
+                <span class="site-state-item-count">96</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
