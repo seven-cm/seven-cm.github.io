@@ -270,6 +270,279 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2021/04/10/记一次数据库100-优化过程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2021/04/10/记一次数据库100-优化过程/" itemprop="url">
+                  记一次数据库100%优化过程
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-10T23:43:51+08:00">
+                2021-04-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h1><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">宿主机：CentOS Linux release <span class="number">7.6</span><span class="number">.1810</span> (Core)</span><br><span class="line">docker版本：Docker version <span class="number">19.03</span><span class="number">.12</span>, build <span class="number">48</span>a66213fe</span><br><span class="line">mysql镜像版本：mysql:<span class="number">5.7</span><span class="number">.31</span></span><br></pre></td></tr></table></figure>
+<h1 id="问题表现"><a href="#问题表现" class="headerlink" title="问题表现"></a>问题表现</h1><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker stats</span><br><span class="line"></span><br><span class="line">CONTAINER ID        NAME                CPU %               MEM USAGE / LIMIT     MEM %               NET I/O             BLOCK I/O           PIDS</span><br><span class="line"><span class="number">3f</span>7fb4fc6bb9        mysql               <span class="number">219.60</span>%             <span class="number">897.3</span>MiB / <span class="number">15.51</span>GiB   <span class="number">5.65</span>%               <span class="number">2.15</span>TB / <span class="number">18.4</span>TB     <span class="number">0</span>B / <span class="number">0</span>B             <span class="number">139</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>会发现 mysql 经常处于 cpu% &gt; 150 的情况</p>
+</blockquote>
+<h2 id="解决流程"><a href="#解决流程" class="headerlink" title="解决流程"></a>解决流程</h2><h3 id="优先查看-slow-log"><a href="#优先查看-slow-log" class="headerlink" title="优先查看 slow.log"></a>优先查看 slow.log</h3><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tail -f <span class="regexp">/xxx/</span>xxx<span class="regexp">/xx/</span>slow.log</span><br></pre></td></tr></table></figure>
+<p>10 几分钟过后，却没有任何新的慢查询语句输出。</p>
+<h3 id="进数据库"><a href="#进数据库" class="headerlink" title="进数据库"></a>进数据库</h3><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mysql -uroot -h127<span class="number">.0</span><span class="number">.0</span><span class="number">.1</span> -p</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">show processlist;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>通过 show processlist 查看数据库正在执行的语句。</p>
+</blockquote>
+<p>把相关执行语句 explain 观察一下查询效率问题。</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">explain</span> <span class="keyword">select</span> xxxxx <span class="keyword">from</span> xxxxx;</span><br></pre></td></tr></table></figure>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; <span class="keyword">explain</span> <span class="keyword">select</span> * <span class="keyword">from</span>  xxxx  <span class="keyword">WHERE</span> a=<span class="number">41</span> <span class="keyword">AND</span> b=<span class="number">1</span>  <span class="keyword">order</span> <span class="keyword">by</span> id <span class="keyword">desc</span> <span class="keyword">limit</span> <span class="number">1</span> \G;</span><br><span class="line">*************************** <span class="number">1.</span> <span class="keyword">row</span> ***************************</span><br><span class="line">           id: <span class="number">1</span></span><br><span class="line">  select_type: SIMPLE</span><br><span class="line">        <span class="keyword">table</span>: xxxx</span><br><span class="line">   partitions: <span class="keyword">NULL</span></span><br><span class="line">         <span class="keyword">type</span>: range</span><br><span class="line">possible_keys: xxxx_a,xxxx_id</span><br><span class="line">          key: xxxx_b</span><br><span class="line">      key_len: <span class="number">2</span></span><br><span class="line">          <span class="keyword">ref</span>: <span class="keyword">NULL</span></span><br><span class="line">         <span class="keyword">rows</span>: <span class="number">368928</span></span><br><span class="line">     filtered: <span class="number">3.49</span></span><br><span class="line">        Extra: <span class="keyword">Using</span> <span class="keyword">index</span> condition; <span class="keyword">Using</span> <span class="keyword">where</span></span><br><span class="line"><span class="number">1</span> <span class="keyword">row</span> <span class="keyword">in</span> <span class="keyword">set</span>, <span class="number">1</span> <span class="built_in">warning</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+<p>可见每次查询类似的结果，可能搜索 30W 的数据(估算值);</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">mysql&gt;</span> <span class="string">explain</span> <span class="string">select</span> <span class="string">*</span> <span class="string">from</span> <span class="string">xxxx</span> <span class="string">join</span> <span class="string">(select</span> <span class="string">max(id)</span> <span class="string">id</span> <span class="string">from</span> <span class="string">xxxx</span>  <span class="string">WHERE</span>  <span class="string">a=41</span> <span class="string">AND</span> <span class="string">b=1)</span> <span class="string">as</span> <span class="string">t</span> <span class="string">on</span> <span class="string">t.id</span> <span class="string">=</span> <span class="string">xxxx.id</span> <span class="string">\G;</span></span><br><span class="line"><span class="string">***************************</span> <span class="number">1.</span> <span class="string">row</span> <span class="string">***************************</span></span><br><span class="line"><span class="attr">           id:</span> <span class="number">1</span></span><br><span class="line"><span class="attr">  select_type:</span> <span class="string">PRIMARY</span></span><br><span class="line"><span class="attr">        table:</span> <span class="string">&lt;derived2&gt;</span></span><br><span class="line"><span class="attr">   partitions:</span> <span class="literal">NULL</span></span><br><span class="line"><span class="attr">         type:</span> <span class="string">system</span></span><br><span class="line"><span class="attr">possible_keys:</span> <span class="literal">NULL</span></span><br><span class="line"><span class="attr">          key:</span> <span class="literal">NULL</span></span><br><span class="line"><span class="attr">      key_len:</span> <span class="literal">NULL</span></span><br><span class="line"><span class="attr">          ref:</span> <span class="literal">NULL</span></span><br><span class="line"><span class="attr">         rows:</span> <span class="number">1</span></span><br><span class="line"><span class="attr">     filtered:</span> <span class="number">100.00</span></span><br><span class="line"><span class="attr">        Extra:</span> <span class="literal">NULL</span></span><br><span class="line"><span class="string">***************************</span> <span class="number">2.</span> <span class="string">row</span> <span class="string">***************************</span></span><br><span class="line"><span class="attr">           id:</span> <span class="number">1</span></span><br><span class="line"><span class="attr">  select_type:</span> <span class="string">PRIMARY</span></span><br><span class="line"><span class="attr">        table:</span> <span class="string">xxxx</span></span><br><span class="line"><span class="attr">   partitions:</span> <span class="literal">NULL</span></span><br><span class="line"><span class="attr">         type:</span> <span class="string">const</span></span><br><span class="line"><span class="attr">possible_keys:</span> <span class="string">PRIMARY</span></span><br><span class="line"><span class="attr">          key:</span> <span class="string">PRIMARY</span></span><br><span class="line"><span class="attr">      key_len:</span> <span class="number">4</span></span><br><span class="line"><span class="attr">          ref:</span> <span class="string">const</span></span><br><span class="line"><span class="attr">         rows:</span> <span class="number">1</span></span><br><span class="line"><span class="attr">     filtered:</span> <span class="number">100.00</span></span><br><span class="line"><span class="attr">        Extra:</span> <span class="literal">NULL</span></span><br><span class="line"><span class="string">***************************</span> <span class="number">3.</span> <span class="string">row</span> <span class="string">***************************</span></span><br><span class="line"><span class="attr">           id:</span> <span class="number">2</span></span><br><span class="line"><span class="attr">  select_type:</span> <span class="string">DERIVED</span></span><br><span class="line"><span class="attr">        table:</span> <span class="string">xxxx</span></span><br><span class="line"><span class="attr">   partitions:</span> <span class="literal">NULL</span></span><br><span class="line"><span class="attr">         type:</span> <span class="string">index_merge</span></span><br><span class="line"><span class="attr">possible_keys:</span> <span class="string">xxxx_a,xxxx_id</span></span><br><span class="line"><span class="attr">          key:</span> <span class="string">xxxx_b</span></span><br><span class="line"><span class="attr">      key_len:</span> <span class="number">5</span><span class="string">,2</span></span><br><span class="line"><span class="attr">          ref:</span> <span class="literal">NULL</span></span><br><span class="line"><span class="attr">         rows:</span> <span class="number">12894</span></span><br><span class="line"><span class="attr">     filtered:</span> <span class="number">100.00</span></span><br><span class="line"><span class="attr">        Extra:</span> <span class="string">Using</span> <span class="string">intersect(xxx_id,xxx_b);</span> <span class="string">Using</span> <span class="string">where;</span> <span class="string">Using</span> <span class="string">index</span></span><br><span class="line"><span class="number">3</span> <span class="string">rows</span> <span class="string">in</span> <span class="string">set,</span> <span class="number">1</span> <span class="string">warning</span> <span class="string">(0.06</span> <span class="string">sec)</span></span><br></pre></td></tr></table></figure>
+<p>优化后的 docker stats</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CONTAINER ID        NAME                CPU %               MEM USAGE / LIMIT     MEM %               NET I/O             BLOCK I/O           PIDS</span><br><span class="line"><span class="number">3f</span>7fb4fc6bb9        mysql               <span class="number">21.46</span>%              <span class="number">897.3</span>MiB / <span class="number">15.51</span>GiB   <span class="number">5.65</span>%               <span class="number">2.15</span>TB / <span class="number">18.4</span>TB     <span class="number">0</span>B / <span class="number">0</span>B             <span class="number">139</span></span><br></pre></td></tr></table></figure>
+<h1 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h1><p>1、<a href="https://dev.mysql.com/doc/refman/5.7/en/explain-output.html" target="_blank" rel="external">mysql 5.7 有关 explain 输出的解析</a></p>
+<p>2、<a href="https://www.eversql.com/mysql-explain-example-explaining-mysql-explain-using-stackoverflow-data/#:~:text=rows%20-%20Indicates%20the%20amount%20of%20number%20of,unfiltered%20by%20the%20conditions%20in%20the%20WHERE%20clause." target="_blank" rel="external">MySQL Explain Example</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2021/04/10/记一次svn迁移/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2021/04/10/记一次svn迁移/" itemprop="url">
+                  记一次svn迁移
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-10T23:42:49+08:00">
+                2021-04-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>准备把 svn 迁移到 gitlab 去;故记录一下操作过程。</p>
+</blockquote>
+<h1 id="迁移命令"><a href="#迁移命令" class="headerlink" title="迁移命令"></a>迁移命令</h1><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git svn <span class="keyword">clone</span> <span class="title">svn</span>://xxx/xxx/xxx</span><br></pre></td></tr></table></figure>
+<p>奈何在 windows 下执行实在太慢了。3000 多个的提交记录，执行了 2 个小时还未完成。</p>
+<p>通过搜索得知 在 linux 中执行速度比在 Windows 中快。</p>
+<blockquote>
+<p>This seems to be a problem of the windows port of ‘git svn’. Or more specifically one of the perl libraries of ‘git svn’ on windows/cygwin.</p>
+</blockquote>
+<h1 id="在虚拟机中安装-CentOS-7"><a href="#在虚拟机中安装-CentOS-7" class="headerlink" title="在虚拟机中安装 CentOS 7"></a>在虚拟机中安装 CentOS 7</h1><h1 id="安装-git-svn"><a href="#安装-git-svn" class="headerlink" title="安装 git-svn"></a>安装 git-svn</h1><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum <span class="keyword">install</span> git-svn</span><br></pre></td></tr></table></figure>
+<h1 id="再次执行迁移命令"><a href="#再次执行迁移命令" class="headerlink" title="再次执行迁移命令"></a>再次执行迁移命令</h1><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git svn <span class="keyword">clone</span> <span class="title">svn</span>://xxx/xxx/xxx</span><br></pre></td></tr></table></figure>
+<p>最终花几分钟执行完成。</p>
+<h1 id="后续提交到-git"><a href="#后续提交到-git" class="headerlink" title="后续提交到 git"></a>后续提交到 git</h1><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git remote <span class="keyword">add</span><span class="bash"> origin https://xxx.xxx.xxx.git</span></span><br><span class="line">git <span class="keyword">add</span><span class="bash"> .</span></span><br><span class="line">git commit -m <span class="string">"svn update 2 git"</span></span><br><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2020/08/23/阿里云RDS到期切换记录/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -495,7 +768,7 @@
         
           
             <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>在按网上的教程搭建好gitalk后，出现“gitalk Validation Failed”的问题。</p>
-<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>【csdn-death05】<a href="https://blog.csdn.net/death05/article/details/83618887" target="_blank" rel="external">https://blog.csdn.net/death05/article/details/83618887</a></p>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>【csdn-death05】·gitalk Error: Validation Failed·<a href="https://blog.csdn.net/death05/article/details/83618887" target="_blank" rel="external">https://blog.csdn.net/death05/article/details/83618887</a></p>
 
           
         
@@ -1293,264 +1566,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2019/05/01/CentOS-搭建-gitolite/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/05/01/CentOS-搭建-gitolite/" itemprop="url">
-                  CentOS 搭建 gitolite
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-01T22:58:30+08:00">
-                2019-05-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近准备把svn更换为git，为了方便管理用户权限，准备使用gitolite。</p>
-<h2 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h2><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y <span class="keyword">install</span> git</span><br></pre></td></tr></table></figure>
-<h2 id="安装gitolite依赖"><a href="#安装gitolite依赖" class="headerlink" title="安装gitolite依赖"></a>安装gitolite依赖</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum -y <span class="keyword">install</span> perl</span><br><span class="line">yum -y <span class="keyword">install</span> perl-<span class="keyword">Data</span>-Dumper.x86_64</span><br></pre></td></tr></table></figure>
-<h2 id="添加git用户"><a href="#添加git用户" class="headerlink" title="添加git用户"></a>添加git用户</h2><figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">useradd git</span></span><br></pre></td></tr></table></figure>
-<h2 id="安装gitolite"><a href="#安装gitolite" class="headerlink" title="安装gitolite"></a>安装gitolite</h2><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">su</span> git</span><br><span class="line"><span class="keyword">cd</span> ~</span><br><span class="line">git clone https:<span class="comment">//github.com/sitaramc/gitolite</span></span><br><span class="line"><span class="keyword">mkdir</span> bin</span><br><span class="line">./gitolite/install -to <span class="variable">$HOME</span>/bin</span><br></pre></td></tr></table></figure>
-<h2 id="下面的步骤可在客户端做或直接在git用户下操作也可以"><a href="#下面的步骤可在客户端做或直接在git用户下操作也可以" class="headerlink" title="下面的步骤可在客户端做或直接在git用户下操作也可以"></a>下面的步骤可在客户端做或直接在git用户下操作也可以</h2><blockquote>
-<p>区别是，如果你想在客户端管理（添加用户，仓库等信息）就在客户端增加；若仅仅在服务端管理，就在服务端操作即可<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#生成rsa密钥</span><br><span class="line">ssh-keygen -t rsa</span><br><span class="line">mv .ssh/id_rsa<span class="selector-class">.pub</span> admin<span class="selector-class">.pub</span></span><br><span class="line"><span class="variable">$HOME</span>/bin/gitolite setup -pk .ssh/admin.pub</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<h2 id="clone配置仓库"><a href="#clone配置仓库" class="headerlink" title="clone配置仓库"></a>clone配置仓库</h2><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone <span class="symbol">git@</span><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:gitolite-admin</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>clone后即可在此仓库中配置git的用户密钥、仓库、权限</p>
-<h2 id="配置说明"><a href="#配置说明" class="headerlink" title="配置说明"></a>配置说明</h2><p>相关配置，可参考网站：<br><a href="https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitolite" target="_blank" rel="external">https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitolite</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2019/04/24/VisualVM远程监控阿里云tomcat/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/04/24/VisualVM远程监控阿里云tomcat/" itemprop="url">
-                  VisualVM远程监控阿里云tomcat
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-24T23:03:59+08:00">
-                2019-04-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近阿里云上的cpu占用率比较高，想了解是什么原因造成；故打算使用VisualVM工具来监控一下。</p>
-<h2 id="下载地址"><a href="#下载地址" class="headerlink" title="下载地址"></a>下载地址</h2><p>搜索一下，就能找到相关的网站 <a href="https://visualvm.github.io/" target="_blank" rel="external">https://visualvm.github.io/</a><br>到下载页面：<a href="https://visualvm.github.io/download.html" target="_blank" rel="external">https://visualvm.github.io/download.html</a> 即可下载</p>
-<h2 id="增加tomcat的启动参数"><a href="#增加tomcat的启动参数" class="headerlink" title="增加tomcat的启动参数"></a>增加tomcat的启动参数</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">JMX_OPTS="\</span><br><span class="line">  -Djava.rmi.server.hostname=172.17.111.20\</span><br><span class="line">  -Dcom.sun.management.jmxremote\</span><br><span class="line">  -Dcom.sun.management.jmxremote.port=8088\</span><br><span class="line">  -Dcom.sun.management.jmxremote.ssl=false\</span><br><span class="line">  -Dcom.sun.management.jmxremote.authenticate=true\</span><br><span class="line">  -Dcom.sun.management.jmxremote.password.file=../conf/jmx/jmxremote.password\</span><br><span class="line">  -Dcom.sun.management.jmxremote.access.file=./conf/jmx/jmxremote.access\</span><br><span class="line">"</span><br><span class="line"><span class="meta">#</span><span class="bash">增加到tomcat启动参数中去</span></span><br><span class="line">CATALINA_OPTS="$&#123;CATALINA_OPTS&#125; $&#123;JMX_OPTS&#125; -Xss2m"</span><br><span class="line"><span class="meta"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#</span><span class="bash">----------------------------------------</span></span><br><span class="line"><span class="meta">#</span><span class="bash">jmxremote.access 文件内容如下 配置账户权限</span></span><br><span class="line">monitorRole readonly</span><br><span class="line">controlRole readwrite</span><br><span class="line"><span class="meta"></span><br><span class="line">#</span><span class="bash">jmxremote.password 文件内容如下 配置账户密码</span></span><br><span class="line">monitorRole read123456</span><br><span class="line">controlRole rw123456</span><br><span class="line"><span class="meta"></span><br><span class="line">#</span><span class="bash"> 最后需将文件权限修改为400</span></span><br><span class="line"><span class="meta">#</span><span class="bash">----------------------------------------</span></span><br></pre></td></tr></table></figure>
-<h2 id="问题来了"><a href="#问题来了" class="headerlink" title="问题来了"></a>问题来了</h2><p>然而就算安全组开放了端口8088，VisualVM还是不能链接上去。</p>
-<h2 id="解决方式"><a href="#解决方式" class="headerlink" title="解决方式"></a>解决方式</h2><p>搜索了一下，才知道原来在启动 jmxremote 的时候除了指定端口，还会随机开启其他两个端口；我们使用<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">列出正在使用该端口的信息</span></span><br><span class="line">netstat -lnp|grep 8088</span><br><span class="line"><span class="meta">#</span><span class="bash">查看该pid所占用的端口</span></span><br><span class="line">netstat -lnp|grep pid </span><br><span class="line"></span><br><span class="line">tcp        0      0 0.0.0.0:36256               0.0.0.0:*                   LISTEN      4825/jsvc.exec      </span><br><span class="line">tcp        0      0 0.0.0.0:8088                0.0.0.0:*                   LISTEN      4825/jsvc.exec      </span><br><span class="line">tcp        0      0 0.0.0.0:39030               0.0.0.0:*                   LISTEN      4825/jsvc.exec  </span><br><span class="line"><span class="meta"></span><br><span class="line">#</span><span class="bash">看来还需要开放 36256 39030 这两个端口</span></span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1600,7 +1615,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">77</span>
+                <span class="site-state-item-count">79</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1613,7 +1628,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">96</span>
+                <span class="site-state-item-count">98</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -1666,7 +1681,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

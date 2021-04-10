@@ -87,25 +87,28 @@
 
 
 
-<meta name="description" content="因Tomcat8的APR需OpenSSL 1.0.2+的版本；而且最近暴露了OpenSSL的漏洞也较多；故记录下将OpenSSL升级到最新版本的过程。
+<meta name="description" content="因 Tomcat8 的 APR 需 OpenSSL 1.0.2+的版本；而且最近暴露了 OpenSSL 的漏洞也较多；故记录下将 OpenSSL 升级到最新版本的过程。
 
 下载最新源码
-123456789101112wget https://www.openssl.org/source/openssl-1.1.0c.tar.gztar zxvf openssl-1.1.0c.tar.gzcd openssl-1.1">
+
+123456789101112wget https://www.openssl.org/source/openssl-1.1.0c.tar.gztar zxvf openssl-1.1.0c.tar.gzcd o">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CentOS升级OpenSSL">
 <meta property="og:url" content="http://seven-cm.github.io/2017/01/05/CentOS升级OpenSSL/index.html">
 <meta property="og:site_name" content="seven-cm.blog">
-<meta property="og:description" content="因Tomcat8的APR需OpenSSL 1.0.2+的版本；而且最近暴露了OpenSSL的漏洞也较多；故记录下将OpenSSL升级到最新版本的过程。
+<meta property="og:description" content="因 Tomcat8 的 APR 需 OpenSSL 1.0.2+的版本；而且最近暴露了 OpenSSL 的漏洞也较多；故记录下将 OpenSSL 升级到最新版本的过程。
 
 下载最新源码
-123456789101112wget https://www.openssl.org/source/openssl-1.1.0c.tar.gztar zxvf openssl-1.1.0c.tar.gzcd openssl-1.1">
-<meta property="og:updated_time" content="2019-02-28T16:02:19.000Z">
+
+123456789101112wget https://www.openssl.org/source/openssl-1.1.0c.tar.gztar zxvf openssl-1.1.0c.tar.gzcd o">
+<meta property="og:updated_time" content="2020-09-26T01:23:49.859Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CentOS升级OpenSSL">
-<meta name="twitter:description" content="因Tomcat8的APR需OpenSSL 1.0.2+的版本；而且最近暴露了OpenSSL的漏洞也较多；故记录下将OpenSSL升级到最新版本的过程。
+<meta name="twitter:description" content="因 Tomcat8 的 APR 需 OpenSSL 1.0.2+的版本；而且最近暴露了 OpenSSL 的漏洞也较多；故记录下将 OpenSSL 升级到最新版本的过程。
 
 下载最新源码
-123456789101112wget https://www.openssl.org/source/openssl-1.1.0c.tar.gztar zxvf openssl-1.1.0c.tar.gzcd openssl-1.1">
+
+123456789101112wget https://www.openssl.org/source/openssl-1.1.0c.tar.gztar zxvf openssl-1.1.0c.tar.gzcd o">
 
 
 
@@ -350,17 +353,17 @@
       
 
       
-        <p>因Tomcat8的APR需OpenSSL 1.0.2+的版本；而且最近暴露了OpenSSL的漏洞也较多；故记录下将OpenSSL升级到最新版本的过程。</p>
+        <p>因 Tomcat8 的 APR 需 OpenSSL 1.0.2+的版本；而且最近暴露了 OpenSSL 的漏洞也较多；故记录下将 OpenSSL 升级到最新版本的过程。</p>
 <ol>
-<li><p>下载最新源码</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">wget https:<span class="regexp">//</span>www.openssl.org<span class="regexp">/source/</span>openssl-<span class="number">1.1</span>.<span class="number">0</span>c.tar.gz</span><br><span class="line">tar zxvf openssl-<span class="number">1.1</span>.<span class="number">0</span>c.tar.gz</span><br><span class="line">cd openssl-<span class="number">1.1</span>.<span class="number">0</span>c</span><br><span class="line">.<span class="regexp">/config --prefix=/u</span>sr<span class="regexp">/local/</span>ssl-<span class="number">1.1</span>.<span class="number">0</span>c shared zlib</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">mv <span class="regexp">/usr/</span>bin<span class="regexp">/openssl /u</span>sr<span class="regexp">/bin/</span>openssl.bak</span><br><span class="line">mv <span class="regexp">/usr/i</span>nclude<span class="regexp">/openssl /u</span>sr<span class="regexp">/include/</span>openssl.bak</span><br><span class="line">ln -s <span class="regexp">/usr/</span>local<span class="regexp">/ssl-1.1.0c/</span>bin<span class="regexp">/openssl /u</span>sr<span class="regexp">/bin/</span>openssl</span><br><span class="line">ln -s <span class="regexp">/usr/</span>local<span class="regexp">/ssl-1.1.0c/i</span>nclude<span class="regexp">/openssl /u</span>sr<span class="regexp">/include/</span>openssl</span><br><span class="line">echo <span class="string">"/usr/local/ssl-1.1.0c/lib"</span> &gt;&gt; <span class="regexp">/etc/</span>ld.so.conf</span><br><span class="line">ldconfig -v</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>到此算是安装完成；可以运行一下openssl version获取版本信息</p>
-</li>
-<li>但是在编译tomcat8的APR lib的时候，你会发现还是用了老版本的SSL会导致tomcat8运行不了。</li>
-<li>解决方法：<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>增加with-ssl指定ssl安装的文件目录</span><br><span class="line">./configure --prefix=/<span class="keyword">opt</span>/tomcat/apr --with-ssl=/usr/local/ssl-<span class="number">1.1</span>.<span class="number">0</span><span class="keyword">c</span> --with-apr=/<span class="keyword">opt</span>/tomcat/apr --with-java-home=$JAVA_HOME</span><br><span class="line"><span class="number">2</span> 或者说直接修改ssl指定的版本</span><br><span class="line"><span class="keyword">cd</span> /usr/lib64/</span><br><span class="line"><span class="keyword">ls</span> -<span class="keyword">lh</span> |<span class="keyword">grep</span> libssl</span><br><span class="line">修改libssl.<span class="keyword">so</span>的软链接</span><br><span class="line"><span class="keyword">ln</span> -s xxxx/libssl.<span class="keyword">so</span>.<span class="number">1.1</span> /usr/lib64/libssl.<span class="keyword">so</span></span><br></pre></td></tr></table></figure>
-</li>
+<li>下载最新源码</li>
 </ol>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">wget https:<span class="regexp">//</span>www.openssl.org<span class="regexp">/source/</span>openssl-<span class="number">1.1</span>.<span class="number">0</span>c.tar.gz</span><br><span class="line">tar zxvf openssl-<span class="number">1.1</span>.<span class="number">0</span>c.tar.gz</span><br><span class="line">cd openssl-<span class="number">1.1</span>.<span class="number">0</span>c</span><br><span class="line">.<span class="regexp">/config --prefix=/u</span>sr<span class="regexp">/local/</span>ssl-<span class="number">1.1</span>.<span class="number">0</span>c shared zlib</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">mv <span class="regexp">/usr/</span>bin<span class="regexp">/openssl /u</span>sr<span class="regexp">/bin/</span>openssl.bak</span><br><span class="line">mv <span class="regexp">/usr/i</span>nclude<span class="regexp">/openssl /u</span>sr<span class="regexp">/include/</span>openssl.bak</span><br><span class="line">ln -s <span class="regexp">/usr/</span>local<span class="regexp">/ssl-1.1.0c/</span>bin<span class="regexp">/openssl /u</span>sr<span class="regexp">/bin/</span>openssl</span><br><span class="line">ln -s <span class="regexp">/usr/</span>local<span class="regexp">/ssl-1.1.0c/i</span>nclude<span class="regexp">/openssl /u</span>sr<span class="regexp">/include/</span>openssl</span><br><span class="line">echo <span class="string">"/usr/local/ssl-1.1.0c/lib"</span> &gt;&gt; <span class="regexp">/etc/</span>ld.so.conf</span><br><span class="line">ldconfig -v</span><br></pre></td></tr></table></figure>
+<ol>
+<li>到此算是安装完成；可以运行一下 openssl version 获取版本信息</li>
+<li>但是在编译 tomcat8 的 APR lib 的时候，你会发现还是用了老版本的 SSL 会导致 tomcat8 运行不了。</li>
+<li>解决方法：</li>
+</ol>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>增加with-ssl指定ssl安装的文件目录</span><br><span class="line">./configure --prefix=/<span class="keyword">opt</span>/tomcat/apr --with-ssl=/usr/local/ssl-<span class="number">1.1</span>.<span class="number">0</span><span class="keyword">c</span> --with-apr=/<span class="keyword">opt</span>/tomcat/apr --with-java-home=$JAVA_HOME</span><br><span class="line"><span class="number">2</span> 或者说直接修改ssl指定的版本</span><br><span class="line"><span class="keyword">cd</span> /usr/lib64/</span><br><span class="line"><span class="keyword">ls</span> -<span class="keyword">lh</span> |<span class="keyword">grep</span> libssl</span><br><span class="line">修改libssl.<span class="keyword">so</span>的软链接</span><br><span class="line"><span class="keyword">ln</span> -s xxxx/libssl.<span class="keyword">so</span>.<span class="number">1.1</span> /usr/lib64/libssl.<span class="keyword">so</span></span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -483,7 +486,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">77</span>
+                <span class="site-state-item-count">79</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -496,7 +499,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">96</span>
+                <span class="site-state-item-count">98</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -549,7 +552,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

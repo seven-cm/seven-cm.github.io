@@ -270,6 +270,264 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2019/05/01/CentOS-搭建-gitolite/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/05/01/CentOS-搭建-gitolite/" itemprop="url">
+                  CentOS 搭建 gitolite
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-01T22:58:30+08:00">
+                2019-05-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近准备把svn更换为git，为了方便管理用户权限，准备使用gitolite。</p>
+<h2 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h2><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y <span class="keyword">install</span> git</span><br></pre></td></tr></table></figure>
+<h2 id="安装gitolite依赖"><a href="#安装gitolite依赖" class="headerlink" title="安装gitolite依赖"></a>安装gitolite依赖</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum -y <span class="keyword">install</span> perl</span><br><span class="line">yum -y <span class="keyword">install</span> perl-<span class="keyword">Data</span>-Dumper.x86_64</span><br></pre></td></tr></table></figure>
+<h2 id="添加git用户"><a href="#添加git用户" class="headerlink" title="添加git用户"></a>添加git用户</h2><figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">useradd git</span></span><br></pre></td></tr></table></figure>
+<h2 id="安装gitolite"><a href="#安装gitolite" class="headerlink" title="安装gitolite"></a>安装gitolite</h2><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">su</span> git</span><br><span class="line"><span class="keyword">cd</span> ~</span><br><span class="line">git clone https:<span class="comment">//github.com/sitaramc/gitolite</span></span><br><span class="line"><span class="keyword">mkdir</span> bin</span><br><span class="line">./gitolite/install -to <span class="variable">$HOME</span>/bin</span><br></pre></td></tr></table></figure>
+<h2 id="下面的步骤可在客户端做或直接在git用户下操作也可以"><a href="#下面的步骤可在客户端做或直接在git用户下操作也可以" class="headerlink" title="下面的步骤可在客户端做或直接在git用户下操作也可以"></a>下面的步骤可在客户端做或直接在git用户下操作也可以</h2><blockquote>
+<p>区别是，如果你想在客户端管理（添加用户，仓库等信息）就在客户端增加；若仅仅在服务端管理，就在服务端操作即可<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#生成rsa密钥</span><br><span class="line">ssh-keygen -t rsa</span><br><span class="line">mv .ssh/id_rsa<span class="selector-class">.pub</span> admin<span class="selector-class">.pub</span></span><br><span class="line"><span class="variable">$HOME</span>/bin/gitolite setup -pk .ssh/admin.pub</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h2 id="clone配置仓库"><a href="#clone配置仓库" class="headerlink" title="clone配置仓库"></a>clone配置仓库</h2><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone <span class="symbol">git@</span><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:gitolite-admin</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>clone后即可在此仓库中配置git的用户密钥、仓库、权限</p>
+<h2 id="配置说明"><a href="#配置说明" class="headerlink" title="配置说明"></a>配置说明</h2><p>相关配置，可参考网站：<br><a href="https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitolite" target="_blank" rel="external">https://git-scm.com/book/zh/v1/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-Gitolite</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2019/04/24/VisualVM远程监控阿里云tomcat/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2019/04/24/VisualVM远程监控阿里云tomcat/" itemprop="url">
+                  VisualVM远程监控阿里云tomcat
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-24T23:03:59+08:00">
+                2019-04-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近阿里云上的cpu占用率比较高，想了解是什么原因造成；故打算使用VisualVM工具来监控一下。</p>
+<h2 id="下载地址"><a href="#下载地址" class="headerlink" title="下载地址"></a>下载地址</h2><p>搜索一下，就能找到相关的网站 <a href="https://visualvm.github.io/" target="_blank" rel="external">https://visualvm.github.io/</a><br>到下载页面：<a href="https://visualvm.github.io/download.html" target="_blank" rel="external">https://visualvm.github.io/download.html</a> 即可下载</p>
+<h2 id="增加tomcat的启动参数"><a href="#增加tomcat的启动参数" class="headerlink" title="增加tomcat的启动参数"></a>增加tomcat的启动参数</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">JMX_OPTS="\</span><br><span class="line">  -Djava.rmi.server.hostname=172.17.111.20\</span><br><span class="line">  -Dcom.sun.management.jmxremote\</span><br><span class="line">  -Dcom.sun.management.jmxremote.port=8088\</span><br><span class="line">  -Dcom.sun.management.jmxremote.ssl=false\</span><br><span class="line">  -Dcom.sun.management.jmxremote.authenticate=true\</span><br><span class="line">  -Dcom.sun.management.jmxremote.password.file=../conf/jmx/jmxremote.password\</span><br><span class="line">  -Dcom.sun.management.jmxremote.access.file=./conf/jmx/jmxremote.access\</span><br><span class="line">"</span><br><span class="line"><span class="meta">#</span><span class="bash">增加到tomcat启动参数中去</span></span><br><span class="line">CATALINA_OPTS="$&#123;CATALINA_OPTS&#125; $&#123;JMX_OPTS&#125; -Xss2m"</span><br><span class="line"><span class="meta"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#</span><span class="bash">----------------------------------------</span></span><br><span class="line"><span class="meta">#</span><span class="bash">jmxremote.access 文件内容如下 配置账户权限</span></span><br><span class="line">monitorRole readonly</span><br><span class="line">controlRole readwrite</span><br><span class="line"><span class="meta"></span><br><span class="line">#</span><span class="bash">jmxremote.password 文件内容如下 配置账户密码</span></span><br><span class="line">monitorRole read123456</span><br><span class="line">controlRole rw123456</span><br><span class="line"><span class="meta"></span><br><span class="line">#</span><span class="bash"> 最后需将文件权限修改为400</span></span><br><span class="line"><span class="meta">#</span><span class="bash">----------------------------------------</span></span><br></pre></td></tr></table></figure>
+<h2 id="问题来了"><a href="#问题来了" class="headerlink" title="问题来了"></a>问题来了</h2><p>然而就算安全组开放了端口8088，VisualVM还是不能链接上去。</p>
+<h2 id="解决方式"><a href="#解决方式" class="headerlink" title="解决方式"></a>解决方式</h2><p>搜索了一下，才知道原来在启动 jmxremote 的时候除了指定端口，还会随机开启其他两个端口；我们使用<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">列出正在使用该端口的信息</span></span><br><span class="line">netstat -lnp|grep 8088</span><br><span class="line"><span class="meta">#</span><span class="bash">查看该pid所占用的端口</span></span><br><span class="line">netstat -lnp|grep pid </span><br><span class="line"></span><br><span class="line">tcp        0      0 0.0.0.0:36256               0.0.0.0:*                   LISTEN      4825/jsvc.exec      </span><br><span class="line">tcp        0      0 0.0.0.0:8088                0.0.0.0:*                   LISTEN      4825/jsvc.exec      </span><br><span class="line">tcp        0      0 0.0.0.0:39030               0.0.0.0:*                   LISTEN      4825/jsvc.exec  </span><br><span class="line"><span class="meta"></span><br><span class="line">#</span><span class="bash">看来还需要开放 36256 39030 这两个端口</span></span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2019/03/19/swagger-ui-排序问题-接上篇/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1350,274 +1608,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2018/05/07/近况/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/05/07/近况/" itemprop="url">
-                  近况
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-07T20:34:29+08:00">
-                2018-05-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>因最近在做微信小程序项目，故顺便熟悉一下vue。用了差不多一周的小项目实训来学习vue；而后真真地感受到了vue的强大。</p>
-<h2 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h2><p>后续会出一些和小程序以及vue相关的的心得文章。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2018/03/27/小程序入门经历/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/03/27/小程序入门经历/" itemprop="url">
-                  小程序入门经历
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-27T22:31:15+08:00">
-                2018-03-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近需要做小程序项目,而自己对小程序的构成也不是很熟悉.故记录下对小程序学习的经历.</p>
-<h2 id="第一步-先了解小程序的构成"><a href="#第一步-先了解小程序的构成" class="headerlink" title="第一步:先了解小程序的构成"></a>第一步:先了解小程序的构成</h2><p>最开始当然是先看小程序的官方文档了.<a href="https://mp.weixin.qq.com/debug/wxadoc/dev/quickstart/basic/getting-started.html" target="_blank" rel="external">小程序起步</a>;先按里面的步骤搭建一个简单的小程序.</p>
-<h3 id="小程序的构成"><a href="#小程序的构成" class="headerlink" title="小程序的构成"></a>小程序的构成</h3><ol>
-<li>JSON配置</li>
-<li>WXML模板</li>
-<li>WXSS样式</li>
-<li>JS逻辑交互</li>
-</ol>
-<p>其他的就不再在这里阐述了.按官方的说明,个人是这样理解上面的几个文件的:</p>
-<blockquote>
-<p>JSON配置: 系统级参数配置</p>
-<p>WXML模板: 页面呈现:可以理解为view</p>
-<p>WXSS样式: 其实是CSS</p>
-<p>JS逻辑交互: 这个就不用多说了</p>
-</blockquote>
-<p>到此,我们已经了解了小程序的初步构成了.那该如何去构建一个有点样子的小程序?其实我们不用着急,还是从网上找一个有丰富呈现的小程序.在github中找到了:<a href="https://github.com/ZhangHangwei/WXBaiSi" target="_blank" rel="external">微信小程序 仿百思不得姐</a></p>
-<p>导入到开发工具,到此,一个有模有样的小程序已经呈现在面前了</p>
-<h2 id="第二步-学习"><a href="#第二步-学习" class="headerlink" title="第二步:学习"></a>第二步:学习</h2><p>从上述例子中,知道了</p>
-<ol>
-<li>小程序还可以像vue那样,使用template,也就是小程序里面的block;</li>
-<li>了解到了小程序对话框,提示等内置api</li>
-</ol>
-<p>当然,该小程序还有一些bug,这些就不在这里作讨论了.</p>
-<h2 id="第三步-开发工具"><a href="#第三步-开发工具" class="headerlink" title="第三步:开发工具"></a>第三步:开发工具</h2><p>对于官方的工具,我还是不太喜欢,主要是对于写css我还是喜欢用less.故我使用了vscode作为小程序的开发工具,因在vscode中找了与小程序相关的插件,能根据less自动生成为小程序的wxss文件</p>
-<h2 id="第四步-了解Promise与callback"><a href="#第四步-了解Promise与callback" class="headerlink" title="第四步:了解Promise与callback"></a>第四步:了解Promise与callback</h2><p>既然是有一定逻辑的小程序,很可能我们需要获取用户的openId,昵称等信息.这里就有一个问题了,在页面启动的时候,常常是openId还没有拿到,我们就向自己的后台发送请求了.这里我使用到了ES6的Promise,小程序已经支持.对于callback,这个可以参考我们第一次构建简单小程序里面,在页面启动的时候,判断是否已经获取到用户信息的那段js.</p>
-<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>等项目完成后,再把其中的开发经验详细写一下.</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1667,7 +1657,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">77</span>
+                <span class="site-state-item-count">79</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1680,7 +1670,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">96</span>
+                <span class="site-state-item-count">98</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -1733,7 +1723,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

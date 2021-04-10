@@ -270,6 +270,255 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/05/04/Java-每秒指定发送线程数量/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/05/04/Java-每秒指定发送线程数量/" itemprop="url">
+                  Java 每秒指定发送线程数量
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-04T00:32:10+08:00">
+                2017-05-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在业务中使用Executor框架中的newFixThreadPool创建固定大小的线程池；会出现这样的一个情况：当提供服务方的服务在超时的时候，还没有返回相关的状态信息给我们，就会出现所有线程都在等待这一个返回结果。后果就是业务订单堆积得越来越多；一直等待到线程池有空闲的线程才能继续处理。那么，问题来了：线程池饱满后，该如何处理？</p>
+<h2 id="方案１"><a href="#方案１" class="headerlink" title="方案１"></a>方案１</h2><p>首先想到的方案是读透Executor框架的代码，然后对相关代码进行组合，以满足业务的需要。但是这块后续仔细想了想，如果要做的话，那改造的功夫可不小了，既要读透，又要自己造轮子。在时间不充足的条件下，这个方案不大合适。</p>
+<h2 id="方案２"><a href="#方案２" class="headerlink" title="方案２"></a>方案２</h2><p>有同事提出用MQ来解决这个问题；使用消息的发布与订阅，能很好地控制相关的订单流的大小。然而问题来了，这块的改造又是一个大工程。</p>
+<h2 id="方案３"><a href="#方案３" class="headerlink" title="方案３"></a>方案３</h2><p>在原有Java代码的基础上，用现有的知识进行代码改善，支撑业务需要。既然我们需要的线程是不能因服务方返回慢就一直在等待，那么这个线程就不能是固定大小的了；虽然在Executor框架中提供了：newCachedThreadPool来创建不限制线程池大小的方法，但是我们不能控制相关的线程多少，对系统的资源消耗还有可控性来说是不符合业务的需要。</p>
+<p>思量了多次，最终得到相关的方案：<br>１、还是使用newFixThreadPool，但是该线程池只创建２个线程：一个读取订单线程；一个处理订单线程<br>２、对于处理订单线程，我们可以粗暴地使用Thread提供的方法来执行业务；</p>
+<p>这样，我们能用最熟悉的方法来创建相关的线程，以符合业务的需要。<br>相关核心代码如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line"> * 交易线程池工具类</span><br><span class="line"> * 主要结合Executor 与 Thread 来处理订单</span><br><span class="line"> * <span class="doctag">@author</span> sevencm</span><br><span class="line"> * <span class="doctag">@Date</span> 2017-05-03</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Executor4TransTools</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger log = LoggerFactory.getLogger(Executor4TransTools.class);</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 线程池大小</span><br><span class="line">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> EXECUTOR_4TRANS_NUM = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * &lt;br&gt;固定线程池</span><br><span class="line">	 * &lt;br&gt;1个线程读取订单</span><br><span class="line">	 * &lt;br&gt;1个线程处理订单</span><br><span class="line">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> ExecutorService executorService = ExecutorUtils.getFixedThreadPool(EXECUTOR_4TRANS_NUM);</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 订单线程队列</span><br><span class="line">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> Queue&lt;Integer&gt; transQueue = <span class="keyword">new</span> ConcurrentLinkedQueue&lt;Integer&gt;();</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 记录队列大小</span><br><span class="line">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> AtomicInteger queueSize = <span class="keyword">new</span> AtomicInteger(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 默认处理线程大小 5 个</span><br><span class="line">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> AtomicInteger threadSize = <span class="keyword">new</span> AtomicInteger(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 是否继续发送订单-用于控制线程开关；为服务更新使用</span><br><span class="line">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> running = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> poolSize  = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String THREAD_NAME = Thread.currentThread().getName();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 默认处理线程大小 5 个</span><br><span class="line">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> AtomicInteger testOrderId = <span class="keyword">new</span> AtomicInteger(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initChinaMobileWorkerThread</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		executorService.execute(loadOrderCommand());</span><br><span class="line">		executorService.execute(handleOrderCommand());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 处理订单线程</span><br><span class="line">	 * <span class="doctag">@return</span></span><br><span class="line">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> Runnable <span class="title">handleOrderCommand</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		Runnable hoc = <span class="keyword">new</span> Runnable() &#123;</span><br><span class="line"></span><br><span class="line">			<span class="meta">@Override</span></span><br><span class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">				<span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line"></span><br><span class="line">					<span class="keyword">final</span> Integer order = transQueue.poll();</span><br><span class="line">					<span class="keyword">if</span>(order==<span class="keyword">null</span>)&#123;</span><br><span class="line">						ExecutorUtils.threadSleep(<span class="number">500L</span>);</span><br><span class="line">					&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">						queueSize.decrementAndGet();</span><br><span class="line">						<span class="keyword">int</span> nowSize = threadSize.addAndGet(<span class="number">1</span>);</span><br><span class="line">						<span class="keyword">if</span>(nowSize&lt;=(poolSize-<span class="number">1</span>))&#123;</span><br><span class="line">							Runnable runnable = <span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">								<span class="meta">@Override</span></span><br><span class="line">								<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">									log.info(order+<span class="string">""</span>);</span><br><span class="line">								&#125;</span><br><span class="line">							&#125;;</span><br><span class="line">							Thread thread = <span class="keyword">new</span> Thread(runnable);</span><br><span class="line">							thread.setName(THREAD_NAME+<span class="string">"-handle-thread-"</span>+nowSize);</span><br><span class="line">							thread.start();</span><br><span class="line">						&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">							ExecutorUtils.threadSleep(<span class="number">1000L</span>);</span><br><span class="line">							threadSize.set(<span class="number">0</span>);</span><br><span class="line">							Runnable runnable = <span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">								<span class="meta">@Override</span></span><br><span class="line">								<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">									log.info(order+<span class="string">""</span>);</span><br><span class="line">								&#125;</span><br><span class="line">							&#125;;</span><br><span class="line">							Thread thread = <span class="keyword">new</span> Thread(runnable);</span><br><span class="line">							thread.setName(THREAD_NAME+<span class="string">"-handle-thread-0"</span>);</span><br><span class="line">							thread.start();</span><br><span class="line">						&#125;</span><br><span class="line"></span><br><span class="line">					&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;;</span><br><span class="line">		<span class="keyword">return</span> hoc;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span><br><span class="line">	 * 读取订单线程</span><br><span class="line">	 * <span class="doctag">@return</span></span><br><span class="line">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> Runnable <span class="title">loadOrderCommand</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		Runnable loc = <span class="keyword">new</span> Runnable() &#123;</span><br><span class="line"></span><br><span class="line">			<span class="meta">@Override</span></span><br><span class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">				<span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">					<span class="keyword">if</span>(transQueue.isEmpty())&#123;</span><br><span class="line">						ExecutorUtils.threadSleep(<span class="number">500L</span>);</span><br><span class="line">						<span class="keyword">if</span>(running)&#123;</span><br><span class="line">							<span class="comment">//TODO 读取订单信息</span></span><br><span class="line">							ArrayList&lt;Integer&gt; orders = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">							<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">100</span>;i++)&#123;</span><br><span class="line">								<span class="keyword">int</span> order = testOrderId.addAndGet(<span class="number">1</span>);</span><br><span class="line">								orders.add(order);</span><br><span class="line">							&#125;</span><br><span class="line">							queueSize.getAndAdd(orders.size());</span><br><span class="line">							transQueue.addAll(orders);</span><br><span class="line">						&#125;</span><br><span class="line">					&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">						ExecutorUtils.threadSleep(<span class="number">500L</span>);</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;;</span><br><span class="line">		<span class="keyword">return</span> loc;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/04/21/解决maven下载慢-为maven添加国内阿里云镜像/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/21/解决maven下载慢-为maven添加国内阿里云镜像/" itemprop="url">
+                  解决maven下载慢-为maven添加国内阿里云镜像
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-21T22:24:43+08:00">
+                2017-04-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>使用maven最痛苦的事情就是下载速度太慢了;解决方法要么自己找代理。</p>
+<h2 id="在网上找到一个阿里云的maven镜像"><a href="#在网上找到一个阿里云的maven镜像" class="headerlink" title="在网上找到一个阿里云的maven镜像"></a>在网上找到一个阿里云的maven镜像</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">settings</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/SETTINGS/1.0.0"</span></span><br><span class="line">          <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span><br><span class="line">          <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mirrors</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 阿里云仓库 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>alimaven<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">name</span>&gt;</span>aliyun maven<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://maven.aliyun.com/nexus/content/repositories/central/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- 中央仓库1 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>repo1<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">name</span>&gt;</span>Human Readable Name for this Mirror.<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://repo1.maven.org/maven2/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- 中央仓库2 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>repo2<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">name</span>&gt;</span>Human Readable Name for this Mirror.<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://repo2.maven.org/maven2/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mirrors</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">settings</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="配置方法"><a href="#配置方法" class="headerlink" title="配置方法"></a>配置方法</h2><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在.m目录下新建文件settings.<span class="keyword">xml</span> <span class="title">内容填入上述代码即可</span></span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/04/21/hexo-搭建过程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1326,258 +1575,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/01/18/为小程序加上https-startssl/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/01/18/为小程序加上https-startssl/" itemprop="url">
-                  为小程序加上https--StartSSL
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-18T20:40:39+08:00">
-                2017-01-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>2月５日更新：<br>因在ios10.2中有问题，故更换为阿里云的免费证书。  </p>
-<p>１、小程序准备上线了，现在要为服务器申请https。先用免费的SSL来测试。</p>
-<p>２、进入<a href="https://www.startssl.com/；">https://www.startssl.com/；</a> 可以申请免费的SSL证书。</p>
-<p>３、先注册：<a href="https://www.startssl.com/SignUp">https://www.startssl.com/SignUp</a><br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/01/18/为小程序加上https-startssl/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/01/08/Java-web代码混淆/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="seven-cm">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="seven-cm.blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/01/08/Java-web代码混淆/" itemprop="url">
-                  Java web代码混淆
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-08T10:10:49+08:00">
-                2017-01-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>因公司需将产品出售给第三方公司；而不能给源代码。只好给代码加上混淆。</p>
-<p>下面记录下相关的Ｍaven配置。</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- ProGuard混淆插件--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.github.wvengen<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>proguard-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.0.11<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 混淆时刻，这里是打包的时候混淆--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">phase</span>&gt;</span>package<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                            <span class="comment">&lt;!-- 使用插件的什么功能，当然是混淆--&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">goal</span>&gt;</span>proguard<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!-- 是否将生成的PG文件安装部署--&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">attach</span>&gt;</span>true<span class="tag">&lt;/<span class="name">attach</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!-- 是否混淆--&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">obfuscate</span>&gt;</span>true<span class="tag">&lt;/<span class="name">obfuscate</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!-- 指定生成文件分类 --&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">attachArtifactClassifier</span>&gt;</span>pg<span class="tag">&lt;/<span class="name">attachArtifactClassifier</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">options</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- JDK目标版本1.7--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-target 1.7<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 不做收缩（删除注释、未被引用代码）--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-dontshrink<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 不做优化（变更代码实现逻辑）--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-dontoptimize<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 不路过非公用类文件及成员--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-dontskipnonpubliclibraryclasses<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-dontskipnonpubliclibraryclassmembers<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 优化时允许访问并修改有修饰符的类和类的成员 --&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-allowaccessmodification<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 确定统一的混淆类的成员名称来增加混淆--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-useuniqueclassmembernames<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 不混淆所有包名，本人测试混淆后WEB项目问题实在太多，毕竟Spring配置中有大量固定写法的包名--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keeppackagenames<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 不混淆所有特殊的类--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,LocalVariable*Table,*Annotation*,Synthetic,EnclosingMethod<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 不混淆所有的set/get方法，毕竟项目中使用的部分第三方框架（例如Shiro）会用到大量的set/get映射--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keepclassmembers public class * &#123;void set*(***);*** get*();&#125;<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                        <span class="comment">&lt;!-- 不混淆job包下的所有类名，且类中的方法也不混淆--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keep class com.chinatelecom.gz.wy.zhukun.shiro_spring.job.** &#123; &amp;lt;methods&amp;gt;; &#125;<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 不混淆filter包下的所有类名，这里主要是对Shiro的路踢人过滤器混淆，对类的属性和方法进行了混淆--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keep class com.chinatelecom.gz.wy.zhukun.shiro_spring.filter.** <span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 不混淆凭证包下的所有类名，但对类中的属性、方法进行混淆，原因是Spring配置中用到了这个类名--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keep class com.chinatelecom.gz.wy.zhukun.shiro_spring.credntials.** <span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 混淆目的同上，这个是拦截器的包，包中有防止重复提交的拦截器--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keep class com.chinatelecom.gz.wy.zhukun.shiro_spring.interceptor.** <span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 混淆目的同上，这个是域包，包中有用户登录域--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keep class com.chinatelecom.gz.wy.zhukun.shiro_spring.realm.** <span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 不混淆model包中的所有类以及类的属性及方法，实体包，混淆了会导致ORM框架及前端无法识别--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keep class com.chinatelecom.gz.wy.zhukun.shiro_spring.model.** &#123;*;&#125;<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 以下两个包因为大部分是Spring管理的Bean，不对包类的类名进行混淆，但对类中的属性和方法混淆--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keep class com.chinatelecom.gz.wy.zhukun.shiro_spring.service.** <span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">option</span>&gt;</span>-keep class com.chinatelecom.gz.wy.zhukun.shiro_spring.dao.**<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">options</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">outjar</span>&gt;</span>$&#123;project.build.finalName&#125;-pg.jar<span class="tag">&lt;/<span class="name">outjar</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!-- 添加依赖，这里你可以按你的需要修改，这里测试只需要一个JRE的Runtime包就行了 --&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">libs</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">lib</span>&gt;</span>$&#123;java.home&#125;/lib/rt.jar<span class="tag">&lt;/<span class="name">lib</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">libs</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!-- 加载文件的过滤器，就是你的工程目录了--&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">inFilter</span>&gt;</span>com/chinatelecom/gz/wy/zhukun/shiro_spring/**<span class="tag">&lt;/<span class="name">inFilter</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!-- 对什么东西进行加载，这里仅有classes成功，毕竟你也不可能对配置文件及JSP混淆吧--&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">injar</span>&gt;</span>classes<span class="tag">&lt;/<span class="name">injar</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!-- 输出目录--&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span>$&#123;project.build.directory&#125;<span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>参考资料<br>1 <a href="http://blog.csdn.net/wltj920/article/details/48970869" target="_blank" rel="external">Maven WEB 项目使用ProGuard进行混淆，最佳解决方案</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1627,7 +1624,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">77</span>
+                <span class="site-state-item-count">79</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1640,7 +1637,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">96</span>
+                <span class="site-state-item-count">98</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -1693,7 +1690,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
