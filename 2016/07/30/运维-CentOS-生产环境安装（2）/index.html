@@ -1,0 +1,720 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="CentOS,运维,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="接着上一篇，我们已经成功安装最小化安装的CentOS。 当配置好网络后，我们需要进行以下的配置。  1.查看系统时区、系统时间12[root@localhost ~]# date -RWed, 22 Jun 2016 19:51:39 +0800 2.若需将时区修改为中国北京时间">
+<meta name="keywords" content="CentOS,运维">
+<meta property="og:type" content="article">
+<meta property="og:title" content="运维-CentOS-生产环境安装（2）">
+<meta property="og:url" content="http://seven-cm.github.io/2016/07/30/运维-CentOS-生产环境安装（2）/index.html">
+<meta property="og:site_name" content="seven-cm.blog">
+<meta property="og:description" content="接着上一篇，我们已经成功安装最小化安装的CentOS。 当配置好网络后，我们需要进行以下的配置。  1.查看系统时区、系统时间12[root@localhost ~]# date -RWed, 22 Jun 2016 19:51:39 +0800 2.若需将时区修改为中国北京时间">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2023-04-27T14:32:21.514Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="运维-CentOS-生产环境安装（2）">
+<meta name="twitter:description" content="接着上一篇，我们已经成功安装最小化安装的CentOS。 当配置好网络后，我们需要进行以下的配置。  1.查看系统时区、系统时间12[root@localhost ~]# date -RWed, 22 Jun 2016 19:51:39 +0800 2.若需将时区修改为中国北京时间">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://seven-cm.github.io/2016/07/30/运维-CentOS-生产环境安装（2）/">
+
+
+
+
+
+  <title> 运维-CentOS-生产环境安装（2） | seven-cm.blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?fea19912a68edcd8dd8884f7fc44c677";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">seven-cm.blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2016/07/30/运维-CentOS-生产环境安装（2）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                运维-CentOS-生产环境安装（2）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-30T16:36:14+08:00">
+                2016-07-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>接着上一篇，我们已经成功安装最小化安装的CentOS。</p>
+<p>当配置好网络后，我们需要进行以下的配置。</p>
+<p> 1.查看系统时区、系统时间<br><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[<span class="symbol">root@</span>localhost ~]# date -R</span><br><span class="line">Wed, <span class="number">22</span> Jun <span class="number">2016</span> <span class="number">19</span>:<span class="number">51</span>:<span class="number">39</span> +<span class="number">0800</span></span><br></pre></td></tr></table></figure></p>
+<p>2.若需将时区修改为中国北京时间<a id="more"></a><br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# <span class="keyword">cp</span> /usr/share/zoneinfo/Asia/Shanghai /etc/<span class="built_in">localtime</span></span><br><span class="line"><span class="keyword">cp</span>: overwrite `/etc/<span class="built_in">localtime</span><span class="string">'? y</span></span><br></pre></td></tr></table></figure></p>
+<p>3.同步系统时间<br><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#安装时间同步工具</span><br><span class="line">[<span class="symbol">root@</span>localhost ~]# yum install -y ntpdate</span><br><span class="line"></span><br><span class="line">#同步时间</span><br><span class="line">[<span class="symbol">root@</span>localhost ~]# ntpdate us.pool.ntp.org</span><br><span class="line"><span class="number">22</span> Jun <span class="number">11</span>:<span class="number">58</span>:<span class="number">25</span> ntpdate[<span class="number">1305</span>]: step time server <span class="number">128.138</span><span class="number">.141</span><span class="number">.172</span> offset <span class="number">-28803.518098</span> sec</span><br><span class="line"></span><br><span class="line">#查看时间</span><br><span class="line">[<span class="symbol">root@</span>localhost ~]# date</span><br><span class="line">Wed Jun <span class="number">22</span> <span class="number">11</span>:<span class="number">58</span>:<span class="number">56</span> CST <span class="number">2016</span></span><br><span class="line"></span><br><span class="line">#将时间写入到BIOS</span><br><span class="line">[<span class="symbol">root@</span>localhost ~]# hwclock -w</span><br></pre></td></tr></table></figure></p>
+<p>4.修改ssh登陆端口<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# vi /etc/ssh/sshd_config</span><br><span class="line"><span class="comment">#增加ssh端口，注意先保留22，后续可以注释掉</span></span><br><span class="line">Port 22</span><br><span class="line">Port 51234</span><br><span class="line"><span class="comment">#AddressFamily any</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#保存后，修改防火墙</span></span><br><span class="line">[root@localhost ~]# vi /etc/sysconfig/iptables</span><br><span class="line"></span><br><span class="line"><span class="comment"># Firewall configuration written by system-config-firewall</span></span><br><span class="line"><span class="comment"># Manual customization of this file is not recommended.</span></span><br><span class="line"><span class="number">*f</span>ilter</span><br><span class="line">:INPUT ACCEPT [0:0]</span><br><span class="line">:FORWARD ACCEPT [0:0]</span><br><span class="line">:OUTPUT ACCEPT [0:0]</span><br><span class="line">-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT</span><br><span class="line">-A INPUT -p icmp -j ACCEPT</span><br><span class="line">-A INPUT -i lo -j ACCEPT</span><br><span class="line">-A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT</span><br><span class="line">-A INPUT -m state --state NEW -m tcp -p tcp --dport 51234 -j ACCEPT</span><br><span class="line">-A INPUT -j REJECT --reject-with icmp-host-prohibited</span><br><span class="line">-A FORWARD -j REJECT --reject-with icmp-host-prohibited</span><br><span class="line">COMMIT</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#查看防火墙状态</span></span><br><span class="line">[root@localhost ~]#<span class="built_in"> service </span>iptables status</span><br><span class="line">Table: filter</span><br><span class="line">Chain INPUT (policy ACCEPT)</span><br><span class="line">num  target     prot opt source               destination</span><br><span class="line">1    ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           state RELATED,ESTABLISHED</span><br><span class="line">2    ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0</span><br><span class="line">3    ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0</span><br><span class="line">4    ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           state NEW tcp dpt:22</span><br><span class="line">5    REJECT     all  --  0.0.0.0/0            0.0.0.0/0           reject-with icmp-host-prohibited</span><br><span class="line"></span><br><span class="line">Chain FORWARD (policy ACCEPT)</span><br><span class="line">num  target     prot opt source               destination</span><br><span class="line">1    REJECT     all  --  0.0.0.0/0            0.0.0.0/0           reject-with icmp-host-prohibited</span><br><span class="line"></span><br><span class="line">Chain OUTPUT (policy ACCEPT)</span><br><span class="line">num  target     prot opt source               destination  </span><br><span class="line"></span><br><span class="line"><span class="comment">#重启防火墙</span></span><br><span class="line">[root@localhost ~]#<span class="built_in"> service </span>iptables restart</span><br><span class="line">iptables: Setting chains <span class="keyword">to</span><span class="built_in"> policy </span>ACCEPT:<span class="built_in"> filter </span>[  OK  ]</span><br><span class="line">iptables: Flushing<span class="built_in"> firewall </span>rules: [  OK  ]</span><br><span class="line">iptables: Unloading modules: [  OK  ]</span><br><span class="line">iptables: Applying<span class="built_in"> firewall </span>rules: [  OK  ]</span><br><span class="line"></span><br><span class="line"><span class="comment">#查看防火墙信息</span></span><br><span class="line">[root@localhost ~]# iptables -L</span><br><span class="line">Chain INPUT (policy ACCEPT)</span><br><span class="line">target     prot opt source               destination</span><br><span class="line">ACCEPT     all  --  anywhere             anywhere            state RELATED,ESTABLISHED</span><br><span class="line">ACCEPT     icmp --  anywhere             anywhere</span><br><span class="line">ACCEPT     all  --  anywhere             anywhere</span><br><span class="line">ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:ssh</span><br><span class="line">ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:51234</span><br><span class="line">REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited</span><br><span class="line"></span><br><span class="line">Chain FORWARD (policy ACCEPT)</span><br><span class="line">target     prot opt source               destination</span><br><span class="line">REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited</span><br><span class="line"></span><br><span class="line">Chain OUTPUT (policy ACCEPT)</span><br><span class="line">target     prot opt source               destination</span><br><span class="line"></span><br><span class="line"><span class="comment">#重启ssh服务</span></span><br><span class="line">[root@localhost ~]#<span class="built_in"> service </span>sshd restart</span><br><span class="line">Stopping sshd: [  OK  ]</span><br><span class="line">Starting sshd: [  OK  ]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#使用新端口进行测试链接</span></span><br><span class="line"><span class="built_in">..</span>.</span><br></pre></td></tr></table></figure></p>
+<p>5.新增用户组<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#添加web组</span></span><br><span class="line">[root@localhost ~]# groupadd web</span><br><span class="line"><span class="comment">#添加web用户</span></span><br><span class="line">[root@localhost ~]# useradd -g web web</span><br><span class="line"><span class="comment">#配置web用户密码</span></span><br><span class="line">[root@localhost ~]# passwd web</span><br><span class="line">Changing password <span class="keyword">for</span><span class="built_in"> user </span>web.</span><br><span class="line">New password:</span><br><span class="line">BAD PASSWORD: it is too simplistic/systematic</span><br><span class="line">BAD PASSWORD: is too simple</span><br><span class="line">Retype new password:</span><br><span class="line">passwd: all authentication tokens updated successfully.</span><br></pre></td></tr></table></figure></p>
+<p>6.安装rzsz命令<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@localhost</span> ~]<span class="meta"># yum install lrzsz</span></span><br></pre></td></tr></table></figure></p>
+<p>7.安装zip命令<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@localhost</span> ~]<span class="meta"># yum install zip unzip</span></span><br></pre></td></tr></table></figure></p>
+<p>8.挂载未挂载的硬盘<br><figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#找出未挂载的硬盘</span></span><br><span class="line">fdisk -l</span><br><span class="line"><span class="meta">#对未挂载的硬盘进行分区 xxx为未挂载的硬盘标识</span></span><br><span class="line">fdisk xxx</span><br><span class="line"><span class="meta">#输入n进行分区</span></span><br><span class="line"><span class="meta">#输入p选择主分区</span></span><br><span class="line"><span class="meta">#输入分区数目，一般输入1</span></span><br><span class="line"><span class="meta">#后面的默认</span></span><br><span class="line"><span class="meta">#最后输入w写入系统</span></span><br><span class="line">Command (m <span class="keyword">for</span> help): w</span><br><span class="line">The partition table has been altered!</span><br><span class="line"><span class="meta">#再次使用fdisk -l查看</span></span><br><span class="line"><span class="meta">#最后格式化新分区 xxx为新分区的盘符</span></span><br><span class="line">mkfs.ext4 xxx</span><br><span class="line"><span class="meta">#挂载分区到目录中 xxx为新分区盘符</span></span><br><span class="line">mount xxx /home/data</span><br></pre></td></tr></table></figure></p>
+<p>9.硬盘开机自动挂载<br><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/fstab</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#</span><br><span class="line"># /etc/fstab</span><br><span class="line"># Created by anaconda on Thu Aug <span class="number">14</span> <span class="number">21</span>:<span class="number">16</span>:<span class="number">42</span> <span class="number">2014</span></span><br><span class="line">#</span><br><span class="line"># Accessible filesystems, by <span class="built_in">ref</span>erence, are maintained under <span class="string">'/dev/disk'</span></span><br><span class="line"># See man pages fstab(<span class="number">5</span>), findfs(<span class="number">8</span>), mount(<span class="number">8</span>) <span class="keyword">and</span>/<span class="keyword">or</span> blkid(<span class="number">8</span>) <span class="keyword">for</span> more info</span><br><span class="line">#</span><br><span class="line">UUID=****<span class="number">7</span>dd64f42ee / ext4 defaults,barrier=<span class="number">0</span> <span class="number">1</span> <span class="number">1</span></span><br><span class="line">tmpfs                   /dev/shm                tmpfs   defaults        <span class="number">0</span> <span class="number">0</span></span><br><span class="line">devpts                  /dev/pts                devpts  gid=<span class="number">5</span>,mode=<span class="number">620</span>  <span class="number">0</span> <span class="number">0</span></span><br><span class="line">sysfs                   /sys                    sysfs   defaults        <span class="number">0</span> <span class="number">0</span></span><br><span class="line">proc                    /proc                   proc    defaults        <span class="number">0</span> <span class="number">0</span></span><br><span class="line">xxxxxxx              /home/data              ext4    defaults        <span class="number">0</span> <span class="number">0</span></span><br></pre></td></tr></table></figure></p>
+<p>其中xxxxxxx是盘符．</p>
+<p>9.关闭SELinux<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost mysql-logs]# vi /etc/selinux/config</span><br><span class="line"><span class="comment"># SELINUX= can take one of these three values:</span></span><br><span class="line"><span class="comment">#     enforcing - SELinux security policy is enforced.</span></span><br><span class="line"><span class="comment">#     permissive - SELinux prints warnings instead of enforcing.</span></span><br><span class="line"><span class="comment">#     disabled - No SELinux policy is loaded.</span></span><br><span class="line"><span class="attribute">SELINUX</span>=disabled</span><br><span class="line"><span class="comment"># SELINUXTYPE= can take one of these two values:</span></span><br><span class="line"><span class="comment">#     targeted - Targeted processes are protected,</span></span><br><span class="line"><span class="comment">#     mls - Multi Level Security protection.</span></span><br><span class="line"><span class="attribute">SELINUXTYPE</span>=targeted</span><br><span class="line"></span><br><span class="line"><span class="comment">#重启服务器</span></span><br></pre></td></tr></table></figure></p>
+<p>10.安装mysql<br><figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br></pre></td><td class="code"><pre><span class="line">#查看mysql是否安装，或者已安装的信息</span><br><span class="line">[root@localhost ~]# rpm -qa | grep mysql</span><br><span class="line">mysql-libs<span class="number">-5.1</span><span class="number">.71</span><span class="number">-1.</span>el6.x86_64</span><br><span class="line"></span><br><span class="line">#强制卸载</span><br><span class="line">[root@localhost ~]# rpm -e --nodeps mysql-libs<span class="number">-5.1</span><span class="number">.71</span><span class="number">-1.</span>el6.x86_64</span><br><span class="line"></span><br><span class="line">#安装依赖包</span><br><span class="line">[root@localhost ~]# yum -y install perl perl-devel libaio libaio-devel perl-DBI</span><br><span class="line"></span><br><span class="line">#到官网下载rpm安装包，选择<span class="number">5.5</span>版本的Red Hat Enterprise Linux <span class="number">6</span> / Oracle Linux <span class="number">6</span> (x86, <span class="number">64</span>-bit), RPM Bundle Bundle下载</span><br><span class="line"></span><br><span class="line">#注意，如果是CentOS <span class="number">6</span> 则下载 Red Hat Enterprise Linux <span class="number">6</span></span><br><span class="line"></span><br><span class="line">#下载Percona XtraBackup</span><br><span class="line">wget https:<span class="comment">//www.percona.com/downloads/XtraBackup/Percona-XtraBackup-2.4.3/binary/redhat/6/x86_64/percona-xtrabackup-24-2.4.3-1.el6.x86_64.rpm</span></span><br><span class="line"></span><br><span class="line">#下载perl-DBD-MySQL</span><br><span class="line"> wget http:<span class="comment">//pkgs.repoforge.org/perl-DBD-MySQL/perl-DBD-MySQL-4.022-1.el6.rfx.x86_64.rpm</span></span><br><span class="line"></span><br><span class="line">#解压mysql下载的bundle.tar</span><br><span class="line">[root@localhost ~]# tar -xvf MySQL<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm-bundle.tar</span><br><span class="line">MySQL-client<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm</span><br><span class="line">MySQL-shared-compat<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm</span><br><span class="line">MySQL-server<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm</span><br><span class="line">MySQL-embedded<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm</span><br><span class="line">MySQL-test<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm</span><br><span class="line">MySQL-devel<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm</span><br><span class="line">MySQL-shared<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm</span><br><span class="line"></span><br><span class="line">[root@localhost ~]# ls -l</span><br><span class="line">total <span class="number">303400</span></span><br><span class="line">-rw-------. <span class="number">1</span> root root        <span class="number">938</span> May <span class="number">26</span> <span class="number">18</span>:<span class="number">38</span> anaconda-ks.cfg</span><br><span class="line">-rw-r--r--. <span class="number">1</span> root root       <span class="number">8815</span> May <span class="number">26</span> <span class="number">18</span>:<span class="number">38</span> install.log</span><br><span class="line">-rw-r--r--. <span class="number">1</span> root root       <span class="number">3384</span> May <span class="number">26</span> <span class="number">18</span>:<span class="number">37</span> install.log.syslog</span><br><span class="line">-rw-r--r--. <span class="number">1</span> root root  <span class="number">151111680</span> May <span class="number">17</span> <span class="number">19</span>:<span class="number">50</span> MySQL<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm-bundle.tar</span><br><span class="line">-rw-r--r--. <span class="number">1</span> <span class="number">7155</span> <span class="number">31415</span>  <span class="number">15360764</span> May <span class="number">17</span> <span class="number">15</span>:<span class="number">06</span> MySQL-client<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm</span><br><span class="line">-rw-r--r--. <span class="number">1</span> <span class="number">7155</span> <span class="number">31415</span>   <span class="number">4977120</span> May <span class="number">17</span> <span class="number">15</span>:<span class="number">06</span> MySQL-devel<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm</span><br><span class="line">-rw-r--r--. <span class="number">1</span> <span class="number">7155</span> <span class="number">31415</span>  <span class="number">51847752</span> May <span class="number">17</span> <span class="number">15</span>:<span class="number">07</span> MySQL-embedded<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm</span><br><span class="line">-rw-r--r--. <span class="number">1</span> <span class="number">7155</span> <span class="number">31415</span>  <span class="number">40004240</span> May <span class="number">17</span> <span class="number">15</span>:<span class="number">07</span> MySQL-server<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm</span><br><span class="line">-rw-r--r--. <span class="number">1</span> <span class="number">7155</span> <span class="number">31415</span>   <span class="number">1755840</span> May <span class="number">17</span> <span class="number">15</span>:<span class="number">07</span> MySQL-shared<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm</span><br><span class="line">-rw-r--r--. <span class="number">1</span> <span class="number">7155</span> <span class="number">31415</span>   <span class="number">3969752</span> May <span class="number">17</span> <span class="number">15</span>:<span class="number">08</span> MySQL-shared-compat<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm</span><br><span class="line">-rw-r--r--. <span class="number">1</span> <span class="number">7155</span> <span class="number">31415</span>  <span class="number">33186496</span> May <span class="number">17</span> <span class="number">15</span>:<span class="number">08</span> MySQL-test<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm</span><br><span class="line">-rw-r--r--. <span class="number">1</span> root root    <span class="number">8422436</span> May <span class="number">19</span> <span class="number">15</span>:<span class="number">24</span> percona-xtrabackup<span class="number">-24</span><span class="number">-2.4</span><span class="number">.3</span><span class="number">-1.</span>el6.x86_64.rpm</span><br><span class="line"></span><br><span class="line">#先查看mysql的安装帮助，其中有提到</span><br><span class="line">#MySQL-shared-VERSION.glibc23.i386.rpm  Prior to MySQL <span class="number">5.5</span><span class="number">.6</span>, <span class="keyword">if</span> you install this package, do not install the MySQL-shared-compat package.</span><br><span class="line">#此处不安装 MySQL-shared<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el7.x86_64.rpm</span><br><span class="line"></span><br><span class="line">#故安装步骤：</span><br><span class="line">#MySQL-server   MySQL-devel     MySQL-client    MySQL-shared-compat</span><br><span class="line"></span><br><span class="line">#安装MySQL-server</span><br><span class="line">[root@localhost ~]# rpm -ivh MySQL-server<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm</span><br><span class="line">warning: MySQL-server<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm: Header V3 DSA/SHA1 Signature, key ID <span class="number">5072e1</span>f5: NOKEY</span><br><span class="line">Preparing...                ########################################### [<span class="number">100</span>%]</span><br><span class="line">   <span class="number">1</span>:MySQL-server           ########################################### [<span class="number">100</span>%]</span><br><span class="line"><span class="number">160622</span> <span class="number">20</span>:<span class="number">59</span>:<span class="number">37</span> [Note] /usr/sbin/mysqld (mysqld <span class="number">5.5</span><span class="number">.50</span>) starting <span class="keyword">as</span> process <span class="number">3324</span> ...</span><br><span class="line"><span class="number">160622</span> <span class="number">20</span>:<span class="number">59</span>:<span class="number">37</span> [Note] /usr/sbin/mysqld (mysqld <span class="number">5.5</span><span class="number">.50</span>) starting <span class="keyword">as</span> process <span class="number">3331</span> ...</span><br><span class="line"></span><br><span class="line">PLEASE REMEMBER TO SET A PASSWORD FOR THE MySQL root USER !</span><br><span class="line">To do so, start the server, then issue the following commands:</span><br><span class="line"></span><br><span class="line">/usr/bin/mysqladmin -u root password <span class="string">'new-password'</span></span><br><span class="line">/usr/bin/mysqladmin -u root -h localhost.localdomain password <span class="string">'new-password'</span></span><br><span class="line"></span><br><span class="line">Alternatively you can run:</span><br><span class="line">/usr/bin/mysql_secure_installation</span><br><span class="line"></span><br><span class="line">which will also give you the option <span class="keyword">of</span> removing the test</span><br><span class="line">databases and anonymous user created by default.  This is</span><br><span class="line">strongly recommended for production servers.</span><br><span class="line"></span><br><span class="line">See the manual for more instructions.</span><br><span class="line"></span><br><span class="line">Please report any problems at http:<span class="comment">//bugs.mysql.com/</span></span><br><span class="line"></span><br><span class="line">#安装MySQL-devel</span><br><span class="line">[root@localhost ~]# rpm -ivh MySQL-devel<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm</span><br><span class="line">warning: MySQL-devel<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm: Header V3 DSA/SHA1 Signature, key ID <span class="number">5072e1</span>f5: NOKEY</span><br><span class="line">Preparing...                ########################################### [<span class="number">100</span>%]</span><br><span class="line">   <span class="number">1</span>:MySQL-devel            ########################################### [<span class="number">100</span>%]</span><br><span class="line"></span><br><span class="line">#安装MySQL-client</span><br><span class="line">[root@localhost ~]# rpm -ivh MySQL-client<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm</span><br><span class="line">warning: MySQL-client<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm: Header V3 DSA/SHA1 Signature, key ID <span class="number">5072e1</span>f5: NOKEY</span><br><span class="line">Preparing...                ########################################### [<span class="number">100</span>%]</span><br><span class="line">   <span class="number">1</span>:MySQL-client           ########################################### [<span class="number">100</span>%]</span><br><span class="line"></span><br><span class="line">#安装MySQL-shared-compat</span><br><span class="line">[root@localhost ~]# rpm -ivh MySQL-shared-compat<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm</span><br><span class="line">warning: MySQL-shared-compat<span class="number">-5.5</span><span class="number">.50</span><span class="number">-1.</span>el6.x86_64.rpm: Header V3 DSA/SHA1 Signature, key ID <span class="number">5072e1</span>f5: NOKEY</span><br><span class="line">Preparing...                ########################################### [<span class="number">100</span>%]</span><br><span class="line">   <span class="number">1</span>:MySQL-shared-compat    ########################################### [<span class="number">100</span>%]</span><br><span class="line"></span><br><span class="line">#安装perl-DBD-MySQL</span><br><span class="line">[root@localhost ~]# rpm -ivh perl-DBD-MySQL<span class="number">-4.022</span><span class="number">-1.</span>el6.rfx.x86_64.rpm</span><br><span class="line">warning: perl-DBD-MySQL<span class="number">-4.022</span><span class="number">-1.</span>el6.rfx.x86_64.rpm: Header V3 DSA/SHA1 Signature, key ID <span class="number">6</span>b8d79e6: NOKEY</span><br><span class="line">Preparing...                ########################################### [<span class="number">100</span>%]</span><br><span class="line">   <span class="number">1</span>:perl-DBD-MySQL         ########################################### [<span class="number">100</span>%]</span><br><span class="line"></span><br><span class="line">#安装percona-xtrabackup</span><br><span class="line">[root@localhost ~]# rpm -ivh percona-xtrabackup<span class="number">-24</span><span class="number">-2.4</span><span class="number">.3</span><span class="number">-1.</span>el6.x86_64.rpm</span><br><span class="line">warning: percona-xtrabackup<span class="number">-24</span><span class="number">-2.4</span><span class="number">.3</span><span class="number">-1.</span>el6.x86_64.rpm: Header V4 DSA/SHA1 Signature, key ID cd2efd2a: NOKEY</span><br><span class="line">error: Failed dependencies:</span><br><span class="line">        libev.so<span class="number">.4</span>()(<span class="number">64</span>bit) is needed by percona-xtrabackup<span class="number">-24</span><span class="number">-2.4</span><span class="number">.3</span><span class="number">-1.</span>el6.x86_64</span><br><span class="line">        libnuma.so<span class="number">.1</span>()(<span class="number">64</span>bit) is needed by percona-xtrabackup<span class="number">-24</span><span class="number">-2.4</span><span class="number">.3</span><span class="number">-1.</span>el6.x86_64</span><br><span class="line">#报错了，看来是缺少依赖 libev.so<span class="number">.4</span> libnuma.so<span class="number">.1</span> rsync</span><br><span class="line"> wget http:<span class="comment">//apt.sw.be/redhat/el6/en/x86_64/rpmforge/RPMS/libev-4.15-1.el6.rf.x86_64.rpm</span></span><br><span class="line"> wget http:<span class="comment">//mirror.centos.org/centos/6/os/x86_64/Packages/numactl-2.0.9-2.el6.x86_64.rpm</span></span><br><span class="line"> wget http:<span class="comment">//mirror.symnds.com/distributions/gf/el/6/plus/x86_64/rsync-3.1.1-2.gf.el6.x86_64.rpm</span></span><br><span class="line"></span><br><span class="line">#安装上述依赖包后，重新安装</span><br><span class="line">[root@localhost ~]# rpm -ivh percona-xtrabackup<span class="number">-24</span><span class="number">-2.4</span><span class="number">.3</span><span class="number">-1.</span>el6.x86_64.rpm</span><br><span class="line">warning: percona-xtrabackup<span class="number">-24</span><span class="number">-2.4</span><span class="number">.3</span><span class="number">-1.</span>el6.x86_64.rpm: Header V4 DSA/SHA1 Signature, key ID cd2efd2a: NOKEY</span><br><span class="line">Preparing...                ########################################### [<span class="number">100</span>%]</span><br><span class="line">   <span class="number">1</span>:percona-xtrabackup<span class="number">-24</span>  ########################################### [<span class="number">100</span>%]</span><br><span class="line"></span><br><span class="line">#配置数据库 my.cnf</span><br><span class="line">[client]</span><br><span class="line">port            = <span class="number">3306</span></span><br><span class="line">socket          = /tmp/mysql.sock</span><br><span class="line">character-set=utf8</span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">server-id       = <span class="number">100</span></span><br><span class="line">bind-address    = <span class="number">192.168</span><span class="number">.1</span><span class="number">.1</span></span><br><span class="line">port            = <span class="number">3306</span></span><br><span class="line">user            = mysql</span><br><span class="line">socket          = /tmp/mysql.sock</span><br><span class="line">datadir         = /home/data/mysqldata</span><br><span class="line">#default-character-set = utf8</span><br><span class="line"></span><br><span class="line">#character-set-server = utf8</span><br><span class="line">#collation-server = utf8_general_ci</span><br><span class="line">init-connect=<span class="string">'SET NAMES utf8mb4'</span></span><br><span class="line">character-set-server = utf8mb4</span><br><span class="line">collation-server = utf8mb4_general_ci</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">back_log = <span class="number">50</span></span><br><span class="line">table_cache=<span class="number">128</span></span><br><span class="line">myisam_sort_buffer_size=<span class="number">128</span>M</span><br><span class="line">key_buffer_size=<span class="number">896</span>M</span><br><span class="line">max_connections = <span class="number">1000</span></span><br><span class="line">max_connect_errors = <span class="number">10000</span></span><br><span class="line">max_allowed_packet = <span class="number">40</span>M</span><br><span class="line">max_heap_table_size = <span class="number">64</span>M</span><br><span class="line">sort_buffer_size = <span class="number">16</span>M</span><br><span class="line">join_buffer_size = <span class="number">8</span>M</span><br><span class="line">thread_cache_size = <span class="number">8</span></span><br><span class="line">thread_concurrency = <span class="number">16</span></span><br><span class="line"></span><br><span class="line">query_cache_size = <span class="number">0</span>    # shutdown the query_cache</span><br><span class="line">query_cache_type = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">query_cache_limit = <span class="number">2</span>M</span><br><span class="line">thread_stack = <span class="number">192</span>K</span><br><span class="line">transaction_isolation = REPEATABLE-READ</span><br><span class="line">tmp_table_size = <span class="number">64</span>M</span><br><span class="line">log-bin= /home/data/mysql-logs/webser</span><br><span class="line">relay-log= /home/data/mysql-logs/relay</span><br><span class="line">log-error= /home/data/mysql-logs/log-err</span><br><span class="line">#max_binlog_size = <span class="number">102400000</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">innodb_additional_mem_pool_size = <span class="number">16</span>M</span><br><span class="line">innodb_buffer_pool_size = <span class="number">2000</span>M</span><br><span class="line">innodb_data_file_path = ibdata0:<span class="number">2</span>G;ibdata1:<span class="number">2</span>G;ibdata2:<span class="number">2</span>G</span><br><span class="line">innodb_data_home_dir = /home/data/mysqldata</span><br><span class="line"></span><br><span class="line">innodb_file_io_threads = <span class="number">4</span></span><br><span class="line">#innodb_force_recovery=<span class="number">6</span></span><br><span class="line">innodb_thread_concurrency = <span class="number">5</span></span><br><span class="line">innodb_flush_log_at_trx_commit = <span class="number">0</span></span><br><span class="line">innodb_log_buffer_size = <span class="number">8</span>M</span><br><span class="line">innodb_log_file_size = <span class="number">256</span>M</span><br><span class="line">innodb_log_files_in_group = <span class="number">3</span></span><br><span class="line">innodb_log_group_home_dir = /home/data/mysql-logs/</span><br><span class="line">innodb_max_dirty_pages_pct = <span class="number">90</span></span><br><span class="line"></span><br><span class="line">innodb_lock_wait_timeout = <span class="number">120</span></span><br><span class="line">innodb_file_per_table = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">log_warnings</span><br><span class="line">slow_query_log</span><br><span class="line">slow_query_log_file= /home/data/mysql-logs/slow-log</span><br><span class="line">#long_query_time = <span class="number">5</span></span><br><span class="line">#log_long_format</span><br><span class="line"></span><br><span class="line">#skip-bdb</span><br><span class="line">#skip-innodb</span><br><span class="line">skip-host-cache</span><br><span class="line">#skip-locking</span><br><span class="line">#skip-grant-tables</span><br><span class="line">#slave-skip-errors = <span class="number">1062</span></span><br><span class="line">[mysqldump]</span><br><span class="line">quick</span><br><span class="line">max_allowed_packet = <span class="number">16</span>M</span><br><span class="line"></span><br><span class="line">[mysql]</span><br><span class="line">no-auto-rehash</span><br><span class="line"></span><br><span class="line">[mysqlhotcopy]</span><br><span class="line">interactive-timeout</span><br><span class="line"></span><br><span class="line">[mysqld_safe]</span><br><span class="line">open-files-limit = <span class="number">8192</span></span><br><span class="line"></span><br><span class="line">#将上述文件写入到/etc/my.cnf</span><br><span class="line">#修改my.cnf的所属用户组 为 mysql.mysql</span><br><span class="line">#在home 目录下建立data/mysqldata data/mysql-logs 并且修改所属用户组为mysql.mysql</span><br><span class="line"></span><br><span class="line">#初始化数据库</span><br><span class="line">[root@localhost bin]# mysql_install_db</span><br><span class="line">Installing MySQL <span class="keyword">system</span> tables...</span><br><span class="line"><span class="number">160622</span> <span class="number">22</span>:<span class="number">13</span>:<span class="number">30</span> [Warning] <span class="string">'THREAD_CONCURRENCY'</span> is deprecated and will be removed <span class="keyword">in</span> a future release.</span><br><span class="line"><span class="number">160622</span> <span class="number">22</span>:<span class="number">13</span>:<span class="number">30</span> [Note] /usr/sbin/mysqld (mysqld <span class="number">5.5</span><span class="number">.50</span>-log) starting <span class="keyword">as</span> process <span class="number">3459</span> ...</span><br><span class="line">OK</span><br><span class="line">Filling help tables...</span><br><span class="line"><span class="number">160622</span> <span class="number">22</span>:<span class="number">13</span>:<span class="number">30</span> [Warning] <span class="string">'THREAD_CONCURRENCY'</span> is deprecated and will be removed <span class="keyword">in</span> a future release.</span><br><span class="line"><span class="number">160622</span> <span class="number">22</span>:<span class="number">13</span>:<span class="number">30</span> [Note] /usr/sbin/mysqld (mysqld <span class="number">5.5</span><span class="number">.50</span>-log) starting <span class="keyword">as</span> process <span class="number">3466</span> ...</span><br><span class="line">OK</span><br><span class="line"></span><br><span class="line">To start mysqld at boot time you have to copy</span><br><span class="line">support-files/mysql.server to the right place for your <span class="keyword">system</span></span><br><span class="line"></span><br><span class="line">PLEASE REMEMBER TO SET A PASSWORD FOR THE MySQL root USER !</span><br><span class="line">To do so, start the server, then issue the following commands:</span><br><span class="line"></span><br><span class="line">/usr/bin/mysqladmin -u root password <span class="string">'new-password'</span></span><br><span class="line">/usr/bin/mysqladmin -u root -h localhost.localdomain password <span class="string">'new-password'</span></span><br><span class="line"></span><br><span class="line">Alternatively you can run:</span><br><span class="line">/usr/bin/mysql_secure_installation</span><br><span class="line"></span><br><span class="line">which will also give you the option <span class="keyword">of</span> removing the test</span><br><span class="line">databases and anonymous user created by default.  This is</span><br><span class="line">strongly recommended for production servers.</span><br><span class="line"></span><br><span class="line">See the manual for more instructions.</span><br><span class="line"></span><br><span class="line">You can start the MySQL daemon <span class="keyword">with</span>:</span><br><span class="line">cd /usr ; /usr/bin/mysqld_safe &amp;</span><br><span class="line"></span><br><span class="line">You can test the MySQL daemon <span class="keyword">with</span> mysql-test-run.pl</span><br><span class="line">cd /usr/mysql-test ; perl mysql-test-run.pl</span><br><span class="line"></span><br><span class="line">Please report any problems at http:<span class="comment">//bugs.mysql.com/</span></span><br><span class="line"></span><br><span class="line">#查找mysql服务</span><br><span class="line">[root@localhost bin]# find / -name mysql.server</span><br><span class="line">/usr/share/mysql/mysql.server</span><br><span class="line"></span><br><span class="line">#进入上述目录</span><br><span class="line">[root@localhost mysql]# cp mysql.server /etc/init.d/mysqld</span><br><span class="line">#添加服务</span><br><span class="line">chkconfig --add mysqld</span><br><span class="line"></span><br><span class="line">#启动</span><br><span class="line">service mysqld start</span><br><span class="line">[root@localhost data]# service mysqld start</span><br><span class="line">Starting MySQL........ SUCCESS!</span><br><span class="line"></span><br><span class="line">#设置mysql root用户密码</span><br><span class="line">mysqladmin -u root password <span class="string">'123456'</span></span><br></pre></td></tr></table></figure></p>
+<p>mysql rpm 安装帮助链接：<a href="http://dev.mysql.com/doc/refman/5.5/en/linux-installation-rpm.html" target="_blank" rel="noopener">http://dev.mysql.com/doc/refman/5.5/en/linux-installation-rpm.html</a></p>
+<p>安装nginx<br><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">yum -y install gcc gcc-c++ make libtool zlib zlib-devel openssl openssl-devel pcre pcre-devel</span><br><span class="line"><span class="comment">#wget nginx</span></span><br><span class="line">wget http:<span class="string">//nginx.org/download/nginx-1.6.3.tar.gz</span></span><br><span class="line">tar zxvf nginx-1.6.3</span><br><span class="line"><span class="keyword">cd</span> nginx-1.6.3</span><br><span class="line"><span class="string">./configure</span> <span class="params">--prefix=/opt/nginx-1</span>.6.3 <span class="params">--with-pcre</span> \</span><br><span class="line"><span class="params">--with-http_stub_status_module</span> <span class="params">--with-http_ssl_module</span> \</span><br><span class="line"><span class="params">--with-http_gzip_static_module</span> <span class="params">--with-http_realip_module</span></span><br><span class="line"></span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CentOS/" rel="tag"># CentOS</a>
+          
+            <a href="/tags/运维/" rel="tag"># 运维</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/30/运维-CentOS-生产环境安装（1）/" rel="next" title="运维-CentOS-生产环境安装（1）">
+                <i class="fa fa-chevron-left"></i> 运维-CentOS-生产环境安装（1）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/30/运维-CentOS-搭建VPN/" rel="prev" title="运维-CentOS-搭建VPN">
+                运维-CentOS-搭建VPN <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="gitalk-container"></div>
+    
+  </div>
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="seven-cm">
+          <p class="site-author-name" itemprop="name">seven-cm</p>
+           
+              <p class="site-description motion-element" itemprop="description">少敲代码，多陪家人</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">80</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">100</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/seven-cm" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">seven-cm</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+  <script src="/js/src/md5js.min.js"></script>
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    var gitalk = new Gitalk({
+      clientID: '0399ed5d0252ba457a47',
+      clientSecret: '2bd5994250316a50ecb15449b98c744a7f6aa117',
+      repo: 'seven-cm.github.io',
+      owner: 'seven-cm',
+      admin: ['seven-cm'],
+      id: md5(location.pathname),
+      distractionFreeMode: 'false'
+    })
+    gitalk.render('gitalk-container')
+  </script>
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,756 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="mysql,RDS,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="前言因阿里云RDS快到期了；而因业务线的调整，我们打算不再继续对RDS续费，故需对线上的RDS进行一次数据库转移。 转移方法为了方便快捷地转换，我们是在ECS建立数据库，然后对RDS进行主从同步。 数据库版本12345# 阿里云RDSMySQL 5.6# ECS MySQL 5.7 从库my.cnf配置123456789101112131415161718192021222324252627282">
+<meta name="keywords" content="mysql,RDS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="阿里云RDS到期切换记录">
+<meta property="og:url" content="http://seven-cm.github.io/2020/08/23/阿里云RDS到期切换记录/index.html">
+<meta property="og:site_name" content="seven-cm.blog">
+<meta property="og:description" content="前言因阿里云RDS快到期了；而因业务线的调整，我们打算不再继续对RDS续费，故需对线上的RDS进行一次数据库转移。 转移方法为了方便快捷地转换，我们是在ECS建立数据库，然后对RDS进行主从同步。 数据库版本12345# 阿里云RDSMySQL 5.6# ECS MySQL 5.7 从库my.cnf配置123456789101112131415161718192021222324252627282">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2023-04-27T14:32:21.514Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="阿里云RDS到期切换记录">
+<meta name="twitter:description" content="前言因阿里云RDS快到期了；而因业务线的调整，我们打算不再继续对RDS续费，故需对线上的RDS进行一次数据库转移。 转移方法为了方便快捷地转换，我们是在ECS建立数据库，然后对RDS进行主从同步。 数据库版本12345# 阿里云RDSMySQL 5.6# ECS MySQL 5.7 从库my.cnf配置123456789101112131415161718192021222324252627282">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://seven-cm.github.io/2020/08/23/阿里云RDS到期切换记录/">
+
+
+
+
+
+  <title> 阿里云RDS到期切换记录 | seven-cm.blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?fea19912a68edcd8dd8884f7fc44c677";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">seven-cm.blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2020/08/23/阿里云RDS到期切换记录/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                阿里云RDS到期切换记录
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-23T22:43:48+08:00">
+                2020-08-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>因阿里云RDS快到期了；而因业务线的调整，我们打算不再继续对RDS续费，故需对线上的RDS进行一次数据库转移。</p>
+<h2 id="转移方法"><a href="#转移方法" class="headerlink" title="转移方法"></a>转移方法</h2><p>为了方便快捷地转换，我们是在ECS建立数据库，然后对RDS进行主从同步。</p>
+<h3 id="数据库版本"><a href="#数据库版本" class="headerlink" title="数据库版本"></a>数据库版本</h3><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 阿里云RDS</span></span><br><span class="line"><span class="attr">MySQL</span> <span class="string">5.6</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ECS </span></span><br><span class="line"><span class="attr">MySQL</span> <span class="string">5.7</span></span><br></pre></td></tr></table></figure>
+<h3 id="从库my-cnf配置"><a href="#从库my-cnf配置" class="headerlink" title="从库my.cnf配置"></a>从库my.cnf配置</h3><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line">[client]</span><br><span class="line"><span class="attr">port</span>            = <span class="number">3306</span></span><br><span class="line"><span class="attr">socket</span>          = /tmp/mysql.sock</span><br><span class="line"><span class="attr">default-character-set=utf8mb4</span></span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line"><span class="attr">server-id</span>       = <span class="number">100</span></span><br><span class="line"><span class="attr">port</span>            = <span class="number">3306</span></span><br><span class="line"><span class="attr">user</span>            = mysql</span><br><span class="line"><span class="attr">socket</span>          = /tmp/mysql.sock</span><br><span class="line"><span class="attr">datadir</span>         = /data/mysql/data</span><br><span class="line"><span class="attr">character_set_server=utf8mb4</span></span><br><span class="line"><span class="attr">default-storage-engine</span> = InnoDB</span><br><span class="line"></span><br><span class="line"><span class="attr">back_log</span> = <span class="number">50</span></span><br><span class="line"><span class="attr">max_connections</span> = <span class="number">1000</span></span><br><span class="line"><span class="attr">max_connect_errors</span> = <span class="number">6000</span></span><br><span class="line"><span class="attr">open_files_limit</span> = <span class="number">65535</span></span><br><span class="line"><span class="attr">table_open_cache</span> = <span class="number">128</span></span><br><span class="line"><span class="attr">max_allowed_packet</span> = <span class="number">4</span>M</span><br><span class="line"><span class="attr">binlog_cache_size</span> = <span class="number">1</span>M</span><br><span class="line"><span class="attr">max_heap_table_size</span> = <span class="number">8</span>M</span><br><span class="line"><span class="attr">tmp_table_size</span> = <span class="number">16</span>M</span><br><span class="line"><span class="attr">read_buffer_size</span> = <span class="number">2</span>M</span><br><span class="line"><span class="attr">read_rnd_buffer_size</span> = <span class="number">8</span>M</span><br><span class="line"><span class="attr">sort_buffer_size</span> = <span class="number">8</span>M</span><br><span class="line"><span class="attr">join_buffer_size</span> = <span class="number">8</span>M</span><br><span class="line"><span class="attr">thread_cache_size</span> = <span class="number">8</span></span><br><span class="line"><span class="attr">query_cache_size</span> = <span class="number">0</span></span><br><span class="line"><span class="attr">query_cache_limit</span> = <span class="number">2</span>M</span><br><span class="line"><span class="attr">key_buffer_size</span> = <span class="number">16</span>M</span><br><span class="line"><span class="attr">transaction_isolation</span> = READ-COMMITTED</span><br><span class="line"><span class="attr">log_bin</span> = /data/mysql/log/binlog/mysql-bin</span><br><span class="line"><span class="attr">binlog_format</span> = ROW</span><br><span class="line"><span class="attr">log-error=</span> /data/mysql/log/log/error.log</span><br><span class="line"><span class="attr">slow_query_log</span> = <span class="number">1</span></span><br><span class="line"><span class="attr">long_query_time</span> = <span class="number">3</span></span><br><span class="line"></span><br><span class="line"><span class="attr">slow_query_log_file</span> = /data/mysql/log/log/slow.log</span><br><span class="line"><span class="attr">innodb_buffer_pool_size</span> = <span class="number">128</span>M</span><br><span class="line"><span class="attr">innodb_write_io_threads</span> = <span class="number">4</span></span><br><span class="line"><span class="attr">innodb_read_io_threads</span> = <span class="number">4</span></span><br><span class="line"><span class="comment"># 5.7.2版本已经过时</span></span><br><span class="line"><span class="attr">innodb_thread_concurrency</span> = <span class="number">0</span></span><br><span class="line"><span class="attr">innodb_flush_log_at_trx_commit</span> = <span class="number">2</span></span><br><span class="line"><span class="attr">innodb_purge_threads</span> = <span class="number">1</span></span><br><span class="line"><span class="attr">innodb_log_buffer_size</span> = <span class="number">2</span>M</span><br><span class="line"><span class="attr">innodb_log_file_size</span> = <span class="number">256</span>M</span><br><span class="line"><span class="attr">innodb_log_files_in_group</span> = <span class="number">3</span></span><br><span class="line"><span class="attr">innodb_max_dirty_pages_pct</span> = <span class="number">90</span></span><br><span class="line"><span class="attr">innodb_lock_wait_timeout</span> = <span class="number">120</span></span><br><span class="line"><span class="attr">bulk_insert_buffer_size</span> = <span class="number">8</span>M</span><br><span class="line"><span class="attr">myisam_sort_buffer_size</span> = <span class="number">8</span>M</span><br><span class="line"><span class="attr">innodb_file_per_table</span> = <span class="number">1</span></span><br><span class="line"><span class="attr">innodb_data_file_path</span> = ibdata0:<span class="number">2</span>G;ibdata1:<span class="number">2</span>G;</span><br><span class="line"><span class="attr">innodb_data_home_dir</span> = /data/mysql/data</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="attr">gtid_mode=on</span></span><br><span class="line"><span class="attr">enforce_gtid_consistency=on</span></span><br><span class="line"><span class="attr">log-slave-updates=1</span></span><br><span class="line"><span class="comment">#配置</span></span><br><span class="line"><span class="attr">replicate-do-db</span>         =  aaa</span><br><span class="line"><span class="attr">replicate-ignore-db</span>     =  mysql</span><br><span class="line"><span class="attr">replicate-ignore-db</span>     =  information_schema</span><br><span class="line"><span class="attr">replicate-ignore-db</span>     =  performance_schema</span><br><span class="line"><span class="attr">replicate-ignore-db</span>     =  bbb</span><br><span class="line"><span class="comment">#replicate-wild-ignore-table     = mysql.% //不需要同步的表（可选）</span></span><br><span class="line"><span class="comment">#replicate-wild-ignore-table     = test.% //不需要同步的表（可选）</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[mysqldump]</span><br><span class="line">quick</span><br><span class="line"><span class="attr">max_allowed_packet</span> = <span class="number">16</span>M</span><br><span class="line"></span><br><span class="line">[mysqld_safe]</span><br><span class="line"><span class="attr">open-files-limit</span> = <span class="number">8192</span></span><br></pre></td></tr></table></figure>
+<h3 id="导出RDS上的数据"><a href="#导出RDS上的数据" class="headerlink" title="导出RDS上的数据"></a>导出RDS上的数据</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -usuper_db -p <span class="attribute">--set-gtid-purged</span>=OFF -hrm-xxx.mysql.rds.aliyuncs.com <span class="attribute">--ignore-table</span>=xxx.aaa <span class="attribute">--ignore-table</span>=xxx.bbb --single-transaction <span class="attribute">--master-data</span>=2 xxx | gzip &gt; ./xxx_0800.sql.gz</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>因某个数据表的数据量太大了，故直接忽略该不重要的数据；注意语句中需使用–master-data=2获得导出数据时的POS信息：</p>
+</blockquote>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-- CHANGE MASTER <span class="keyword">TO</span> <span class="attribute">MASTER_LOG_FILE</span>=<span class="string">'mysql-bin.000009'</span>, <span class="attribute">MASTER_LOG_POS</span>=185396519;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>使用–master-data的时候需使用RDS的超级用户权限</p>
+</blockquote>
+<h3 id="ECS中对mysql导入数据"><a href="#ECS中对mysql导入数据" class="headerlink" title="ECS中对mysql导入数据"></a>ECS中对mysql导入数据</h3><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">source</span> <span class="regexp">/xxx/</span>xxx<span class="regexp">/xxx.sql</span></span><br></pre></td></tr></table></figure>
+<h3 id="ECS开始主从同步"><a href="#ECS开始主从同步" class="headerlink" title="ECS开始主从同步"></a>ECS开始主从同步</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">change</span> <span class="keyword">master</span> <span class="keyword">to</span> master_host=<span class="string">'rm-xxx.mysql.rds.aliyuncs.com'</span>,master_port=<span class="number">3306</span>,master_user=<span class="string">'xxx'</span>,master_password=<span class="string">'xxxxx'</span>,master_log_file=<span class="string">'mysql-bin.000009'</span>,master_log_pos=<span class="number">185396519</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开始同步</span></span><br><span class="line"><span class="keyword">start</span> <span class="keyword">slave</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看同步状态</span></span><br><span class="line"><span class="keyword">show</span> <span class="keyword">slave</span> <span class="keyword">status</span> \G;</span><br></pre></td></tr></table></figure>
+<h3 id="可能遇到的问题"><a href="#可能遇到的问题" class="headerlink" title="可能遇到的问题"></a>可能遇到的问题</h3><blockquote>
+<p>Last_Error: The incident LOST_EVENTS occured on the master. Message: REVOKE/GRANT failed while granting/revoking privileges in databases.</p>
+</blockquote>
+<p>原因：在对主库作grant的时候，因为出错，导致从库同步失败。</p>
+<h4 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h4><p>先查看同步的信息<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">show</span> <span class="string">slave</span> <span class="string">status</span> <span class="string">\G;</span></span><br><span class="line"><span class="string">***************************</span> <span class="number">1</span><span class="string">.</span> <span class="string">row</span> <span class="string">***************************</span></span><br><span class="line">               <span class="attr">Slave_IO_State:</span> <span class="string">Waiting</span> <span class="string">for</span> <span class="string">master</span> <span class="string">to</span> <span class="string">send</span> <span class="string">event</span></span><br><span class="line">                  <span class="attr">Master_Host:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line">                  <span class="attr">Master_User:</span> <span class="string">replica</span></span><br><span class="line">                  <span class="attr">Master_Port:</span> <span class="number">3306</span></span><br><span class="line">                <span class="attr">Connect_Retry:</span> <span class="number">60</span></span><br><span class="line">              <span class="attr">Master_Log_File:</span> <span class="string">mysql-bin.000010</span></span><br><span class="line">          <span class="attr">Read_Master_Log_Pos:</span> <span class="number">89679008</span></span><br><span class="line">               <span class="attr">Relay_Log_File:</span> <span class="string">test-relay-bin.000002</span></span><br><span class="line">                <span class="attr">Relay_Log_Pos:</span> <span class="number">96157454</span></span><br><span class="line">        <span class="attr">Relay_Master_Log_File:</span> <span class="string">mysql-bin.000009</span></span><br><span class="line">             <span class="attr">Slave_IO_Running:</span> <span class="literal">Yes</span></span><br><span class="line">            <span class="attr">Slave_SQL_Running:</span> <span class="literal">No</span></span><br><span class="line">              <span class="attr">Replicate_Do_DB:</span> <span class="string">aaa</span></span><br><span class="line">          <span class="attr">Replicate_Ignore_DB:</span> <span class="string">mysql,information_schema,performance_schema</span></span><br><span class="line">           <span class="attr">Replicate_Do_Table:</span> </span><br><span class="line">       <span class="attr">Replicate_Ignore_Table:</span> </span><br><span class="line">      <span class="attr">Replicate_Wild_Do_Table:</span> </span><br><span class="line">  <span class="attr">Replicate_Wild_Ignore_Table:</span> <span class="string">aaa.test1,aaa.test2</span></span><br><span class="line">                   <span class="attr">Last_Errno:</span> <span class="number">1590</span></span><br><span class="line">                   <span class="attr">Last_Error: The incident LOST_EVENTS occured on the master. Message:</span> <span class="string">REVOKE/GRANT</span> <span class="string">failed</span> <span class="string">while</span> <span class="string">granting/revoking</span> <span class="string">privileges</span> <span class="string">in</span> <span class="string">databases.</span></span><br><span class="line">                 <span class="attr">Skip_Counter:</span> <span class="number">0</span></span><br><span class="line">          <span class="attr">Exec_Master_Log_Pos:</span> <span class="number">281553653</span></span><br><span class="line">              <span class="attr">Relay_Log_Space:</span> <span class="number">185837413</span></span><br><span class="line">              <span class="attr">Until_Condition:</span> <span class="string">None</span></span><br><span class="line">               <span class="attr">Until_Log_File:</span> </span><br><span class="line">                <span class="attr">Until_Log_Pos:</span> <span class="number">0</span></span><br><span class="line">           <span class="attr">Master_SSL_Allowed:</span> <span class="literal">No</span></span><br><span class="line">           <span class="attr">Master_SSL_CA_File:</span> </span><br><span class="line">           <span class="attr">Master_SSL_CA_Path:</span> </span><br><span class="line">              <span class="attr">Master_SSL_Cert:</span> </span><br><span class="line">            <span class="attr">Master_SSL_Cipher:</span> </span><br><span class="line">               <span class="attr">Master_SSL_Key:</span> </span><br><span class="line">        <span class="attr">Seconds_Behind_Master:</span> <span class="literal">NULL</span></span><br><span class="line"><span class="attr">Master_SSL_Verify_Server_Cert:</span> <span class="literal">No</span></span><br><span class="line">                <span class="attr">Last_IO_Errno:</span> <span class="number">0</span></span><br><span class="line">                <span class="attr">Last_IO_Error:</span> </span><br><span class="line">               <span class="attr">Last_SQL_Errno:</span> <span class="number">1590</span></span><br><span class="line">               <span class="attr">Last_SQL_Error: The incident LOST_EVENTS occured on the master. Message:</span> <span class="string">REVOKE/GRANT</span> <span class="string">failed</span> <span class="string">while</span> <span class="string">granting/revoking</span> <span class="string">privileges</span> <span class="string">in</span> <span class="string">databases.</span></span><br><span class="line">  <span class="attr">Replicate_Ignore_Server_Ids:</span> </span><br><span class="line">             <span class="attr">Master_Server_Id:</span> <span class="number">101</span></span><br><span class="line">                  <span class="attr">Master_UUID:</span> <span class="string">0ca4a659-d53a-11ea-b6e9-00163e0c6331</span></span><br><span class="line">             <span class="attr">Master_Info_File:</span> <span class="string">/var/lib/mysql/master.info</span></span><br><span class="line">                    <span class="attr">SQL_Delay:</span> <span class="number">0</span></span><br><span class="line">          <span class="attr">SQL_Remaining_Delay:</span> <span class="literal">NULL</span></span><br><span class="line">      <span class="attr">Slave_SQL_Running_State:</span> </span><br><span class="line">           <span class="attr">Master_Retry_Count:</span> <span class="number">86400</span></span><br><span class="line">                  <span class="attr">Master_Bind:</span> </span><br><span class="line">      <span class="attr">Last_IO_Error_Timestamp:</span> </span><br><span class="line">     <span class="attr">Last_SQL_Error_Timestamp:</span> <span class="number">200822</span> <span class="number">11</span><span class="string">:55:36</span></span><br><span class="line">               <span class="attr">Master_SSL_Crl:</span> </span><br><span class="line">           <span class="attr">Master_SSL_Crlpath:</span> </span><br><span class="line">           <span class="attr">Retrieved_Gtid_Set:</span> <span class="string">0ca4a659-d53a-11ea-b6e9-00163e0c6331:14478471-14877986</span></span><br><span class="line">            <span class="attr">Executed_Gtid_Set:</span> <span class="string">0ca4a659-d53a-11ea-b6e9-00163e0c6331:14478471-14688606,</span></span><br><span class="line"><span class="string">11cb8e59-e41e-11ea-b249-0242ac130002:1-4042</span></span><br><span class="line">                <span class="attr">Auto_Position:</span> <span class="number">0</span></span><br><span class="line">         <span class="attr">Replicate_Rewrite_DB:</span> </span><br><span class="line">                 <span class="attr">Channel_Name:</span> </span><br><span class="line">           <span class="attr">Master_TLS_Version:</span> </span><br><span class="line"><span class="number">1</span> <span class="string">row</span> <span class="string">in</span> <span class="string">set</span> <span class="string">(0.00</span> <span class="string">sec)</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>注意 Exec_Master_Log_Pos: 281553653 说明我们已经执行到 281553653 之后出现了问题。</p>
+</blockquote>
+<h4 id="查看binlog信息"><a href="#查看binlog信息" class="headerlink" title="查看binlog信息"></a>查看binlog信息</h4><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">mysqlbinlog --no-defaults mysql-bin<span class="number">.000009</span> |tail <span class="number">-40</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># at <span class="number">281553622</span></span><br><span class="line">#<span class="number">200822</span> <span class="number">11</span>:<span class="number">38</span>:<span class="number">18</span> server id <span class="number">101</span>  end_log_pos <span class="number">281553653</span> CRC32 <span class="number">0x6abd8fc2</span>  Xid = <span class="number">266891639</span></span><br><span class="line">COMMIT<span class="comment">/*!*/</span>;</span><br><span class="line"># at <span class="number">281553653</span></span><br><span class="line">#<span class="number">200822</span> <span class="number">11</span>:<span class="number">38</span>:<span class="number">18</span> server id <span class="number">101</span>  end_log_pos <span class="number">281553718</span> CRC32 <span class="number">0xe3dcaa94</span>  GTID [commit=yes]</span><br><span class="line">SET @@SESSION.GTID_NEXT= <span class="string">'0ca4a659-d53a-11ea-b6e9-00163e0c6331:14688607'</span><span class="comment">/*!*/</span>;</span><br><span class="line"># at <span class="number">281553718</span></span><br><span class="line">#<span class="number">200822</span> <span class="number">11</span>:<span class="number">38</span>:<span class="number">18</span> server id <span class="number">101</span>  end_log_pos <span class="number">281553816</span> CRC32 <span class="number">0xa0997e79</span> </span><br><span class="line"># Incident: LOST_EVENTS</span><br><span class="line">RELOAD DATABASE; # Shall generate syntax error</span><br><span class="line"># at <span class="number">281553816</span></span><br><span class="line">#<span class="number">200822</span> <span class="number">11</span>:<span class="number">38</span>:<span class="number">18</span> server id <span class="number">101</span>  end_log_pos <span class="number">281553863</span> CRC32 <span class="number">0x3b237165</span>  Rotate to mysql-bin<span class="number">.000010</span>  pos: <span class="number">4</span></span><br><span class="line">DELIMITER ;</span><br><span class="line"># End of log file</span><br><span class="line">ROLLBACK <span class="comment">/* added by mysqlbinlog */</span>;</span><br><span class="line"><span class="comment">/*!50003 SET COMPLETION_TYPE=@OLD_COMPLETION_TYPE*/</span>;</span><br><span class="line"><span class="comment">/*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=0*/</span>;</span><br></pre></td></tr></table></figure>
+<p>可了解到出现错误后，主库重新开启了一个新的binlog日志；起始的pos为：4<br><code>#200822 11:38:18 server id 101  end_log_pos 281553863 CRC32 0x3b237165  Rotate to mysql-bin.000010  pos: 4</code></p>
+<p>恢复同步<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">stop</span> <span class="keyword">slave</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">change</span> <span class="keyword">master</span> <span class="keyword">to</span> master_host=<span class="string">'rm-xxx.mysql.rds.aliyuncs.com'</span>,master_port=<span class="number">3306</span>,master_user=<span class="string">'xxx'</span>,master_password=<span class="string">'xxxxx'</span>,master_log_file=<span class="string">'mysql-bin.000010'</span>,master_log_pos=<span class="number">4</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">start</span> <span class="keyword">slave</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">show</span> <span class="keyword">slave</span> <span class="keyword">status</span> \G;</span><br></pre></td></tr></table></figure></p>
+<h4 id="tips"><a href="#tips" class="headerlink" title="tips"></a>tips</h4><p>如果不习惯使用mysqlbinlog命令，可以直接在数据库中执行<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">binlog</span> <span class="keyword">events</span> <span class="keyword">in</span> <span class="string">'mysql-bin.000009'</span> <span class="keyword">from</span> <span class="number">185396519</span> <span class="keyword">limit</span> <span class="number">30</span>;</span><br></pre></td></tr></table></figure></p>
+<p>可查看binlog的相关信息。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mysql/" rel="tag"># mysql</a>
+          
+            <a href="/tags/RDS/" rel="tag"># RDS</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/23/gitalk-Validation-Failed-问题/" rel="next" title="gitalk Validation Failed 问题">
+                <i class="fa fa-chevron-left"></i> gitalk Validation Failed 问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/04/10/记一次svn迁移/" rel="prev" title="记一次svn迁移">
+                记一次svn迁移 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="gitalk-container"></div>
+    
+  </div>
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="seven-cm">
+          <p class="site-author-name" itemprop="name">seven-cm</p>
+           
+              <p class="site-description motion-element" itemprop="description">少敲代码，多陪家人</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">80</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">100</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/seven-cm" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#转移方法"><span class="nav-number">1.1.</span> <span class="nav-text">转移方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库版本"><span class="nav-number">1.1.1.</span> <span class="nav-text">数据库版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从库my-cnf配置"><span class="nav-number">1.1.2.</span> <span class="nav-text">从库my.cnf配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导出RDS上的数据"><span class="nav-number">1.1.3.</span> <span class="nav-text">导出RDS上的数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ECS中对mysql导入数据"><span class="nav-number">1.1.4.</span> <span class="nav-text">ECS中对mysql导入数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ECS开始主从同步"><span class="nav-number">1.1.5.</span> <span class="nav-text">ECS开始主从同步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可能遇到的问题"><span class="nav-number">1.1.6.</span> <span class="nav-text">可能遇到的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法"><span class="nav-number">1.1.6.1.</span> <span class="nav-text">解决方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看binlog信息"><span class="nav-number">1.1.6.2.</span> <span class="nav-text">查看binlog信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tips"><span class="nav-number">1.1.6.3.</span> <span class="nav-text">tips</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">seven-cm</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+  <script src="/js/src/md5js.min.js"></script>
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    var gitalk = new Gitalk({
+      clientID: '0399ed5d0252ba457a47',
+      clientSecret: '2bd5994250316a50ecb15449b98c744a7f6aa117',
+      repo: 'seven-cm.github.io',
+      owner: 'seven-cm',
+      admin: ['seven-cm'],
+      id: md5(location.pathname),
+      distractionFreeMode: 'false'
+    })
+    gitalk.render('gitalk-container')
+  </script>
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,740 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="SSL,证书,OTA,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="前言今天刚用新 MacBook Pro 打包 iOS 应用；而公司又没有扩展坞；本想通过 WI-FI 调试，但是需先用数据线链接到电脑；只好用 OTA 方式安装。 搭建 OTA 过程生成内网 IP https 证书具体操作，参考 王王王勇旭 的解决自签名证书在 Chrome 上的“不是私密连接问题” 相关配置如下 123456789101112131415161718192021222324252">
+<meta name="keywords" content="SSL,证书,OTA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="构建内网https证书">
+<meta property="og:url" content="http://seven-cm.github.io/2019/10/26/构建内网https证书/index.html">
+<meta property="og:site_name" content="seven-cm.blog">
+<meta property="og:description" content="前言今天刚用新 MacBook Pro 打包 iOS 应用；而公司又没有扩展坞；本想通过 WI-FI 调试，但是需先用数据线链接到电脑；只好用 OTA 方式安装。 搭建 OTA 过程生成内网 IP https 证书具体操作，参考 王王王勇旭 的解决自签名证书在 Chrome 上的“不是私密连接问题” 相关配置如下 123456789101112131415161718192021222324252">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2023-04-27T14:32:21.510Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="构建内网https证书">
+<meta name="twitter:description" content="前言今天刚用新 MacBook Pro 打包 iOS 应用；而公司又没有扩展坞；本想通过 WI-FI 调试，但是需先用数据线链接到电脑；只好用 OTA 方式安装。 搭建 OTA 过程生成内网 IP https 证书具体操作，参考 王王王勇旭 的解决自签名证书在 Chrome 上的“不是私密连接问题” 相关配置如下 123456789101112131415161718192021222324252">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://seven-cm.github.io/2019/10/26/构建内网https证书/">
+
+
+
+
+
+  <title> 构建内网https证书 | seven-cm.blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?fea19912a68edcd8dd8884f7fc44c677";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">seven-cm.blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2019/10/26/构建内网https证书/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                构建内网https证书
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-26T21:08:45+08:00">
+                2019-10-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>今天刚用新 MacBook Pro 打包 iOS 应用；而公司又没有扩展坞；本想通过 WI-FI 调试，但是需先用数据线链接到电脑；只好用 OTA 方式安装。</p>
+<h2 id="搭建-OTA-过程"><a href="#搭建-OTA-过程" class="headerlink" title="搭建 OTA 过程"></a>搭建 OTA 过程</h2><h3 id="生成内网-IP-https-证书"><a href="#生成内网-IP-https-证书" class="headerlink" title="生成内网 IP https 证书"></a>生成内网 IP https 证书</h3><p>具体操作，参考 王王王勇旭 的<a href="https://blog.csdn.net/Newpyer/article/details/79450128" target="_blank" rel="noopener">解决自签名证书在 Chrome 上的“不是私密连接问题”</a></p>
+<p>相关配置如下</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">-- 建立<span class="module-access"><span class="module"><span class="identifier">LocalCA</span>.</span></span>cnf</span><br><span class="line">touch <span class="module-access"><span class="module"><span class="identifier">LocalCA</span>.</span></span>cnf</span><br><span class="line">内容如下：</span><br><span class="line"></span><br><span class="line"><span class="literal">[ <span class="identifier">req</span> ]</span></span><br><span class="line">distinguished_name  = req_distinguished_name</span><br><span class="line">x509_extensions     = root_ca</span><br><span class="line"></span><br><span class="line"><span class="literal">[ <span class="identifier">req_distinguished_name</span> ]</span></span><br><span class="line"></span><br><span class="line"># define CA</span><br><span class="line">countryName             = CN (<span class="number">2</span> letter code)</span><br><span class="line">countryName_min         = <span class="number">2</span></span><br><span class="line">countryName_max         = <span class="number">2</span></span><br><span class="line">stateOrProvinceName     = GuangDong</span><br><span class="line">localityName            = GuangZhou</span><br><span class="line"><span class="number">0.</span>organizationName      = LocalCompany</span><br><span class="line">organizationalUnitName  = technology</span><br><span class="line">commonName              = develop</span><br><span class="line">commonName_max          = <span class="number">64</span></span><br><span class="line">emailAddress            = local@email.com</span><br><span class="line">emailAddress_max        = <span class="number">64</span></span><br><span class="line"></span><br><span class="line"><span class="literal">[ <span class="identifier">root_ca</span> ]</span></span><br><span class="line">basicConstraints            = critical, CA:<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">--建立<span class="module-access"><span class="module"><span class="identifier">LocalCA</span>.</span></span>ext</span><br><span class="line">touch <span class="module-access"><span class="module"><span class="identifier">LocalCA</span>.</span></span>ext</span><br><span class="line">内容如下：</span><br><span class="line"></span><br><span class="line">subjectAltName = @alt_names</span><br><span class="line">extendedKeyUsage = serverAuth</span><br><span class="line"></span><br><span class="line"><span class="literal">[<span class="identifier">alt_names</span>]</span></span><br><span class="line"></span><br><span class="line"># domain</span><br><span class="line">DNS.<span class="number">1</span> = domain.com</span><br><span class="line"># IP地址</span><br><span class="line">IP.<span class="number">1</span> = <span class="number">192.168</span>.<span class="number">2.221</span></span><br><span class="line">IP.<span class="number">2</span> = <span class="number">127.0</span>.<span class="number">0.1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">-- 生成证书命令</span><br><span class="line">-- CA证书，给设备使用</span><br><span class="line">openssl req -x509 -newkey rsa:<span class="number">2048</span> -out <span class="module-access"><span class="module"><span class="identifier">LocalCA4Device</span>.</span></span>cer -outform PEM -keyout <span class="module-access"><span class="module"><span class="identifier">LocalCA4Device</span>.</span></span>pvk -days <span class="number">10000</span> -verbose -config <span class="module-access"><span class="module"><span class="identifier">LocalCA</span>.</span></span>cnf -nodes -sha256 -subj <span class="string">"/CN=LocalCompany CA"</span></span><br><span class="line"></span><br><span class="line">-- 生成SSL证书</span><br><span class="line"></span><br><span class="line">openssl req -newkey rsa:<span class="number">2048</span> -keyout <span class="module-access"><span class="module"><span class="identifier">LocalCA4Nginx</span>.</span></span>pvk -out <span class="module-access"><span class="module"><span class="identifier">LocalCA4Nginx</span>.</span></span>req -subj /CN=localhost -sha256 -nodes</span><br><span class="line"></span><br><span class="line">openssl x509 -req -CA <span class="module-access"><span class="module"><span class="identifier">LocalCA4Device</span>.</span></span>cer -CAkey <span class="module-access"><span class="module"><span class="identifier">LocalCA4Device</span>.</span></span>pvk -<span class="keyword">in</span> <span class="module-access"><span class="module"><span class="identifier">LocalCA4Nginx</span>.</span></span>req -out <span class="module-access"><span class="module"><span class="identifier">LocalCA4Nginx</span>.</span></span>cer -days <span class="number">10000</span> -extfile <span class="module-access"><span class="module"><span class="identifier">LocalCA</span>.</span></span>ext -sha256 -set_serial <span class="number">0x1111</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>将 CA 证书安装到相关设备即可；Window 需安装到指定目录【受信任的根证书颁发机构】</p>
+</blockquote>
+<h3 id="OTA-下载的-html-内容"><a href="#OTA-下载的-html-内容" class="headerlink" title="OTA 下载的 html 内容"></a>OTA 下载的 html 内容</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"IE=edge"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>iOS-测试包下载<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span></span></span><br><span class="line"><span class="tag">      <span class="attr">name</span>=<span class="string">"viewport"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">content</span>=<span class="string">"width=device-width,initial-scale=1,user-scalable=0"</span></span></span><br><span class="line"><span class="tag">    /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"apple-mobile-web-app-capable"</span> <span class="attr">content</span>=<span class="string">"yes"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"apple-mobile-web-app-status-bar-style"</span> <span class="attr">content</span>=<span class="string">"black"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"Cache-Control"</span> <span class="attr">content</span>=<span class="string">"no-siteapp"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"Cache-Control"</span> <span class="attr">content</span>=<span class="string">"no-transform"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"format-detection"</span> <span class="attr">content</span>=<span class="string">"telephone=no"</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">a</span></span></span><br><span class="line"><span class="tag">        <span class="attr">href</span>=<span class="string">"itms-services://?action=download-manifest<span class="symbol">&amp;amp;</span>url=https://192.168.2.188/app/download/ios/manifest.plist"</span></span></span><br><span class="line"><span class="tag">        &gt;</span>点我安装<span class="tag">&lt;/<span class="name">a</span></span></span><br><span class="line"><span class="tag">      &gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"http://192.168.2.188/app/download/ios/LocalCA4Device.cer"</span></span></span><br><span class="line"><span class="tag">        &gt;</span>下载证书<span class="tag">&lt;/<span class="name">a</span></span></span><br><span class="line"><span class="tag">      &gt;</span></span><br><span class="line"></span><br><span class="line">      <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">h2</span>&gt;</span>常见问题<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"row"</span>&gt;</span>问题：无法连接到 "xx.xx.xx.xx"<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"row"</span>&gt;</span></span><br><span class="line">          解决：【设置 &gt; 通用 &gt; 关于本机 &gt; 证书信任设置】勾选信任</span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">br</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"row"</span>&gt;</span>问题：未受信任的企业级开发者<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"row"</span>&gt;</span></span><br><span class="line">          解决：【设置 &gt; 通用 &gt; 描述文件与设备管理】添加到信任</span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="nginx-配置"><a href="#nginx-配置" class="headerlink" title="nginx 配置"></a>nginx 配置</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">user</span>  nginx;</span><br><span class="line"><span class="attribute">worker_processes</span>  <span class="number">2</span>;</span><br><span class="line"><span class="attribute">pid</span>     /opt/nginx-<span class="number">1</span>.<span class="number">16</span>.<span class="number">1</span>/nginx.pid;</span><br><span class="line"><span class="attribute">error_log</span> /data/logs/nginx/error.log;</span><br><span class="line"></span><br><span class="line"><span class="section">events</span> &#123;</span><br><span class="line">   <span class="attribute">use</span> <span class="literal">epoll</span>;</span><br><span class="line">   <span class="attribute">worker_connections</span>  <span class="number">10240</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">http</span> &#123;</span><br><span class="line">    <span class="attribute">include</span>             mime.types;</span><br><span class="line">    <span class="attribute">default_type</span>        application/octet-stream;</span><br><span class="line">    <span class="attribute">log_format</span>          main    <span class="string">'<span class="variable">$remote_addr</span> <span class="variable">$request_length</span> <span class="variable">$request_time</span> [<span class="variable">$time_local</span>] "<span class="variable">$request</span>" <span class="variable">$status</span> <span class="variable">$bytes_sent</span> '</span></span><br><span class="line">                                <span class="string">'<span class="variable">$http_host</span> "<span class="variable">$proxy_add_x_forwarded_for</span>" "<span class="variable">$http_referer</span>" <span class="variable">$upstream_addr</span> <span class="variable">$upstream_response_time</span>'</span>;</span><br><span class="line">    <span class="attribute">access_log</span>                  /data/logs/nginx/access.log main;</span><br><span class="line">    <span class="attribute">server_tokens</span>               <span class="literal">off</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">gzip</span>                        <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">gzip_proxied</span>                any;</span><br><span class="line">    <span class="attribute">gzip_vary</span>                   <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">gzip_min_length</span>             <span class="number">100k</span>;</span><br><span class="line">    <span class="attribute">gzip_buffers</span>                <span class="number">4</span> <span class="number">16k</span>;</span><br><span class="line">    <span class="attribute">gzip_comp_level</span>             <span class="number">3</span>;</span><br><span class="line">    <span class="attribute">gzip_types</span>                  application/x-javascript text/plain application/xml text/xml application/xhtml+xml text/css text/javascript;</span><br><span class="line">    <span class="attribute">sendfile</span>                    <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">port_in_redirect</span>            <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">keepalive_timeout</span>           <span class="number">60</span>;</span><br><span class="line">    <span class="attribute">keepalive_requests</span>          <span class="number">1000</span>;</span><br><span class="line">    <span class="attribute">log_not_found</span>               <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">client_max_body_size</span>        <span class="number">50M</span>;</span><br><span class="line">    <span class="attribute">client_header_buffer_size</span>   <span class="number">16k</span>;</span><br><span class="line">    <span class="attribute">large_client_header_buffers</span> <span class="number">8</span> <span class="number">32k</span>;</span><br><span class="line">    <span class="attribute">client_body_timeout</span>         <span class="number">300</span>;</span><br><span class="line">    <span class="attribute">client_body_buffer_size</span>     <span class="number">3072k</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">upstream</span> ota-server &#123;</span><br><span class="line">        <span class="attribute">server</span> <span class="number">192.168.2.222:8080</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span> <span class="number">80</span> ;</span><br><span class="line">        <span class="attribute">server_name</span> <span class="number">192.168.2.188</span>;</span><br><span class="line">        <span class="attribute">root</span>       /home/nginx/html/;</span><br><span class="line">        <span class="attribute">error_page</span> <span class="number">404</span> <span class="number">502</span> = <span class="variable">@fetch</span>;</span><br><span class="line">        <span class="attribute">location</span>  <span class="variable">@fetch</span> &#123;</span><br><span class="line">                 <span class="attribute">default_type</span> application/json;</span><br><span class="line">                 <span class="attribute">return</span> <span class="number">200</span> <span class="string">'&#123;"result":500,"state":false,"msg":"server error"&#125;'</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="attribute">location</span> <span class="regexp">~ /</span> &#123;</span><br><span class="line">                <span class="attribute">proxy_pass</span> http://ota-server;</span><br><span class="line">                <span class="attribute">proxy_read_timeout</span>      <span class="number">7200</span>;</span><br><span class="line">                <span class="attribute">proxy_connect_timeout</span>   <span class="number">5</span>;</span><br><span class="line">                <span class="attribute">proxy_set_header</span>        Host                <span class="variable">$Host</span>;</span><br><span class="line">                <span class="attribute">proxy_set_header</span>        X-Forwarded-For     <span class="variable">$remote_addr</span>;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span> <span class="number">443</span> ;</span><br><span class="line">        <span class="attribute">server_name</span> <span class="number">192.168.2.188</span>;</span><br><span class="line">        <span class="attribute">ssl</span> <span class="literal">on</span>;</span><br><span class="line">        <span class="attribute">ssl_certificate</span> /opt/nginx-<span class="number">1</span>.<span class="number">16</span>.<span class="number">1</span>/certs/LocalCA4Nginx.cer;</span><br><span class="line">        <span class="attribute">ssl_certificate_key</span> /opt/nginx-<span class="number">1</span>.<span class="number">16</span>.<span class="number">1</span>/certs/LocalCA4Nginx.pvk;</span><br><span class="line">        <span class="attribute">ssl_ciphers</span> HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;</span><br><span class="line">        <span class="attribute">root</span>    /home/nginx/html/;</span><br><span class="line">        <span class="attribute">error_page</span> <span class="number">404</span> <span class="number">502</span> = <span class="variable">@fetch</span>;</span><br><span class="line">        <span class="attribute">location</span>  <span class="variable">@fetch</span> &#123;</span><br><span class="line">                 <span class="attribute">default_type</span> application/json;</span><br><span class="line">                 <span class="attribute">return</span> <span class="number">200</span> <span class="string">'&#123;"result":500,"state":false,"msg":"server error"&#125;'</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">location</span> <span class="regexp">~ /</span> &#123;</span><br><span class="line">                <span class="attribute">proxy_pass</span> http://ota-server;</span><br><span class="line">                <span class="attribute">proxy_read_timeout</span>      <span class="number">7200</span>;</span><br><span class="line">                <span class="attribute">proxy_connect_timeout</span>   <span class="number">5</span>;</span><br><span class="line">                <span class="attribute">proxy_set_header</span>        Host                <span class="variable">$Host</span>;</span><br><span class="line">                <span class="attribute">proxy_set_header</span>        X-Forwarded-For     <span class="variable">$remote_addr</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/SSL/" rel="tag"># SSL</a>
+          
+            <a href="/tags/证书/" rel="tag"># 证书</a>
+          
+            <a href="/tags/OTA/" rel="tag"># OTA</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/21/代码片段-vue-自定义alert/" rel="next" title="代码片段-vue-自定义alert">
+                <i class="fa fa-chevron-left"></i> 代码片段-vue-自定义alert
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/10/27/记smart-socket在生产环境使用遇到的一些问题以及解决思路/" rel="prev" title="记smart-socket在生产环境使用遇到的一些问题以及解决思路">
+                记smart-socket在生产环境使用遇到的一些问题以及解决思路 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="gitalk-container"></div>
+    
+  </div>
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="seven-cm">
+          <p class="site-author-name" itemprop="name">seven-cm</p>
+           
+              <p class="site-description motion-element" itemprop="description">少敲代码，多陪家人</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">80</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">100</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/seven-cm" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建-OTA-过程"><span class="nav-number">1.1.</span> <span class="nav-text">搭建 OTA 过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#生成内网-IP-https-证书"><span class="nav-number">1.1.1.</span> <span class="nav-text">生成内网 IP https 证书</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OTA-下载的-html-内容"><span class="nav-number">1.1.2.</span> <span class="nav-text">OTA 下载的 html 内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx-配置"><span class="nav-number">1.1.3.</span> <span class="nav-text">nginx 配置</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">seven-cm</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+  <script src="/js/src/md5js.min.js"></script>
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    var gitalk = new Gitalk({
+      clientID: '0399ed5d0252ba457a47',
+      clientSecret: '2bd5994250316a50ecb15449b98c744a7f6aa117',
+      repo: 'seven-cm.github.io',
+      owner: 'seven-cm',
+      admin: ['seven-cm'],
+      id: md5(location.pathname),
+      distractionFreeMode: 'false'
+    })
+    gitalk.render('gitalk-container')
+  </script>
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

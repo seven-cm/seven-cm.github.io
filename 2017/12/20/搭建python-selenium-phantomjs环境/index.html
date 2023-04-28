@@ -1,0 +1,743 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="phantomjs,python,selenium,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="前言最近要爬取淘宝的订单，但是从公司拿到的cookie放到服务器中爬的时候，淘宝并不会传会json数据，而是把所有的订单数据放到html中去，然后返回整个html页面；而且从js中拿到的数据也是乱七八糟，并不是想要的数据。而通过服务器代理，链接登陆，拿到的cookie则能正常返回json数据。  猜测：淘宝对请求的IP做了记录，如果不是同一个区域的IP，则返回html页面信息。   问题来了：总不">
+<meta name="keywords" content="phantomjs,python,selenium">
+<meta property="og:type" content="article">
+<meta property="og:title" content="搭建python selenium phantomjs环境">
+<meta property="og:url" content="http://seven-cm.github.io/2017/12/20/搭建python-selenium-phantomjs环境/index.html">
+<meta property="og:site_name" content="seven-cm.blog">
+<meta property="og:description" content="前言最近要爬取淘宝的订单，但是从公司拿到的cookie放到服务器中爬的时候，淘宝并不会传会json数据，而是把所有的订单数据放到html中去，然后返回整个html页面；而且从js中拿到的数据也是乱七八糟，并不是想要的数据。而通过服务器代理，链接登陆，拿到的cookie则能正常返回json数据。  猜测：淘宝对请求的IP做了记录，如果不是同一个区域的IP，则返回html页面信息。   问题来了：总不">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2023-04-27T14:32:21.510Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="搭建python selenium phantomjs环境">
+<meta name="twitter:description" content="前言最近要爬取淘宝的订单，但是从公司拿到的cookie放到服务器中爬的时候，淘宝并不会传会json数据，而是把所有的订单数据放到html中去，然后返回整个html页面；而且从js中拿到的数据也是乱七八糟，并不是想要的数据。而通过服务器代理，链接登陆，拿到的cookie则能正常返回json数据。  猜测：淘宝对请求的IP做了记录，如果不是同一个区域的IP，则返回html页面信息。   问题来了：总不">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://seven-cm.github.io/2017/12/20/搭建python-selenium-phantomjs环境/">
+
+
+
+
+
+  <title> 搭建python selenium phantomjs环境 | seven-cm.blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?fea19912a68edcd8dd8884f7fc44c677";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">seven-cm.blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2017/12/20/搭建python-selenium-phantomjs环境/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                搭建python selenium phantomjs环境
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-20T21:27:48+08:00">
+                2017-12-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近要爬取淘宝的订单，但是从公司拿到的cookie放到服务器中爬的时候，淘宝并不会传会json数据，而是把所有的订单数据放到html中去，然后返回整个html页面；而且从js中拿到的数据也是乱七八糟，并不是想要的数据。而通过服务器代理，链接登陆，拿到的cookie则能正常返回json数据。</p>
+<blockquote>
+<p>猜测：淘宝对请求的IP做了记录，如果不是同一个区域的IP，则返回html页面信息。</p>
+</blockquote>
+<blockquote>
+<p>问题来了：总不能一直代理服务器的IP去登陆淘宝，然后再拿cookie吧？而且这样也很麻烦。</p>
+</blockquote>
+<p>解决办法：在服务器中，直接模拟请求登陆淘宝。</p>
+<h2 id="配置步骤"><a href="#配置步骤" class="headerlink" title="配置步骤"></a>配置步骤</h2><h3 id="安装所需selenium模块"><a href="#安装所需selenium模块" class="headerlink" title="安装所需selenium模块"></a>安装所需selenium模块</h3><figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#阿里云服务器已经配置好了python，python-pip</span></span><br><span class="line"><span class="meta">#查看python版本</span></span><br><span class="line">python --version</span><br><span class="line"></span><br><span class="line">Python <span class="number">2.6</span><span class="number">.6</span></span><br><span class="line"><span class="meta">#不能直接用pip install selenium</span></span><br><span class="line"><span class="meta">#因为这样会安装最新版本的selenium的模块，可能会引起python的版本问题。故此处指定selenium的版本</span></span><br><span class="line">pip install selenium==<span class="number">2.53</span><span class="number">.6</span></span><br></pre></td></tr></table></figure>
+<h3 id="下载phantomjs"><a href="#下载phantomjs" class="headerlink" title="下载phantomjs"></a>下载phantomjs</h3><p><a href="http://npm.taobao.org/dist/phantomjs/" target="_blank" rel="noopener">http://npm.taobao.org/dist/phantomjs/</a><br><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget http:<span class="comment">//npm.taobao.org/mirrors/phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2</span></span><br><span class="line">tar jxvf phantomjs<span class="number">-2.1</span><span class="number">.1</span>-linux-x86_64.tar.bz2</span><br></pre></td></tr></table></figure></p>
+<h3 id="解决Status-code-was-127"><a href="#解决Status-code-was-127" class="headerlink" title="解决Status code was: 127"></a>解决Status code was: 127</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#安装<span class="selector-tag">phantomjs</span>依赖的<span class="selector-tag">libfontconfig</span></span><br><span class="line"><span class="selector-tag">yum</span> <span class="selector-tag">install</span> <span class="selector-tag">fontconfig</span> <span class="selector-tag">freetype</span> <span class="selector-tag">libfreetype</span><span class="selector-class">.so</span><span class="selector-class">.6</span> <span class="selector-tag">libfontconfig</span><span class="selector-class">.so</span><span class="selector-class">.1</span></span><br></pre></td></tr></table></figure>
+<h3 id="最后当然是上代码了"><a href="#最后当然是上代码了" class="headerlink" title="最后当然是上代码了"></a>最后当然是上代码了</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment">#-*-coding:utf-8-*-</span></span><br><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver  </span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.support.ui <span class="keyword">import</span> WebDriverWait</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.common.desired_capabilities <span class="keyword">import</span> DesiredCapabilities</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.common.action_chains <span class="keyword">import</span> ActionChains</span><br><span class="line"><span class="keyword">import</span> urllib2</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">dcap = dict(DesiredCapabilities.PHANTOMJS)</span><br><span class="line">dcap[<span class="string">"phantomjs.page.settings.userAgent"</span>] = (</span><br><span class="line">    <span class="string">"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"</span></span><br><span class="line">)</span><br><span class="line">driver = webdriver.PhantomJS(executable_path=<span class="string">'/opt/selenium/phantomjs-2.1.1-linux-x86_64/bin/phantomjs'</span>,desired_capabilities=dcap)  </span><br><span class="line"><span class="comment">#driver = webdriver.Firefox()  </span></span><br><span class="line">driver.viewportSize=&#123;<span class="string">'width'</span>:<span class="number">1024</span>,<span class="string">'height'</span>:<span class="number">800</span>&#125;</span><br><span class="line">driver.maximize_window()</span><br><span class="line"> </span><br><span class="line">driver.delete_all_cookies()</span><br><span class="line">driver.get(<span class="string">"https://login.taobao.com/member/login.jhtml?from=taobaoindex&amp;f=top&amp;style=&amp;sub=true&amp;redirect_url=https%3A%2F%2Fmyseller.taobao.com%2Fseller_admin.htm"</span>)</span><br><span class="line"> <span class="comment">#load the switch</span></span><br><span class="line">element=WebDriverWait(driver,<span class="number">60</span>).until(<span class="keyword">lambda</span> driver : driver.find_element_by_xpath(<span class="string">"//*[@id='J_Quick2Static']"</span>))</span><br><span class="line">element.click()</span><br><span class="line">driver.implicitly_wait(<span class="number">20</span>)</span><br><span class="line">username=driver.find_element_by_name(<span class="string">"TPL_username"</span>)</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> username.is_displayed:</span><br><span class="line">    driver.implicitly_wait(<span class="number">20</span>)</span><br><span class="line">    driver.find_element_by_xpath(<span class="string">"//*[@id='J_Quick2Static']"</span>).click()</span><br><span class="line">driver.implicitly_wait(<span class="number">20</span>)</span><br><span class="line">time.sleep(<span class="number">5</span>)</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment">#定位滑块元素,如果不存在，则跳出循环</span></span><br><span class="line">        show=driver.find_element_by_xpath(<span class="string">"//*[@id='nocaptcha']"</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> show.is_displayed():</span><br><span class="line">            <span class="keyword">break</span>        </span><br><span class="line">        source=driver.find_element_by_xpath(<span class="string">"//*[@id='nc_1_n1z']"</span>)  </span><br><span class="line">        <span class="comment">#定义鼠标拖放动作</span></span><br><span class="line">        ActionChains(driver).drag_and_drop_by_offset(source,<span class="number">400</span>,<span class="number">0</span>).perform()</span><br><span class="line">        time.sleep(<span class="number">2</span>)</span><br><span class="line">        driver.save_screenshot(<span class="string">'login-screeshot-0.png'</span>)</span><br><span class="line">        <span class="comment">#查看是否认证成功，获取text值 //*[@id="nc_1__scale_text"]/span</span></span><br><span class="line">        text=driver.find_element_by_xpath(<span class="string">"//*[@id='nc_1__scale_text']/span"</span>)</span><br><span class="line">        <span class="keyword">if</span> text.text.startswith(<span class="string">u'验证通过'</span>):</span><br><span class="line">            print(<span class="string">'成功滑动'</span>)</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">if</span> text.text.startswith(<span class="string">u'请点击'</span>):</span><br><span class="line">            print(<span class="string">'成功滑动'</span>)</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">if</span> text.text.startswith(<span class="string">u'请按住'</span>):</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        driver.find_element_by_xpath(<span class="string">"//div[@id='havana_nco']/div/span/a"</span>).click()</span><br><span class="line">        print(e)  </span><br><span class="line">username.send_keys(<span class="string">u'xxxx'</span>)</span><br><span class="line">driver.find_element_by_name(<span class="string">"TPL_password"</span>).send_keys(<span class="string">"xxxxx"</span>)</span><br><span class="line">driver.implicitly_wait(<span class="number">20</span>)</span><br><span class="line">driver.find_element_by_xpath(<span class="string">"//*[@id='J_SubmitStatic']"</span>).click()</span><br><span class="line">time.sleep(<span class="number">20</span>)</span><br><span class="line">driver.save_screenshot(<span class="string">'login-screeshot-1.png'</span>)</span><br><span class="line">    <span class="comment">#以下是获得cookie代码</span></span><br><span class="line">cookie = [item[<span class="string">"name"</span>] + <span class="string">"="</span> + item[<span class="string">"value"</span>] <span class="keyword">for</span> item <span class="keyword">in</span> driver.get_cookies()]</span><br><span class="line">cookiestr = <span class="string">';'</span>.join(item <span class="keyword">for</span> item <span class="keyword">in</span> cookie)</span><br><span class="line"><span class="comment">#print cookiestr</span></span><br><span class="line">data=&#123;</span><br><span class="line"><span class="string">'cookie'</span>:cookiestr</span><br><span class="line">&#125;</span><br><span class="line">print(data)</span><br><span class="line"><span class="comment">#post cookie到接口</span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    headers = &#123;<span class="string">'Content-Type'</span>: <span class="string">'application/json'</span>&#125;</span><br><span class="line">    request = urllib2.Request(url=<span class="string">'http://127.0.0.1:18080/cookie/taobao'</span>, headers=headers, data=json.dumps(data))</span><br><span class="line">    response = urllib2.urlopen(request)</span><br><span class="line">    print(response.read())</span><br><span class="line"><span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">    print(e) </span><br><span class="line">driver.close()</span><br><span class="line">driver.quit()</span><br><span class="line">sys.exit(<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/phantomjs/" rel="tag"># phantomjs</a>
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/selenium/" rel="tag"># selenium</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/20/git-常用命令/" rel="next" title="git 常用命令">
+                <i class="fa fa-chevron-left"></i> git 常用命令
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/04/记录在jsp中调试时-中文乱码的问题/" rel="prev" title="记录在jsp中调试时,中文乱码的问题">
+                记录在jsp中调试时,中文乱码的问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="gitalk-container"></div>
+    
+  </div>
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="seven-cm">
+          <p class="site-author-name" itemprop="name">seven-cm</p>
+           
+              <p class="site-description motion-element" itemprop="description">少敲代码，多陪家人</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">80</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">100</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/seven-cm" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置步骤"><span class="nav-number">1.1.</span> <span class="nav-text">配置步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装所需selenium模块"><span class="nav-number">1.1.1.</span> <span class="nav-text">安装所需selenium模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下载phantomjs"><span class="nav-number">1.1.2.</span> <span class="nav-text">下载phantomjs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决Status-code-was-127"><span class="nav-number">1.1.3.</span> <span class="nav-text">解决Status code was: 127</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最后当然是上代码了"><span class="nav-number">1.1.4.</span> <span class="nav-text">最后当然是上代码了</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">seven-cm</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+  <script src="/js/src/md5js.min.js"></script>
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    var gitalk = new Gitalk({
+      clientID: '0399ed5d0252ba457a47',
+      clientSecret: '2bd5994250316a50ecb15449b98c744a7f6aa117',
+      repo: 'seven-cm.github.io',
+      owner: 'seven-cm',
+      admin: ['seven-cm'],
+      id: md5(location.pathname),
+      distractionFreeMode: 'false'
+    })
+    gitalk.render('gitalk-container')
+  </script>
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

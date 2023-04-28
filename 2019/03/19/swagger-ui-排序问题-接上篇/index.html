@@ -1,0 +1,742 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="swagger-ui,排序问题,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="前言我们已经将后端所需的Swagger已经按position排序，但是通过swagger-ui.html看的结果还是按path排序，那么肯定是在前端展示的时候，又做了排序。唯有修改swagger-ui源码来解决该问题～ 下载swagger-ui前端源码12345&amp;lt;dependency&amp;gt;    &amp;lt;groupId&amp;gt;io.springfox&amp;lt;/groupId&amp;gt;">
+<meta name="keywords" content="swagger-ui,排序问题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="swagger ui 排序问题-接上篇">
+<meta property="og:url" content="http://seven-cm.github.io/2019/03/19/swagger-ui-排序问题-接上篇/index.html">
+<meta property="og:site_name" content="seven-cm.blog">
+<meta property="og:description" content="前言我们已经将后端所需的Swagger已经按position排序，但是通过swagger-ui.html看的结果还是按path排序，那么肯定是在前端展示的时候，又做了排序。唯有修改swagger-ui源码来解决该问题～ 下载swagger-ui前端源码12345&amp;lt;dependency&amp;gt;    &amp;lt;groupId&amp;gt;io.springfox&amp;lt;/groupId&amp;gt;">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2023-04-27T14:32:21.506Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="swagger ui 排序问题-接上篇">
+<meta name="twitter:description" content="前言我们已经将后端所需的Swagger已经按position排序，但是通过swagger-ui.html看的结果还是按path排序，那么肯定是在前端展示的时候，又做了排序。唯有修改swagger-ui源码来解决该问题～ 下载swagger-ui前端源码12345&amp;lt;dependency&amp;gt;    &amp;lt;groupId&amp;gt;io.springfox&amp;lt;/groupId&amp;gt;">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://seven-cm.github.io/2019/03/19/swagger-ui-排序问题-接上篇/">
+
+
+
+
+
+  <title> swagger ui 排序问题-接上篇 | seven-cm.blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?fea19912a68edcd8dd8884f7fc44c677";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">seven-cm.blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://seven-cm.github.io/2019/03/19/swagger-ui-排序问题-接上篇/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="seven-cm">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="seven-cm.blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                swagger ui 排序问题-接上篇
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-19T22:56:44+08:00">
+                2019-03-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我们已经将后端所需的Swagger已经按position排序，但是通过swagger-ui.html看的结果还是按path排序，那么肯定是在前端展示的时候，又做了排序。唯有修改swagger-ui源码来解决该问题～</p>
+<h2 id="下载swagger-ui前端源码"><a href="#下载swagger-ui前端源码" class="headerlink" title="下载swagger-ui前端源码"></a>下载swagger-ui前端源码</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.springfox<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springfox-swagger-ui<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.9.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>我们查看上述jar包的MANIFEST.MF文件的信息<br><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Manifest-Version: <span class="number">1.0</span></span><br><span class="line">Implementation-Title: springfox-swagger-ui</span><br><span class="line">Built-With: gradle<span class="number">-4.6</span>, groovy<span class="number">-2.4</span><span class="number">.12</span></span><br><span class="line">Implementation-Version: <span class="number">2.9</span><span class="number">.2</span></span><br><span class="line">SwaggerUi-Version: <span class="number">3.17</span><span class="number">.1</span></span><br><span class="line">Built-By: d_krishnan</span><br><span class="line">Build-Time: <span class="number">2018</span><span class="number">-06</span><span class="number">-23</span>T17:<span class="number">02</span>:<span class="number">09</span><span class="number">-0500</span></span><br><span class="line">Created-By: <span class="number">1.8</span><span class="number">.0</span>_151 (Oracle Corporation)</span><br><span class="line">Built-On: ISDV161716L.local/<span class="number">192.168</span><span class="number">.1</span><span class="number">.163</span></span><br></pre></td></tr></table></figure></p>
+<p>由此可见，此jar包中的swagger-ui是根据3.17.1版本构建的。我们来看看swagger-ui在github上的信息<br><a href="https://github.com/swagger-api/swagger-ui" target="_blank" rel="noopener">https://github.com/swagger-api/swagger-ui</a><br>查看tag标签，找到3.17.1版本 <a href="https://github.com/swagger-api/swagger-ui/tree/v3.17.1" target="_blank" rel="noopener">https://github.com/swagger-api/swagger-ui/tree/v3.17.1</a><br>下载下来。</p>
+<h2 id="调试源码"><a href="#调试源码" class="headerlink" title="调试源码"></a>调试源码</h2><blockquote>
+<p>源码的调试，涉及node环境的安装，此处不再叙述。只是简单展示相关的调试步骤。</p>
+</blockquote>
+<h3 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h3><p>使用vscode 打开文件夹 swagger-ui-3.17.1；在终端输入<br><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm <span class="keyword">install</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="配置获取swagger信息的url"><a href="#配置获取swagger信息的url" class="headerlink" title="配置获取swagger信息的url"></a>配置获取swagger信息的url</h3><p>我们可以在dev-helpers文件夹下的index.html配置<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// Build a system</span><br><span class="line">      const ui = SwaggerUIBundle(&#123;</span><br><span class="line">        url: "http://localhost:8080/cms/v2/api-docs",</span><br><span class="line">        dom_id: '#swagger-ui',</span><br><span class="line">        presets: [</span><br><span class="line">          SwaggerUIBundle.presets.apis,</span><br><span class="line">          SwaggerUIStandalonePreset</span><br><span class="line">        ],</span><br><span class="line">        plugins: [</span><br><span class="line">          SwaggerUIBundle.plugins.DownloadUrl</span><br><span class="line">        ],</span><br><span class="line">        layout: "StandaloneLayout"</span><br><span class="line">      &#125;)</span><br></pre></td></tr></table></figure></p>
+<p>在url中配置获取swagger的url即可。</p>
+<h3 id="出现Failed-to-load-API-definition"><a href="#出现Failed-to-load-API-definition" class="headerlink" title="出现Failed to load API definition."></a>出现Failed to load API definition.</h3><figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Errors</span><br><span class="line">Hide</span><br><span class="line">Fetch errorFailed <span class="built_in">to</span> fetch <span class="keyword">http</span>://localhost:<span class="number">8080</span>/cms/v2/api-docs</span><br><span class="line">Fetch errorPossible cross-origin (CORS) issue? The <span class="built_in">URL</span> origin (<span class="keyword">http</span>://localhost:<span class="number">8080</span>) does <span class="keyword">not</span> match <span class="keyword">the</span> page (<span class="keyword">http</span>://localhost:<span class="number">3200</span>). Check <span class="keyword">the</span> server returns <span class="keyword">the</span> correct <span class="string">'Access-Control-Allow-*'</span> headers.</span><br></pre></td></tr></table></figure>
+<h3 id="看来是跨越的问题，我们增加其他方法来处理"><a href="#看来是跨越的问题，我们增加其他方法来处理" class="headerlink" title="看来是跨越的问题，我们增加其他方法来处理"></a>看来是跨越的问题，我们增加其他方法来处理</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.sevencm.cms.swagger;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Primary;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.env.Environment;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.ResponseEntity;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Controller;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.CrossOrigin;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMethod;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.ResponseBody;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.annotations.ApiIgnore;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.spring.web.DocumentationCache;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.spring.web.json.Json;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.spring.web.json.JsonSerializer;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.swagger2.mappers.ServiceModelToSwagger2Mapper;</span><br><span class="line"><span class="keyword">import</span> springfox.documentation.swagger2.web.Swagger2Controller;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;</span><br><span class="line"></span><br><span class="line"><span class="meta">@CrossOrigin</span>(origins = &#123;<span class="string">"http://localhost:3200"</span>, <span class="string">"null"</span>&#125;)</span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@ApiIgnore</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Swagger2ControllerCORS</span> <span class="keyword">extends</span> <span class="title">Swagger2Controller</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEFAULT_URL = <span class="string">"/v2/api-docs/CORS"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Swagger2ControllerCORS</span><span class="params">(Environment environment,</span></span></span><br><span class="line"><span class="function"><span class="params">                                  DocumentationCache documentationCache,</span></span></span><br><span class="line"><span class="function"><span class="params">                                  ServiceModelToSwagger2Mapper mapper,</span></span></span><br><span class="line"><span class="function"><span class="params">                                  JsonSerializer jsonSerializer)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(environment, documentationCache, mapper, jsonSerializer);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(</span><br><span class="line">            value = DEFAULT_URL,</span><br><span class="line">            method = RequestMethod.GET,</span><br><span class="line">            produces = &#123; APPLICATION_JSON_VALUE &#125;)</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ResponseEntity&lt;Json&gt; <span class="title">getDocumentation</span><span class="params">(String swaggerGroup, HttpServletRequest servletRequest)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.getDocumentation(swaggerGroup, servletRequest);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以在<br>swagger-ui的前端源代码中，修改以下代码，则可以修改前端又自动排序的问题<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 文件：swagger-ui-3.17.1/src/core/plugins/spec/selectors.js </span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> taggedOperations = <span class="function">(<span class="params">state</span>) =&gt;</span> <span class="function">(<span class="params">&#123; getConfigs &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> &#123; tagsSorter, operationsSorter &#125; = getConfigs()</span><br><span class="line">  <span class="keyword">return</span> operationsWithTags(state)</span><br><span class="line">    <span class="comment">// .sortBy(</span></span><br><span class="line">    <span class="comment">//   (val, key) =&gt; key, // get the name of the tag to be passed to the sorter</span></span><br><span class="line">    <span class="comment">//   (tagA, tagB) =&gt; &#123;</span></span><br><span class="line">    <span class="comment">//     let sortFn = (typeof tagsSorter === "function" ? tagsSorter : sorters.tagsSorter[ tagsSorter ])</span></span><br><span class="line">    <span class="comment">//     return (!sortFn ? null : sortFn(tagA, tagB))</span></span><br><span class="line">    <span class="comment">//   &#125;</span></span><br><span class="line">    <span class="comment">// )</span></span><br><span class="line">    .map(<span class="function">(<span class="params">ops, tag</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">// let sortFn = (typeof operationsSorter === "function" ? operationsSorter : sorters.operationsSorter[ operationsSorter ])</span></span><br><span class="line">      <span class="comment">// let operations = (!sortFn ? ops : ops.sort(sortFn))</span></span><br><span class="line">      <span class="keyword">let</span> operations = ops</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">Map</span>(&#123; <span class="attr">tagDetails</span>: tagDetails(state, tag), <span class="attr">operations</span>: operations &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/swagger-ui/" rel="tag"># swagger-ui</a>
+          
+            <a href="/tags/排序问题/" rel="tag"># 排序问题</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/14/swagger-ui-排序问题/" rel="next" title="swagger-ui 排序问题">
+                <i class="fa fa-chevron-left"></i> swagger-ui 排序问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/24/VisualVM远程监控阿里云tomcat/" rel="prev" title="VisualVM远程监控阿里云tomcat">
+                VisualVM远程监控阿里云tomcat <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="gitalk-container"></div>
+    
+  </div>
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="seven-cm">
+          <p class="site-author-name" itemprop="name">seven-cm</p>
+           
+              <p class="site-description motion-element" itemprop="description">少敲代码，多陪家人</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">80</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">100</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/seven-cm" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#下载swagger-ui前端源码"><span class="nav-number">1.1.</span> <span class="nav-text">下载swagger-ui前端源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试源码"><span class="nav-number">1.2.</span> <span class="nav-text">调试源码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装依赖"><span class="nav-number">1.2.1.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置获取swagger信息的url"><span class="nav-number">1.2.2.</span> <span class="nav-text">配置获取swagger信息的url</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#出现Failed-to-load-API-definition"><span class="nav-number">1.2.3.</span> <span class="nav-text">出现Failed to load API definition.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#看来是跨越的问题，我们增加其他方法来处理"><span class="nav-number">1.2.4.</span> <span class="nav-text">看来是跨越的问题，我们增加其他方法来处理</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">seven-cm</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+  <script src="/js/src/md5js.min.js"></script>
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    var gitalk = new Gitalk({
+      clientID: '0399ed5d0252ba457a47',
+      clientSecret: '2bd5994250316a50ecb15449b98c744a7f6aa117',
+      repo: 'seven-cm.github.io',
+      owner: 'seven-cm',
+      admin: ['seven-cm'],
+      id: md5(location.pathname),
+      distractionFreeMode: 'false'
+    })
+    gitalk.render('gitalk-container')
+  </script>
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
